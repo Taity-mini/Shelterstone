@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Andrew Tait (1504693)
@@ -7,9 +8,8 @@
  * User's object model class
  *
  */
-
-
-class users {
+class users
+{
 
     //class variables based on user and profile fields
 
@@ -64,7 +64,6 @@ class users {
             return "Query failed: " . $e->getMessage();
         }
     }
-
 
 
     //Users Table
@@ -157,7 +156,7 @@ class users {
 
     public function setModifiedDate($modifed)
     {
-        $this->modified =htmlentities($modifed);
+        $this->modified = htmlentities($modifed);
     }
 
 
@@ -179,7 +178,7 @@ class users {
 
     public function setBio($bio)
     {
-       $this->bio = htmlentities($bio);
+        $this->bio = htmlentities($bio);
     }
 
     public function setInterests($interests)
@@ -194,7 +193,7 @@ class users {
 
     public function setLink($link)
     {
-        $this ->link = htmlentities($link);
+        $this->link = htmlentities($link);
     }
 
 //Get all users' details
@@ -214,7 +213,7 @@ class users {
             $stmt->execute();
             $results = $stmt->fetchAll();
 
-            foreach($results as $row) {
+            foreach ($results as $row) {
                 $this->setEmail($row['email']);
                 $this->setFirstName($row['firstName']);
                 $this->setLastName($row['lastName']);
@@ -233,7 +232,7 @@ class users {
             $stmt2->execute();
             $results = $stmt->fetchAll();
 
-            foreach($results as $row) {
+            foreach ($results as $row) {
                 $this->setUserName($row['username']);
                 $this->setOAuthUID($row['oauth_uid']);
                 $this->setCreatedDate($row['created']);
@@ -251,16 +250,15 @@ class users {
         $sql = "SELECT COUNT(*) FROM users";
         $stmt = $conn->prepare($sql);
 
-        try{
+        try {
             $stmt->execute();
-            $results =$stmt->fetch();
+            $results = $stmt->fetch();
             $count = $results[0];
             return $count;
-        }catch (PDOException $e) {
-            return "Database query failed: " .$e->getMessage();
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
         }
     }
-
 
 
 //Creating Functions
@@ -279,10 +277,9 @@ class users {
 
     public function createUser($conn, $password)
     {
-        try
-        {
+        try {
             //First let's hash the password with the bcrypt function
-            $hash = password_hash($password,PASSWORD_DEFAULT);
+            $hash = password_hash($password, PASSWORD_DEFAULT);
 
             //Save current date time to variable for insertion
             $date = date('Y-m-d H:i:s');
@@ -462,9 +459,6 @@ class users {
             } catch (PDOException $e) {
                 dbClose($conn);
                 return "Approval failed: " . $e->getMessage();
-            } catch (Exception $e) {
-                dbClose($conn);
-                return "Approval failed: " . $e->getMessage();
             }
         }
     }
@@ -502,9 +496,6 @@ class users {
             } catch (PDOException $e) {
                 dbClose($conn);
                 return "Update failed: " . $e->getMessage();
-            } catch (Exception $e) {
-                dbClose($conn);
-                return "Update failed: " . $e->getMessage();
             }
 
         } //Otherwise we can unban them from the site
@@ -519,16 +510,122 @@ class users {
             } catch (PDOException $e) {
                 dbClose($conn);
                 return "Update failed: " . $e->getMessage();
-            } catch (Exception $e) {
-                dbClose($conn);
-                return "Update failed: " . $e->getMessage();
             }
         }
     }
 
+    //Listing functions for user attributes
+
+    public function listUsersToApprove($conn)
+    {
+        $sql = "SELECT * FROM profiles p";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $toApprove = array();
+            foreach ($results as $row) {
+                $this->setUserID($row['userID']);
+                //Check if the user is approved or not
+                if(!$this->isApproved($conn)) {
+                    //if not approved then add to array
+                    $toApprove [] = $row;
+                }
+            }
+            return $toApprove;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
+
+    public function listUsersToAccredit($conn)
+    {
+        $sql = "SELECT * FROM profiles p";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $toAccredit = array();
+            foreach ($results as $row) {
+                $this->setUserID($row['userID']);
+                //Check if the user is approved or not
+                if(!$this->isAccredited($conn)) {
+                    //if not approved then add to array
+                    $toAccredit [] = $row;
+                }
+            }
+            return $toAccredit;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
+
+    public function listBannedUsers($conn)
+    {
+        $sql = "SELECT * FROM profiles p";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $banList = array();
+            foreach ($results as $row) {
+                $this->setUserID($row['userID']);
+                //Check if the user is approved or not
+                if($this->isBanned($conn)) {
+                    //if not approved then add to array
+                    $banList [] = $row;
+                }
+            }
+            return $banList;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
 
 
+    //Checking boolean methods
+    //Does the user exist
+    public function doesExist($conn)
+    {
+        $sql = "SELECT userID FROM users WHERE userID = :userID LIMIT 1";
 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            if (count($results) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Query failed: " . $e->getMessage();
+        }
+    }
+
+    //No user with the same username
+    public function doesUserNameExist($conn)
+    {
+        $sql = "SELECT username FROM users WHERE username = :username LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':username', $this->getUsername(), PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            if (count($results) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Query failed: " . $e->getMessage();
+        }
+    }
 
 
 }
