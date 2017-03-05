@@ -628,6 +628,56 @@ class users
     }
 
 
+    //Login Function
+    public function Login($userID, $password, $conn)
+    {
+        try {
+            $sql = "SELECT userID, password from users WHERE userID =:userID";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':userID', htmlentities($userID), PDO::PARAM_STR);
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $hash = $results[0]['password'];
+
+            if (isset($results)) {
+                if (password_verify($password, $hash)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Query failed: " . $e->getMessage();
+        }
+    }
+
+    //Searching Functions
+    public function search($conn, $field, $query)
+    {
+        try {
+
+            $field = "`" . str_replace("`", "``", $field) . "`";
+            $sql = "SELECT * FROM `profiles` WHERE $field LIKE :query";
+            $stmt = $conn->prepare($sql);
+
+            //$stmt->bindParam(':field', $field, PDO::PARAM_STR);
+            $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            if (isset($results)) {
+                return $results;
+            } else {
+                return false;
+            }
+
+        } catch (PDOException $e) {
+            return "Query failed: " . $e->getMessage();
+        }
+    }
+
+
 }
 
 
