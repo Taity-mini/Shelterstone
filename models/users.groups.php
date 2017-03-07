@@ -365,8 +365,7 @@ class users_groups
 
     public function ListCommittee($conn)
     {
-
-        $sql = "SELECT userID FROM users u, user_groups ug, groups g WHERE ug.groupID = g.groupID AND g.groupID IN (2,3,4,5,6) AND u.userID = :userID";
+        //$sql = "SELECT userID FROM users u, user_groups ug, groups g WHERE ug.groupID = g.groupID AND g.groupID IN (2,3,4,5,6) AND u.userID = :userID";
 
         $sql = "SELECT u.userID, g.groupID FROM users u, user_groups ug, groups g WHERE ug.groupID = g.groupID AND g.groupID IN (2,3,4,5,6) AND u.userID = :userID ORDER BY g.groupIDASC";
 
@@ -390,20 +389,8 @@ class users_groups
             }
             return $array;
         } catch (PDOException $e) {
-            return "Query failed: " . $e->getMessage();
+            return "List Committee Query failed: " . $e->getMessage();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

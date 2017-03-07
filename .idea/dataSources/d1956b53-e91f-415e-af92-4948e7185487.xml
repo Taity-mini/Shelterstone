@@ -318,6 +318,7 @@
       <Position>1</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
     </column>
     <column id="85" parent="19" name="groupName">
       <Position>2</Position>
@@ -348,7 +349,7 @@
     </column>
     <column id="91" parent="20" name="mainBody">
       <Position>4</Position>
-      <DataType>varchar(45)|0</DataType>
+      <DataType>varchar(5000)|0</DataType>
     </column>
     <column id="92" parent="20" name="date">
       <Position>5</Position>
@@ -441,62 +442,46 @@
 groupID</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="112" parent="22" name="fk_user_groups_users1">
-      <ColNames>userID</ColNames>
-      <RefSchemaName>shelterstone</RefSchemaName>
-      <RefTableName>users</RefTableName>
-      <RefColNames>userID</RefColNames>
-      <OnUpdate>no-action</OnUpdate>
-      <OnDelete>no-action</OnDelete>
-    </foreign-key>
-    <foreign-key id="113" parent="22" name="fk_user_groups_groups1">
-      <ColNames>groupID</ColNames>
-      <RefSchemaName>shelterstone</RefSchemaName>
-      <RefTableName>groups</RefTableName>
-      <RefColNames>groupID</RefColNames>
-      <OnUpdate>no-action</OnUpdate>
-      <OnDelete>no-action</OnDelete>
-    </foreign-key>
-    <column id="114" parent="23" name="userID">
+    <column id="112" parent="23" name="userID">
       <Position>1</Position>
       <DataType>int(11)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="115" parent="23" name="oauth_uid">
+    <column id="113" parent="23" name="oauth_uid">
       <Position>2</Position>
       <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="116" parent="23" name="username">
+    <column id="114" parent="23" name="username">
       <Position>3</Position>
       <DataType>varchar(50)|0</DataType>
     </column>
-    <column id="117" parent="23" name="password">
+    <column id="115" parent="23" name="password">
       <Position>4</Position>
       <DataType>varchar(250)|0</DataType>
     </column>
-    <column id="118" parent="23" name="approved">
+    <column id="116" parent="23" name="approved">
       <Position>5</Position>
       <DataType>tinyint(1)|0</DataType>
     </column>
-    <column id="119" parent="23" name="accredited">
+    <column id="117" parent="23" name="accredited">
       <Position>6</Position>
       <DataType>tinyint(1)|0</DataType>
     </column>
-    <column id="120" parent="23" name="banned">
+    <column id="118" parent="23" name="banned">
       <Position>7</Position>
       <DataType>tinyint(1)|0</DataType>
     </column>
-    <column id="121" parent="23" name="created">
+    <column id="119" parent="23" name="created">
       <Position>8</Position>
       <DataType>datetime|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="122" parent="23" name="modified">
+    <column id="120" parent="23" name="modified">
       <Position>9</Position>
       <DataType>datetime|0</DataType>
     </column>
-    <key id="123" parent="23" name="PRIMARY">
+    <key id="121" parent="23" name="PRIMARY">
       <ColNames>userID</ColNames>
       <Primary>1</Primary>
     </key>
