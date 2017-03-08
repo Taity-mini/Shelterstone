@@ -114,7 +114,7 @@ class files
     //Delete individual file or all files upload a user
     public function delete($conn, $userID = null)
     {
-        $sql = "DELETE FROM fileID";
+        $sql = "DELETE FROM files";
 
         if (!is_null($userID)) {
             $sql .= " WHERE userID = :userID";
@@ -183,7 +183,7 @@ class files
     }
 
     //List all files or all files upload by user
-    public function listAllFiles($conn, $userID)
+    public function listAllFiles($conn, $userID = null)
     {
         $sql = "SELECT * FROM files";
 
@@ -191,17 +191,11 @@ class files
             $sql .= " WHERE userID = :userID";
         }
 
-        if (is_null($userID)) {
-            $sql .= " WHERE fileID = :fileID";
-        }
 
         $stmt = $conn->prepare($sql);
 
         if (!is_null($userID)) {
-            $stmt->bindParam(':usedID', $userID, PDO::PARAM_STR);
-        }
-        if (is_null($userID)) {
-            $stmt->bindParam(':fileID', $this->getFileID(), PDO::PARAM_STR);
+            $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
         }
 
         $stmt = $conn->prepare($sql);
@@ -229,7 +223,7 @@ class files
             $extensions = array("jpeg", "jpg", "png", "gif", "pdf", "doc", "docx", "csv", "xlsx");
 
             if (in_array($file_ext, $extensions) === false) {
-                $errors[] = "extension not allowed, please choose a valid file type.";
+                $errors[] = "Extension not allowed, please choose a valid file type.";
                 return false;
             }
 

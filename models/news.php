@@ -105,7 +105,6 @@ class news
 
             // Iterate through the results and set the details
             foreach ($results as $row) {
-                $this->setID($row["newsID"]);
                 $this->setUserID($row['userID']);
                 $this->setTitle($row["title"]);
                 $this->setMainBody($row["mainBody"]);
