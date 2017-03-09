@@ -218,4 +218,37 @@ class climbing_routes
         }
     }
 
+ //Validation functions
+
+    public function isInputValid($name, $style, $grade) {
+        if ($this->isNameValid($name) && $this->isStyleValid($style) && $this->isGradeValid($grade)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isNameValid($title) {
+        if ((strlen($title) > 0) && (strlen($title) <= 100)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isStyleValid($subTitle) {
+        if (strlen($subTitle) <= 100) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isGradeValid($subTitle) {
+        if (strlen($subTitle) <= 25) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

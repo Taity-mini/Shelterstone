@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Andrew Tait (1504693)
@@ -6,7 +7,6 @@
  * Time: 15:13
  * Climbing Locations Object model class
  */
-
 class climbing_locations
 {
     //Class variables/properties
@@ -17,7 +17,7 @@ class climbing_locations
 
     function _constructor($locationID = -1)
     {
-        $this->locationID  =  htmlentities($locationID);
+        $this->locationID = htmlentities($locationID);
     }
 
     //Getters
@@ -81,7 +81,7 @@ class climbing_locations
     public function create($conn)
     {
         $sql = "INSERT INTO climbing_location VALUES(:locationName, :locationDescription)";
-        $stmt = $conn ->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $stmt->bindParam(':locationName', $this->getLocationName(), PDO::PARAM_STR);
         $stmt->bindParam(':locationDescription', $this->getLocationName(), PDO::PARAM_STR);
@@ -160,6 +160,35 @@ class climbing_locations
             return $results;
         } catch (PDOException $e) {
             return "Database List locations query failed: " . $e->getMessage();
+        }
+    }
+
+    //Validation functions
+
+    public function isInputValid($locationName, $locationDescription)
+    {
+        if ($this->isNameValid($locationName) && $this->isDescriptionValid($locationDescription)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isNameValid($name)
+    {
+        if ((strlen($name) > 0) && (strlen($name) <= 150)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isDescriptionValid($description)
+    {
+        if (strlen($description) <= 250) {
+            return true;
+        } else {
+            return false;
         }
     }
 

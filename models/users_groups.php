@@ -393,4 +393,32 @@ class users_groups
         }
     }
 
+    //Validation functions
+    public function isInputValid($name, $description)
+    {
+        if ($this->isNameValid($name) && $this->isDescriptionValid($description)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isNameValid($name)
+    {
+        if ((strlen($name) > 0) && (strlen($name) <= 50)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isDescriptionValid($description)
+    {
+        if (strlen($description) <= 250) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

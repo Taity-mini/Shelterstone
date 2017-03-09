@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Andrew Tait (1504693)
@@ -6,7 +7,6 @@
  * Time: 19:28
  * File handling object model class
  */
-
 class files
 {
     //File class variables / properties
@@ -238,6 +238,35 @@ class files
                 echo "Success";
                 return true;
             }
+        }
+    }
+
+    //Validation functions
+
+    public function isInputValid($title, $description)
+    {
+        if ($this->isTitleValid($title) && $this->isDescriptionValid($description)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isTitleValid($name)
+    {
+        if ((strlen($name) > 0) && (strlen($name) <= 100)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isDescriptionValid($description)
+    {
+        if (strlen($description) <= 250) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

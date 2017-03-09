@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Andrew Tait (1504693)
@@ -7,7 +8,6 @@
  * Climbing logbook object model class
  *
  */
-
 class climbing_logbooks
 {
 
@@ -116,7 +116,7 @@ class climbing_logbooks
     public function create($conn)
     {
         $sql = "INSERT INTO climbing_logbook VALUES(:userID, :locationID, :logType, :date, :notes)";
-        $stmt = $conn ->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         //Save current date time to variable for insertion
         $date = date('Y-m-d H:i:s');
@@ -242,18 +242,25 @@ class climbing_logbooks
         }
     }
 
+//Validation functions
 
+    public function isInputValid($notes)
+    {
+        if ($this->isNotesValid($notes)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
+    private function isNotesValid($notes)
+    {
+        if ((strlen($notes) > 0) && (strlen($notes) <= 250)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }
 
