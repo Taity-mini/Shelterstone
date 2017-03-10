@@ -528,7 +528,7 @@ class users
             foreach ($results as $row) {
                 $this->setUserID($row['userID']);
                 //Check if the user is approved or not
-                if(!$this->isApproved($conn)) {
+                if (!$this->isApproved($conn)) {
                     //if not approved then add to array
                     $toApprove [] = $row;
                 }
@@ -551,7 +551,7 @@ class users
             foreach ($results as $row) {
                 $this->setUserID($row['userID']);
                 //Check if the user is approved or not
-                if(!$this->isAccredited($conn)) {
+                if (!$this->isAccredited($conn)) {
                     //if not approved then add to array
                     $toAccredit [] = $row;
                 }
@@ -574,7 +574,7 @@ class users
             foreach ($results as $row) {
                 $this->setUserID($row['userID']);
                 //Check if the user is approved or not
-                if($this->isBanned($conn)) {
+                if ($this->isBanned($conn)) {
                     //if not approved then add to array
                     $banList [] = $row;
                 }
@@ -677,7 +677,113 @@ class users
         }
     }
 
+    //Validation Functions
 
+    public function isInputValid($conn, $username, $email, $firstName, $lastName, $bio, $interests, $picture, $link)
+    {
+        if ($this->isUsernameValid($conn, $username)
+            && $this->isEmailValid($email)
+            && $this->isFirstNameValid($firstName)
+            && $this->isLastNameValid($lastName)
+            && $this->isBioValid($bio)
+            && $this->isInterestsValid($interests)
+            && $this->isPictureValid($picture)
+            && $this->isLinkValid($link)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isUsernameValid($conn, $username)
+    {
+        $sql = "SELECT username FROM users WHERE username = :username";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+            if ($stmt->rowCount() == 0) {
+                return true;
+                //echo 'true';
+            } else {
+                return false;
+                // echo 'false';
+            }
+        } catch (PDOException $e) {
+            return "Query failed: " . $e->getMessage();
+        }
+    }
+
+    public function isEmailValid($email)
+    {
+        if (strlen($email) > 0 && strlen($email) <= 250) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    public function isFirstNameValid($firstName)
+    {
+        if ((strlen($firstName) > 0) && (strlen($firstName) <= 60)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function isLastNameValid($lastName)
+    {
+        if ((strlen($lastName) > 0) && (strlen($lastName) <= 60)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isBioValid($bio)
+    {
+        if (count($bio <= 600)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isInterestsValid($interests)
+    {
+        if (count($interests <= 50)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isPictureValid($picture)
+    {
+        if (count($picture <= 255)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function isLinkValid($link)
+    {
+        if (count($link <= 255)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 
