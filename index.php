@@ -7,4 +7,11 @@
  * Time: 17:24
  */
 
+//Setup Database connection files
+session_start();
+require_once('/inc/config.php');
+$conn = dbConnect();
+
+require_once ('views/layout.php');
+
 
