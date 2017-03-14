@@ -7,8 +7,6 @@
  * Routing file for URLS in MVC system
  */
 
-define('INCLUDE_DIR', dirname(__FILE__) . '/controllers/');
-
 function call($controller, $action)
 {
     require_once('controllers/' . $controller . '_controller.php');
@@ -22,6 +20,14 @@ function call($controller, $action)
             //require_once('models/post.php');
             $controller = new news_controller();
             break;
+
+        case 'gallery':
+            $controller = new gallery_controller();
+            break;
+
+        case 'climbing':
+            $controller = new climbing_controller();
+            break;
     }
 
     $controller->{$action}();
@@ -29,6 +35,7 @@ function call($controller, $action)
 
 
 $rules = array(
+
 //
 //main pages
 //
@@ -57,8 +64,6 @@ $uri = '/' . trim(str_replace($uri, '', $_SERVER['REQUEST_URI']), '/');
 $uri = urldecode($uri);
 
 // we're adding an entry for the new controller and its actions
-$controllers = array('pages' => ['home', 'error'], 'news' => ['news', 'show']);
-
 
 foreach ($rules as $action => $rule) {
     if (preg_match('~^' . $rule . '$~i', $uri, $params)) {
@@ -77,42 +82,8 @@ foreach ($rules as $action => $rule) {
                 call('pages', 'error');
                 break;
         }
-
-//        foreach ($controllers as $controller => $actions) {
-//
-//        }
-//
-//        if (array_key_exists($controller, $controllers)) {
-//            if (in_array($action, $controllers[$controller])) {
-//                call($controller, $action);
-//            } else {
-//                call('pages', 'error');
-//            }
-//        } else {
-//            call('pages', 'error');
-//        }
-
-
-//        foreach ($controllers as $key => $value)
-//        {
-//            echo $key . ':' . $value . "\n";
-//        }
-
-//        if ($key !== false) {
-//            if (in_array($action, $controllers[$key])) {
-//                call($key, $action);
-//            } else {
-//                echo "failed";
-//                call('pages', 'error');
-//            }
-//        } else {
-//            call('pages', 'error');
-//        }
-
-        //include(INCLUDE_DIR . $action . '.php');
-
         exit();
     }
 }
 // nothing is found so handle the 404 error
-include(INCLUDE_DIR . '404.php');
+call('pages', 'notFound');
