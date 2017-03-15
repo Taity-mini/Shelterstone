@@ -624,7 +624,7 @@ class users
             }
             return $toApprove;
         } catch (PDOException $e) {
-            return "List users to approve query failed: " . $e->getMessage();
+            return "Database query failed: " . $e->getMessage();
         }
     }
 
@@ -647,7 +647,7 @@ class users
             }
             return $toAccredit;
         } catch (PDOException $e) {
-            return "List users to accredit query failed: " . $e->getMessage();
+            return "Database query failed: " . $e->getMessage();
         }
     }
 
