@@ -238,5 +238,26 @@ class competition_results
         }
     }
 
+    public function displayCategory()
+    {
+        switch ($this->getCategory()) {
+            case 0:
+                return "Women - Easy";
+                break;
+
+            case 1:
+                return "Women - Hard";
+                break;
+
+            case 2:
+                return "Men - Easy";
+                break;
+
+            case 3:
+                return "Men - Hard";
+                break;
+        }
+    }
+
 
 }

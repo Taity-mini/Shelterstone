@@ -110,12 +110,12 @@ class competitions
             $results = $stmt->fetchAll();
 
             foreach ($results as $row) {
-               $this->setAuthorID($row['userID']);
-               $this->setLocationID($row['locationID']);
-               $this->setTitle($row['title']);
-               $this->setDescription($row['description']);
-               $this->setDate($row['date']);
-               $this->setModified($row['modified']);
+                $this->setAuthorID($row['userID']);
+                $this->setLocationID($row['locationID']);
+                $this->setTitle($row['title']);
+                $this->setDescription($row['description']);
+                $this->setDate($row['date']);
+                $this->setModified($row['modified']);
             }
 
         } catch (PDOException $e) {
@@ -153,7 +153,7 @@ class competitions
                     WHERE compID = :compID";
 
             $date = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getDate())));
-            $modified =date('Y-m-d H:i:s');
+            $modified = date('Y-m-d H:i:s');
             $stmt = $conn->prepare($sql);
 
             $stmt->bindParam(':compID', $this->getCompID(), PDO::PARAM_STR);
@@ -240,5 +240,34 @@ class competitions
         }
     }
 
+
+    //Input validation functions
+
+    public function isInputValid($title, $description)
+    {
+        if ($this->isTitleValid($title) && $this->isDescriptionValid($description)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isTitleValid($title)
+    {
+        if ((strlen($title) > 0) && (strlen($title) <= 200)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isDescriptionValid($description)
+    {
+        if (count($description <= 300)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

@@ -248,4 +248,36 @@ class event_attendees
         }
     }
 
+    public function hasPaid($conn)
+    {
+        $sql = "SELECT eventAttendeeID FROM event_attendees ea WHERE ea.paid = 1  AND ea.eventAttendeeID = :eventAttendeeID";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':eventAttendeeID', $this->getEventAttendeeID(), PDO::PARAM_STR);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Has user paid for event query failed: " . $e->getMessage();
+        }
+    }
+
+    //Input validation functions
+    public function isNotesValid($notes)
+    {
+        if (count($notes <= 400)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

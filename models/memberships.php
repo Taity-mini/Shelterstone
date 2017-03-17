@@ -232,7 +232,7 @@ class memberships
 
     //Boolean checkers
 
-    public function isPaid($conn)
+    public function hasPaid($conn)
     {
         $sql = "SELECT memberShipID FROM memberships ms WHERE ms.paid = 1  AND ms.memberShipID = :memberShipID";
 
