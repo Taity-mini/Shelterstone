@@ -98,8 +98,8 @@ class memberships
 
             foreach ($results as $row) {
                 $this->setUserID($row['userID']);
-                $this->type($row['type']);
-                $this->paid($row['paid']);
+                $this->getType($row['type']);
+                $this->getPaid($row['paid']);
                 $this->setStartDate($row['startDate']);
                 $this->setEndDate($row['endDate']);
             }
@@ -159,7 +159,7 @@ class memberships
         }
     }
 
-    public function delete($conn, $userID)
+    public function delete($conn, $userID = null)
     {
         $sql = "DELETE FROM memberships";
 
@@ -190,7 +190,7 @@ class memberships
 
     public function doesExist($conn)
     {
-        $sql = "SELECT memberShipID FROM membershipID WHERE memberShipID = :memberShipID LIMIT 1";
+        $sql = "SELECT memberShipID FROM memberships WHERE memberShipID = :memberShipID LIMIT 1";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':memberShipID', $this->getMemberShipID(), PDO::PARAM_STR);
