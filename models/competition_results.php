@@ -194,6 +194,26 @@ class competition_results
         }
     }
 
+    public function doesExist($conn)
+    {
+        $sql = "SELECT compResultsID FROM competition_results WHERE compResultsID = :compResultsID LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':compResultsID', $this->getCompResultsID(), PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            if (count($results) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Check comp results record exists query failed: " . $e->getMessage();
+        }
+    }
+
+
 
     public function listAllCompResults($conn, $userID = null)
     {
@@ -202,19 +222,12 @@ class competition_results
             $sql .= " WHERE userID = :userID";
         }
 
-        if (is_null($userID)) {
-            $sql .= " WHERE compID = :compID";
-        }
-
         $stmt = $conn->prepare($sql);
 
         if (!is_null($userID)) {
             $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
         }
 
-        if (is_null($userID)) {
-            $stmt->bindParam(':compID', $this->getCompID(), PDO::PARAM_STR);
-        }
 
         try {
             $stmt->execute();

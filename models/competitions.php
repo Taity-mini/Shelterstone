@@ -104,7 +104,7 @@ class competitions
         $stmt->bindParam(':compID', $this->getCompID(), PDO::PARAM_STR);
 
 
-        //Get user's details from users table row
+        //Get comp details from competitions table row
         try {
             $stmt->execute();
             $results = $stmt->fetchAll();
@@ -168,7 +168,7 @@ class competitions
             return true;
         } catch (PDOException $e) {
             dbClose($conn);
-            return "Update climbing logbook failed: " . $e->getMessage();
+            return "Update competition entry failed: " . $e->getMessage();
         }
     }
 
@@ -239,7 +239,6 @@ class competitions
             return "List all competitions query failed: " . $e->getMessage();
         }
     }
-
 
 
 }
