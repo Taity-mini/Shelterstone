@@ -12,6 +12,7 @@ function call($controller, $action)
     require_once('controllers/' . $controller . '_controller.php');
 
     switch ($controller) {
+
         case 'pages':
             $controller = new pages_controller();
             break;
@@ -27,6 +28,14 @@ function call($controller, $action)
 
         case 'climbing':
             $controller = new climbing_controller();
+            break;
+
+        case 'competition':
+            $controller = new competition_controller();
+            break;
+
+        case 'events':
+            $controller = new events_controller();
             break;
     }
 
@@ -51,13 +60,16 @@ $rules = array(
 
 //Events
     'events' => "/events/",
+    'event_add' => "/events/add",
     'event_view' => "/events/view/(?'compID'[\w\-]+)",
+    'event_edit' => "/events/view/(?'compID'[\w\-]+)",
     'trip_events' => "/events/trips",
     'comp_events' => "/events/competitions",
 
-    //Competitions
+//Competitions
     'competitions' => "/competitions/",
     'competition_results' => "/competitions/result/(?'compID'[\w\-]+)",
+    'competition_results_edit' => "/competitions/result/edit/(?'compResultsID'[\w\-]+)",
     'competition_edit' => "/competitions/edit/(?'compID'[\w\-]+)",
     'competition_add' => "/competitions/add",
 
@@ -75,13 +87,15 @@ $rules = array(
 //Profile
     'profile' => "/profile/",
     'profile_view' => "/profile/view/(?'userID'[\w\-]+)",
+    'profile_edit' => "/profile/edit/(?'userID'[\w\-]+)",
 
 
 //Climbing Log
-    'climbing_log' => "/climbing_log",
-    //Logbook
 
-    'climbing_log_logbook' => "/climbing_log/logbook/(?'logID'[\w\-]+)",
+    //Logbook
+    'climbing_log' => "/climbing_log",
+    'climbing_logbook' => "/climbing_log/logbook/(?'logID'[\w\-]+)",
+
     //Locations
     'climbing_log_locations' => "/climbing_log/locations",
     'climbing_log_location_edit' => "/climbing_log/locations/(?'locationID'[\w\-]+)",
@@ -148,15 +162,15 @@ foreach ($rules as $action => $rule) {
 
             //About
             case 'about':
-                call('about', 'club');
+                call('pages', 'club');
                 break;
 
             case 'committee':
-                call('about', $action);
+                call('pages', $action);
                 break;
 
             case 'join_us':
-                call('about', 'joinUs');
+                call('pages', 'joinUs');
                 break;
 
             // Events
@@ -198,6 +212,61 @@ foreach ($rules as $action => $rule) {
                 call('gallery', 'personalAlbum');
                 break;
 
+            //Climbing
+            case 'climbing_log':
+                call('climbing', 'listLogbooks');
+                break;
+
+            case 'climbing_logbook':
+                call('climbing', 'logbook');
+                break;
+
+            case 'climbing_log_locations':
+                call('climbing', 'locations');
+                break;
+
+            case 'climbing_log_locations_edit':
+                call('climbing', 'EditLocations');
+                break;
+
+
+            case 'climbing_log_route':
+                call('climbing', 'viewRoutes');
+                break;
+
+            case 'climbing_log_route_edit':
+                call('climbing', 'editRoutes');
+                break;
+
+            //Committee
+            case 'member_management':
+                call('committee', $action);
+                break;
+
+            case 'event_management':
+                call('committee', $action);
+                break;
+
+            case 'agenda':
+                call('committee', $action);
+                break;
+
+            //Competitions
+            case 'competitions':
+                call('competition', $action);
+                break;
+
+            case 'competition_results':
+                call('competition', $action);
+                break;
+
+            case 'competition_add':
+                call('competition', $action);
+                break;
+
+            case 'competition_edit':
+                call('competition', $action);
+                break;
 
             default:
                 call('pages', 'error');
