@@ -10,23 +10,22 @@
 
 class news_controller
 {
-    public function index()
+
+    private $news;
+    function _constructor()
     {
         require_once('./models/news.php');
         require_once('./models/users.php');
-
         $news = new news();
+    }
 
+    public function index()
+    {
         require_once ('./views/news/news.php');
     }
 
     public function article()
     {
-        require_once('./models/news.php');
-        require_once('./models/users.php');
-
-        $news = new news();
-
         require_once ('./views/news/news_article.php');
     }
 
@@ -35,21 +34,11 @@ class news_controller
 
     public function addNews()
     {
-        require_once('./models/news.php');
-        require_once('./models/users.php');
-
-        $news = new news();
-
         require_once ('./views/news/create_news.php');
     }
 
     public function editNews()
     {
-        require_once('./models/news.php');
-        require_once('./models/users.php');
-
-        $news = new news();
-
         require_once ('./views/news/edit_news.php');
     }
 

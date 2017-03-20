@@ -17,6 +17,32 @@ class pages_controller
         require_once ('./views/pages/home.php');
     }
 
+    public function search()
+    {
+        require_once ('./views/pages/search.php');
+    }
+
+    //PROFILE PAGES
+
+    //Profile for current user
+    public function profile()
+    {
+        require_once ('./views/pages/profile.php');
+    }
+
+
+    //View other user's profile
+    public function viewProfile()
+    {
+        require_once ('./views/pages/profile.php');
+    }
+
+    //Edit other user's profile
+    public function profile_edit()
+    {
+        require_once ('./views/pages/profile_edit.php');
+    }
+
     //ABOUT US PAGES
 
     //Club
@@ -39,12 +65,16 @@ class pages_controller
     //Login and registration
     public function login()
     {
+        require_once ('./models/users.php');
+        require_once ('./models/users_groups.php');
         require_once ('./views/pages/login.php');
     }
 
     public function register()
     {
-        require_once ('./views/pages/register.php');
+        require_once('./models/users.php');
+        require_once('./models/users_groups.php');
+        require_once('./views/pages/register.php');
     }
 
 

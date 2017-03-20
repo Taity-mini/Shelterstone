@@ -10,12 +10,15 @@
 class gallery_controller
 {
 
-    public function home()
+    function constructor()
     {
         require_once('./models/gallery_photos.php');
         require_once('./models/gallery_albums.php');
         require_once('./models/users.php');
+    }
 
+    public function home()
+    {
         require_once ('./views/gallery/index.php');
     }
 
@@ -23,19 +26,11 @@ class gallery_controller
 
     public function viewAlbum()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/view_album.php');
     }
 
     public function viewPhoto()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/view_photo.php');
     }
 
@@ -43,19 +38,11 @@ class gallery_controller
 
     public function addAlbum()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/create_album.php');
     }
 
     public function addPhoto()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/upload.php');
     }
 
@@ -63,19 +50,11 @@ class gallery_controller
 
     public function editAlbum()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/edit_album.php');
     }
 
     public function editPhoto()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/edit_photo.php');
     }
 
@@ -83,19 +62,11 @@ class gallery_controller
     //Other methods
     public function personalAlbum()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/personal_album.php');
     }
 
     public function events()
     {
-        require_once('./models/gallery_photos.php');
-        require_once('./models/gallery_albums.php');
-        require_once('./models/users.php');
-
         require_once ('./views/gallery/events.php');
     }
 
