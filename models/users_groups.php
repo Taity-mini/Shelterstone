@@ -225,7 +225,7 @@ class users_groups
         }
     }
 
-    //Current outdoor event/trips vice president ID: 4
+    //Current outdoor events/trips vice president ID: 4
     public function isUserTripsPres($conn, $userID)
     {
         $sql = "SELECT ug.userID FROM user_groups ug, groups g WHERE ug.groupID = g.groupID AND ug.groupID = 4 AND ug.userID = :userID";

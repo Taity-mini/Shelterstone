@@ -75,7 +75,7 @@ class event_attendees
         $this->notes = htmlentities($notes);
     }
 
-    //Get total number of event attendees count
+    //Get total number of events attendees count
     public function getTotalCount($conn, $eventID = null)
     {
         $sql = "SELECT COUNT(*) FROM event_attendees";
@@ -110,7 +110,7 @@ class event_attendees
         $stmt->bindParam(':eventAttendeeID', $this->getEventAttendeeID(), PDO::PARAM_STR);
 
 
-        //Get event details from events table row
+        //Get events details from events table row
         try {
             $stmt->execute();
             $results = $stmt->fetchAll();
@@ -122,7 +122,7 @@ class event_attendees
                 $this->setNotes($row['notes']);
             }
         } catch (PDOException $e) {
-            return "event get details query Failed:" . $e->getMessage();
+            return "events get details query Failed:" . $e->getMessage();
         }
     }
 
@@ -143,7 +143,7 @@ class event_attendees
 
         } catch (PDOException $e) {
             dbClose($conn);
-            return "Create event attendee entry failed:" . $e->getMessage();
+            return "Create events attendee entry failed:" . $e->getMessage();
         }
     }
 
@@ -164,7 +164,7 @@ class event_attendees
             return true;
         } catch (PDOException $e) {
             dbClose($conn);
-            return "Update event attendee entry failed: " . $e->getMessage();
+            return "Update events attendee entry failed: " . $e->getMessage();
         }
     }
 
@@ -204,7 +204,7 @@ class event_attendees
             $results = $stmt->fetchAll();
             return $results;
         } catch (PDOException $e) {
-            return "Delete event attendees query failed: " . $e->getMessage();
+            return "Delete events attendees query failed: " . $e->getMessage();
         }
     }
 
@@ -244,7 +244,7 @@ class event_attendees
                 return false;
             }
         } catch (PDOException $e) {
-            return "Check event attendee record exists query failed: " . $e->getMessage();
+            return "Check events attendee record exists query failed: " . $e->getMessage();
         }
     }
 
@@ -265,7 +265,7 @@ class event_attendees
                 return false;
             }
         } catch (PDOException $e) {
-            return "Has user paid for event query failed: " . $e->getMessage();
+            return "Has user paid for events query failed: " . $e->getMessage();
         }
     }
 

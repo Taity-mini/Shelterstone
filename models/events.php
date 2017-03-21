@@ -122,7 +122,7 @@ class events
         $stmt->bindParam(':eventID', $this->getEventID(), PDO::PARAM_STR);
 
 
-        //Get event details from events table row
+        //Get events details from events table row
         try {
             $stmt->execute();
             $results = $stmt->fetchAll();
@@ -137,7 +137,7 @@ class events
             }
 
         } catch (PDOException $e) {
-            return "event get details query Failed:" . $e->getMessage();
+            return "events get details query Failed:" . $e->getMessage();
         }
     }
 
@@ -183,7 +183,7 @@ class events
             return true;
         } catch (PDOException $e) {
             dbClose($conn);
-            return "Update event entry failed: " . $e->getMessage();
+            return "Update events entry failed: " . $e->getMessage();
         }
     }
 
@@ -212,7 +212,7 @@ class events
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
-            return "Delete event entry failed:" . $e->getMessage();
+            return "Delete events entry failed:" . $e->getMessage();
         }
     }
 
@@ -257,7 +257,7 @@ class events
                 return false;
             }
         } catch (PDOException $e) {
-            return "Check event record exists query failed: " . $e->getMessage();
+            return "Check events record exists query failed: " . $e->getMessage();
         }
     }
 

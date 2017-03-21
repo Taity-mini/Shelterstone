@@ -59,7 +59,7 @@ $rules = array(
     'join_us' => "/about/join_us",
 
 //Events
-    'events' => "/events/",
+    'events' => "/events",
     'event_add' => "/events/add",
     'event_view' => "/events/view/(?'compID'[\w\-]+)",
     'event_edit' => "/events/view/(?'compID'[\w\-]+)",
@@ -174,6 +174,30 @@ foreach ($rules as $action => $rule) {
                 break;
 
             // Events
+            case 'events':
+                call('events', 'listEvents');
+                break;
+
+            case 'event_add':
+                call('events', 'addEvent');
+                break;
+
+            case 'events_edit':
+                call('events', 'editEvent');
+                break;
+
+            case 'events_view':
+                call('events', 'viewEvent');
+                break;
+
+            case 'trip_events':
+                call('events', 'tripEvents');
+                break;
+
+            case 'comp_events':
+                call('events', 'compEvents');
+                break;
+
 
             //Gallery
             case 'gallery':
