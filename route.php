@@ -37,6 +37,10 @@ function call($controller, $action)
         case 'events':
             $controller = new events_controller();
             break;
+
+        case'committee':
+            $controller = new committee_controller();
+            break;
     }
 
     $controller->{$action}();
@@ -57,12 +61,13 @@ $rules = array(
     'about' => "/about/club_information",
     'committee' => "/about/committee",
     'join_us' => "/about/join_us",
+    'history' => "/about/history",
 
 //Events
     'events' => "/events",
     'event_add' => "/events/add",
-    'event_view' => "/events/view/(?'compID'[\w\-]+)",
-    'event_edit' => "/events/view/(?'compID'[\w\-]+)",
+    'event_view' => "/events/view/(?'eventID'[\w\-]+)",
+    'event_edit' => "/events/edit/(?'eventID'[\w\-]+)",
     'trip_events' => "/events/trips",
     'comp_events' => "/events/competitions",
 
@@ -85,7 +90,7 @@ $rules = array(
     'personal_album' => "/gallery/album/personal",
 
 //Profile
-    'profile' => "/profile/",
+    'profile' => "/profile",
     'profile_view' => "/profile/view/(?'userID'[\w\-]+)",
     'profile_edit' => "/profile/edit/(?'userID'[\w\-]+)",
 
@@ -112,6 +117,7 @@ $rules = array(
 
 //News page
     'news' => "/news",
+    'announcements' => "/news/announcements",
     'news_add' => "/news/add",
     'news_article' => "/news/(?'newsID'[\w\-]+)",
     'news_edit' => "/news/edit/(?'newsID'[\w\-]+)",
@@ -142,8 +148,26 @@ foreach ($rules as $action => $rule) {
                 call('pages', $action);
                 break;
 
+            //Standard pages
+
+            case 'login':
+                call('pages', $action);
+                break;
+
+            case 'register':
+                call('pages', $action);
+                break;
+
+
+            case 'profile':
+                call('pages', $action);
+                break;
             //News
             case 'news':
+                call('news', 'index');
+                break;
+
+            case 'announcements':
                 call('news', 'index');
                 break;
 
@@ -264,7 +288,7 @@ foreach ($rules as $action => $rule) {
 
             //Committee
             case 'member_management':
-                call('committee', $action);
+                call('committee', 'member_management');
                 break;
 
             case 'event_management':
@@ -296,8 +320,10 @@ foreach ($rules as $action => $rule) {
                 call('pages', 'error');
                 break;
         }
-        exit();
+        return;
     }
 }
 // nothing is found so handle the 404 error
 call('pages', 'notFound');
+
+
