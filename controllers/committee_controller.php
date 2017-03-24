@@ -19,9 +19,7 @@ class committee_controller
 
     public function member_management()
     {
-
         require_once('./views/committee/member_management.php');
-
     }
 
     public function event_management()

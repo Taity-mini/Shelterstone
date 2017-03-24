@@ -61,6 +61,11 @@ class pages_controller
         require_once ('./views/pages/join_us.php');
     }
 
+    public function history()
+    {
+        require_once ('./views/pages/history.php');
+    }
+
 
     //Login and registration
     public function login()
