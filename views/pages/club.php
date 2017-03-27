@@ -8,3 +8,9 @@
  * Shelterstone Club Information page
  *
  */
+?>
+
+<h1 class="pageTitle" >Club Information</h1>
+
+<p>List club info + meetings</p>
+

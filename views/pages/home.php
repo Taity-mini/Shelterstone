@@ -8,4 +8,9 @@
  */
 
 
-echo "Home Page";
+?>
+
+
+<h1 class="pageTitle" >Welcome to Shelterstone!</h1>
+
+<p>Description here..</p>

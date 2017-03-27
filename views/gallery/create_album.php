@@ -4,4 +4,9 @@
  * User: Andrew Tait (1504693)
  * Date: 11/03/2017
  * Time: 00:34
+ * Create new album
  */
+?>
+<h1 class="pageTitle" >Gallery | Create album</h1>
+
+<p>Create new album form</p>
