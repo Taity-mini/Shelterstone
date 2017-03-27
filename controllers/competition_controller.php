@@ -17,29 +17,29 @@ class competition_controller
         require_once('./models/competition_results.php');
     }
 
-    public function competition()
+    public function competitions()
     {
-        require_once ('./views/competition/comps.php');
+        require_once ('./views/competitions/comps.php');
     }
 
     public function competition_results()
     {
-        require_once ('./views/competition/comp_results.php');
+        require_once ('./views/competitions/comp_results.php');
     }
 
     public function competition_results_edit()
     {
-        require_once ('./views/competition/comp_results_edit.php');
+        require_once ('./views/competitions/comp_results_edit.php');
     }
 
     public function competition_add()
     {
-        require_once ('./views/competition/comps_add.php');
+        require_once ('./views/competitions/comps_add.php');
     }
 
     public function competition_edit()
     {
-        require_once ('./views/competition/comps_edit.php');
+        require_once ('./views/competitions/comps_edit.php');
     }
 
 
