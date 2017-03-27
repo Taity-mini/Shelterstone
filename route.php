@@ -72,7 +72,7 @@ $rules = array(
     'comp_events' => "/events/competitions",
 
 //Competitions
-    'competitions' => "/competitions/",
+    'competitions' => "/competitions",
     'competition_results' => "/competitions/result/(?'compID'[\w\-]+)",
     'competition_results_edit' => "/competitions/result/edit/(?'compResultsID'[\w\-]+)",
     'competition_edit' => "/competitions/edit/(?'compID'[\w\-]+)",
@@ -87,7 +87,7 @@ $rules = array(
     'gallery_photo_edit' => "/gallery/photo/edit/(?'photoID'[\w\-]+)",
     'gallery_view' => "/gallery/album/(?'albumID'[\w\-]+)",
     'gallery_edit' => "/gallery/edit/(?'albumID'[\w\-]+)",
-    'personal_album' => "/gallery/album/personal",
+    'personal_album' => "/gallery/personal",
 
 //Profile
     'profile' => "/profile",
@@ -154,6 +154,10 @@ foreach ($rules as $action => $rule) {
                 call('pages', $action);
                 break;
 
+            case 'logout':
+                call('pages', $action);
+                break;
+
             case 'register':
                 call('pages', $action);
                 break;
@@ -162,6 +166,7 @@ foreach ($rules as $action => $rule) {
             case 'profile':
                 call('pages', $action);
                 break;
+
             //News
             case 'news':
                 call('news', 'index');
@@ -192,10 +197,14 @@ foreach ($rules as $action => $rule) {
             case 'committee':
                 call('pages', $action);
                 break;
-
             case 'join_us':
                 call('pages', 'joinUs');
                 break;
+
+            case 'history':
+                call('pages', 'history');
+                break;
+
 
             // Events
             case 'events':

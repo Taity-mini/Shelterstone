@@ -19,7 +19,7 @@
     <!--Favicon code START-->
 
     <!--Favicon code END -->
-
+    <script src="<?php echo $domain ?>/js/vendor/modernizr.js"></script>
 </head>
 <body>
 <div class="row column text-center">
@@ -65,10 +65,12 @@
             <li class="has-submenu">
                 <a href="<?php echo $domain ?>/gallery">Galleries</a>
                 <ul class="submenu menu vertical" data-submenu>
+                    <li><a href="<?php echo $domain ?>/gallery">Gallery List</a></li>
                     <li><a href="<?php echo $domain ?>/gallery/events">Events</a></li>
-                    <li><a href="<?php echo $domain ?>/gallery/album/personal">Personal Album</a></li>
+                    <li><a href="<?php echo $domain ?>/gallery/personal">Personal Album</a></li>
                 </ul>
             </li>
+            <li class="singleLink"><a href="<?php echo $domain ?>/competitions">Competitions</a></li>
             <li class="has-submenu">
                 <a href="<?php echo $domain ?>/profile">Profile</a>
                 <ul class="submenu menu vertical" data-submenu>
@@ -84,20 +86,29 @@
                     <li><a href="<?php echo $domain ?>/committee/agenda">Agenda's & Minutes</a></li>
                 </ul>
             </li>
-            <li class="has-submenu">
-                <a href="<?php echo $domain ?>/login">Login</a>
-                <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/login">Sign in</a></li>
-                    <li><a href="<?php echo $domain ?>/register">Register</a></li>
-                </ul>
-            </li>
+            <?php
+            if (isset($_SESSION['userID'])) {
+                echo '<li class="singleLink"><a href="'.$domain.'/Logout">Logout</a></li>';
+            } else {
+
+                ?>
+                <li class="has-submenu">
+                    <a href="<?php echo $domain ?>/login">Login</a>
+                    <ul class="submenu menu vertical" data-submenu>
+                        <li><a href="<?php echo $domain ?>/login">Sign in</a></li>
+                        <li><a href="<?php echo $domain ?>/register">Register</a></li>
+                    </ul>
+                </li>
+                <?php
+            }
+            ?>
         </ul>
     </div>
     <div class="top-bar-right text-center">
         <ul class="menu">
             <li><input width="100%" type="search" placeholder="Search">
             <li>
-                <button type="button" class="button">Search</button>
+                <button type="submit" class="button">Search</button>
             </li>
         </ul>
     </div>

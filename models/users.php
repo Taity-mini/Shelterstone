@@ -294,6 +294,7 @@ class users
     public function create($conn, $password)
     {
         try {
+            ini_set('display_errors', true);
             //First let's hash the password with the bcrypt function
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -301,37 +302,47 @@ class users
             $date = date('Y-m-d H:i:s');
 
             //SQL Statement
-            $sql = "INSERT INTO users VALUES (null, :groupID, :oauth ,:username, :password, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approve, :accredited, :driver, :banned, :created, :modifed, :tokenCode)";
+            //$sql = "INSERT INTO `users` (`userID`, `groupID`, `oauth_uid`, `username`, `password`, `email`, `firstName`, `lastName`, `bio`, `interests`, `picture`, `link`, `role`, `certifications`, `approved`, `accredited`, `driver`, `banned`, `created`, `modified`, `tokenCode`) VALUES (NULL, :groupID, :oauth, :username, :password, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approved, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
+            $sql = "INSERT INTO users VALUES (null, :groupID, :oauth ,:username, :password, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approve, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
+
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':groupID', 3, PDO::PARAM_STR);
-            $stmt->bindParam(':oauth', $this->getOauthUID(), PDO::PARAM_STR);
-            $stmt->bindParam(':username', $this->getUsername(), PDO::PARAM_STR);
-            $stmt->bindParam(':password', $hash, PDO::PARAM_STR);
-            $stmt->bindParam(':approve', 0, PDO::PARAM_STR);
-            $stmt->bindParam(':accredited', 0, PDO::PARAM_STR);
-            $stmt->bindParam(':driver', 0, PDO::PARAM_STR);
-            $stmt->bindParam(':created', $date, PDO::PARAM_STR);
-            $stmt->bindParam(':modified', $date, PDO::PARAM_STR);
+            $stmt->bindValue(':groupID', 3, PDO::PARAM_INT);
+            $stmt->bindValue(':oauth', $this->getOauthUID(), PDO::PARAM_STR);
+            $stmt->bindValue(':username', $this->getUsername(), PDO::PARAM_STR);
+            $stmt->bindValue(':password', $hash, PDO::PARAM_STR);
+
 
             //Profile Fields
 
-            $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_INT);
+            $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_STR);
             $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
-            $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_INT);
-            $stmt->bindValue(':bio', $this->getBio(), PDO::PARAM_INT);
+            $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_STR);
+            $stmt->bindValue(':bio', $this->getBio(), PDO::PARAM_STR);
             $stmt->bindValue(':interests', $this->getInterests(), PDO::PARAM_INT);
             $stmt->bindValue(':picture', $this->getPicture(), PDO::PARAM_STR);
             $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
-            $stmt->bindValue(':role', NULL, PDO::PARAM_STR);
-            $stmt->bindValue(':certifications', NULL, PDO::PARAM_STR);
-            $stmt->bindValue(':tokenCode', NULL, PDO::PARAM_STR);
+            $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_STR);
+            $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_STR);
+            $stmt->bindValue(':approve', 0, PDO::PARAM_INT);
+            $stmt->bindValue(':accredited', 0, PDO::PARAM_INT);
+            $stmt->bindValue(':driver', 0, PDO::PARAM_INT);
+            $stmt->bindValue(':banned', 0, PDO::PARAM_INT);
+            $stmt->bindValue(':created', $date, PDO::PARAM_STR);
+            $stmt->bindValue(':modified', $date, PDO::PARAM_STR);
+            $stmt->bindValue(':tokenCode', $this->getTokenCode(), PDO::PARAM_STR);
             $stmt->execute();
+
+            var_dump($stmt->debugDumpParams());
 
             return true;
 
         } catch (PDOException $e) {
-            dbClose($conn);
+            //dbClose($conn);
             return "Create user failed: " . $e->getMessage();
+        }
+        catch (Exception $e) {
+            dbClose($conn);
+            return "create failed: " . $e->getMessage();
         }
     }
 
@@ -749,7 +760,7 @@ class users
             $stmt->bindParam(':userID', htmlentities($userID), PDO::PARAM_STR);
             $stmt->execute();
             $results = $stmt->fetchAll();
-            $hash = $results[0]['password'];
+            $hash = @$results[0]['password'];
 
             if (isset($results)) {
                 if (password_verify($password, $hash)) {
