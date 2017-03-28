@@ -230,7 +230,7 @@ class users
 
     public function setCertifications($certifications)
     {
-        $this->setCertifications($certifications);
+        $this->certifications = ($certifications);
     }
 
 //Get all users' details
