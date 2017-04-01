@@ -381,27 +381,27 @@ class users
     public function updateUser($conn)
     {
         try {
-            $sql = "UPDATE users SET email = :email, firstName = :firstName, lastName = :lastName, bio = :bio, interests = :interests, picture = :picture, link = :link, role = :role, certifications = :certifications WHERE userID = :userID";
+             $sql = "UPDATE users SET groupID = :groupID, email = :email, firstName = :firstName, lastName = :lastName, bio = :bio, interests = :interests, picture = :picture, link = :link, role = :role, certifications = :certifications WHERE userID = :userID";
+
 
             $stmt = $conn->prepare($sql);
-
             $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
-            $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_INT);
+            $stmt->bindValue(':groupID', $this->getGroupID(), PDO::PARAM_STR);
+            $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_STR);
             $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
-            $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_INT);
-            $stmt->bindValue(':bio', $this->getBio(), PDO::PARAM_INT);
+            $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_STR);
+            $stmt->bindValue(':bio', $this->getBio(), PDO::PARAM_STR);
             $stmt->bindValue(':interests', $this->getInterests(), PDO::PARAM_STR);
-            $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_INT);
-            $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_INT);
-            $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_INT);
-
-            //var_dump($stmt);
+            $stmt->bindValue(':picture', $this->getPicture(), PDO::PARAM_STR);
+            $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
+            $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_STR);
+            $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_STR);
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
-            dbClose($conn);
             return "update user failed: " . $e->getMessage();
         }
+
     }
 
     //List all users
