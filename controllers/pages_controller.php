@@ -8,7 +8,7 @@
  * Page Controller class
  * Used for various pages across the site
  */
-class pages_controller
+class pages_controller extends controller
 {
 
     //Standard pages
@@ -22,25 +22,68 @@ class pages_controller
         require_once('./views/pages/search.php');
     }
 
+
     //PROFILE PAGES
 
     //Profile for current user
     public function profile()
     {
-        require_once('./views/pages/profile.php');
+        if (isset($_SESSION['userID'])) {
+
+            $conn = dbConnect();
+
+            $user = new users($_SESSION['userID']);
+            $user->getAllDetails($conn);
+            $this->data['profile'] = $user;
+            //Extract data array to display variables on view template
+            extract($this->data);
+            require_once('./views/pages/profile.php');
+
+        } else { //Show error page otherwise
+            $this->error();
+        }
     }
 
 
     //View other user's profile
     public function viewProfile()
     {
-        require_once('./views/pages/profile.php');
+        if (isset($_SESSION['userID'])) {
+
+            $conn = dbConnect();
+            $userID = $_SESSION['params']['userID'];
+            $user = new users($userID);
+            $user->getAllDetails($conn);
+            $this->data['profile'] = $user;
+            //Extract data array to display variables on view template
+            extract($this->data);
+
+            require_once('./views/pages/profile.php');
+        } else { //Show error page otherwise
+            $this->error();
+        }
     }
 
     //Edit other user's profile
     public function profile_edit()
     {
-        require_once('./views/pages/profile_edit.php');
+        //Check if user is logged in first
+        if (isset($_SESSION['userID'])) {
+
+            $conn = dbConnect();
+            $userID = $_SESSION['params']['userID'];
+
+            $user = new users($userID);
+            $user->getAllDetails($conn);
+            $this->data['profile'] = $user;
+            //Extract data array to display variables on view template
+            extract($this->data);
+            require_once('./views/pages/profile_edit.php');
+
+        } else { //Show error page otherwise
+            $this->error();
+        }
+
     }
 
     //ABOUT US PAGES
@@ -87,8 +130,7 @@ class pages_controller
 
                 if ($user->Login($user->getUserID(), $_POST['txtPassword'], $conn)) {
                     $_SESSION['username'] = htmlentities($_POST['txtUsername']);
-                    $_SESSION['userID'] =  $user->getUserID();
-
+                    $_SESSION['userID'] = $user->getUserID();
 
 
                     echo '<script> location.replace("../"); </script>';
@@ -101,12 +143,6 @@ class pages_controller
 
     }
 
-    public function logout()
-    {
-        unset($_SESSION);
-        session_destroy();
-        echo '<script> location.replace("../"); </script>';
-    }
 
     public function register()
     {
@@ -117,7 +153,7 @@ class pages_controller
         //Registration logic
 
         $conn = dbConnect();
-        $conn->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
         if (isset($_POST['btnSubmit'])) {
 
@@ -125,27 +161,26 @@ class pages_controller
 
 //            if (isset($_POST['txtUsername']) && (isset($_POST['txtPassword'])) && (isset($_POST['txtFirstName'])) && (isset($_POST['txtLastName']))) {
 
-                //Get username from field
-                $user->setUsername($_POST['txtUsername']);
+            //Get username from field
+            $user->setUsername($_POST['txtUsername']);
 //                if (!$user->doesUserNameExist($conn)) {
-                    echo "Username passed!";
+            echo "Username passed!";
 
-                    $user->setEmail($_POST['txtEmail']);
-                    $user->setFirstName($_POST['txtFirstName']);
-                    $user->setLastName($_POST['txtLastName']);
+            $user->setEmail($_POST['txtEmail']);
+            $user->setFirstName($_POST['txtFirstName']);
+            $user->setLastName($_POST['txtLastName']);
 
-                    echo "fields matched";
-                    //Create user in the database
+            echo "fields matched";
+            //Create user in the database
 
-                    if ($user->create($conn, $_POST['txtPassword'])) {
-                            $_SESSION['register'] = true;
-                             unset($_SESSION['error']);
-                             echo "User registered";
-                        }
-                    }
-                    else{
-                        $_SESSION['error'] = true;
-                    }
+            if ($user->create($conn, $_POST['txtPassword'])) {
+                $_SESSION['register'] = true;
+                unset($_SESSION['error']);
+                echo "User registered";
+            }
+        } else {
+            $_SESSION['error'] = true;
+        }
 //                } else {
 //                    $_SESSION['error'] = true;
 //                }

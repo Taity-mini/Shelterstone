@@ -270,6 +270,11 @@ class users
 
     }
 
+    public function getFullName()
+    {
+        return $this->getFirstName() ." " . $this->getLastName();
+     }
+
     //Get total number of registered users count
     public function getTotalCount($conn)
     {

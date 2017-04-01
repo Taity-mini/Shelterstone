@@ -9,6 +9,6 @@
 
 ?>
 
-<h1 class="pageTitle" >Edit Profile: [USERNAME]</h1>
+<h1 class="pageTitle" >Edit Profile: <?=$profile->getUsername()?></h1>
 
 <p>Edit user's profile</p>

@@ -7,8 +7,10 @@
  * Routing file for URLS in MVC system
  */
 
+
 function call($controller, $action)
 {
+    require_once('controllers/controller.php');
     require_once('controllers/' . $controller . '_controller.php');
 
     switch ($controller) {
@@ -139,9 +141,13 @@ $uri = '/' . trim(str_replace($uri, '', $_SERVER['REQUEST_URI']), '/');
 $uri = urldecode($uri);
 
 // we're adding an entry for the new controller and its actions
-
 foreach ($rules as $action => $rule) {
     if (preg_match('~^' . $rule . '$~i', $uri, $params)) {
+
+        //Store URL parameters in session variable for controllers to access
+        $_SESSION['params'] = $params;
+        //And domain url..
+        $_SESSION['domain'] = $domain;
 
         switch ($action) {
             case 'home':
@@ -155,7 +161,9 @@ foreach ($rules as $action => $rule) {
                 break;
 
             case 'logout':
-                call('pages', $action);
+                unset($_SESSION);
+                session_destroy();
+                header('Location: ' . $domain);
                 break;
 
             case 'register':
@@ -164,6 +172,15 @@ foreach ($rules as $action => $rule) {
 
 
             case 'profile':
+                call('pages', $action);
+                break;
+
+
+            case 'profile_view':
+                call('pages', 'viewProfile');
+                break;
+
+            case 'profile_edit':
                 call('pages', $action);
                 break;
 

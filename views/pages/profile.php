@@ -7,10 +7,38 @@
  *
  * View Profile page
  */
+
+
+
 ?>
 
 <h1 class="pageTitle" >Profile</h1>
 
-<p>User's profile</p>
+<h3>Profile Details</h3>
+<p>User's profile: <?=$profile->getUsername()?></p>
+
+<label>
+    <img src="<?= $_SESSION['domain']?>/img/profile.png"/>
+   <b> <?= $profile->getFullName(); ?></b>
+</label>
+<label>
+    Bio:
+    <?= $profile->getBio(); ?>
+</label>
+<label>
+    Interests:
+    <?= $profile->getInterests(); ?>
+</label>
+<label>
+    Role:
+    <?= $profile->getRole(); ?>
+</label>
+
+<h3>Competition Results</h3>
+
+<h3>Climbing Log Details</h3>
+
+<a href="/profile/edit/<?=$profile->getUserID()?>" class="button">Edit Profile</a>
+
 
 

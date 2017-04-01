@@ -7,6 +7,20 @@
  * Header include file used in the design layout
  */
 
+//Logged in checks/functions
+
+if (isset($_SESSION['userID'])) {
+    echo "logged in";
+    require_once('./models/users.php');
+    require_once('./models/users_groups.php');
+    $conn = dbConnect();
+
+    $users = new users($_SESSION['userID']);
+
+    $users->getAllDetails($conn);
+//    var_dump($users);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,13 +85,18 @@
                 </ul>
             </li>
             <li class="singleLink"><a href="<?php echo $domain ?>/competitions">Competitions</a></li>
-            <li class="has-submenu">
-                <a href="<?php echo $domain ?>/profile">Profile</a>
+            <?php
+            if (isset($_SESSION['userID'])) {
+                echo '<li class="has-submenu">
+                <a href="' . $domain . '/profile">Profile</a>
                 <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/climbing_log">Climbing Log</a></li>
-                    <li><a href="<?php echo $domain ?>/profile">Personal Details</a></li>
+                    <li><a href="' . $domain . '/climbing_log">Climbing Log</a></li>
+                    <li><a href="' . $domain . '/profile">Personal Details</a></li>
                 </ul>
-            </li>
+            </li>';
+            }
+
+            ?>
             <li class="has-submenu">
                 <a href="#">Committee</a>
                 <ul class="submenu menu vertical" data-submenu>
@@ -88,7 +107,7 @@
             </li>
             <?php
             if (isset($_SESSION['userID'])) {
-                echo '<li class="singleLink"><a href="'.$domain.'/Logout">Logout</a></li>';
+                echo '<li class="singleLink"><a href="' . $domain . '/Logout">Logout</a></li>';
             } else {
 
                 ?>
