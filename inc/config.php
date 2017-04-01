@@ -7,6 +7,8 @@
  * Database configuration file
  */
 
+ob_start(); //Turn on output buffering for header redirects..
+
 //Database connection variables
 
 $mysqlusername = "root";
