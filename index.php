@@ -10,11 +10,5 @@
 //Setup Database connection files
 session_start();
 require_once('/inc/config.php');
-
-if (isset($_SESSION['userID'])) {
-    echo "logged in";
-}
-
-
 require_once ('views/layout.php');
 
