@@ -70,6 +70,35 @@ class pages_controller extends controller
         //Check if user is logged in first
         if (isset($_SESSION['userID'])) {
 
+            //Perform user profile update
+            if (isset($_POST['btnSubmit'])) {
+                $conn = dbConnect();
+                $userID = $_SESSION['params']['userID'];
+                //if (isset($_POST['txtUsername']) && (isset($_POST['txtWebsite'])) && (isset($_POST['txtEmail'])) && (isset($_POST['txtFirstName']))&& (isset($_POST['txtLastName']))) {
+                //Get data from fields
+                $update = new users($userID);
+                $update->getAllDetails($conn);
+                $update->setEmail($_POST['txtEmail']);
+                $update->setFirstName($_POST['txtFirstName']);
+                $update->setLastName($_POST['txtLastName']);
+                $update->setBio($_POST['txtBio']);
+                $update->setInterests($_POST['txtInterests']);
+                $update->setRole($_POST['txtRole']);
+                $update->setCertifications($_POST['txtCertifications']);
+                $update->setLink(($_POST['txtLink']));
+
+                //Update user in the database
+                if ($update->updateUser($conn)) {
+                    var_dump($update);
+                    $_SESSION['update'] = true;
+                    echo "Working";
+                    header('Location: '.$_SESSION["domain"].'/profile/view/' .  $userID);
+                } else {
+                    $_SESSION['error'] = true;
+                }
+            }
+
+            //Display user data in forms
             $conn = dbConnect();
             $userID = $_SESSION['params']['userID'];
 
@@ -79,11 +108,9 @@ class pages_controller extends controller
             //Extract data array to display variables on view template
             extract($this->data);
             require_once('./views/pages/profile_edit.php');
-
         } else { //Show error page otherwise
             $this->error();
         }
-
     }
 
     //ABOUT US PAGES
