@@ -8,9 +8,17 @@
  * View Profile page
  */
 
-
+if (isset($_SESSION['update'])) {
+    echo '<br/>';
+    echo '<div class="callout success">
+          <h5>Profile Successfully Updated!</h5>
+          </div>';
+    unset($_SESSION['update']);
+}
 
 ?>
+
+
 
 <h1 class="pageTitle" >Profile</h1>
 
