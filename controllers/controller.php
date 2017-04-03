@@ -16,7 +16,7 @@ abstract class controller
 
     public function redirect($url)
     {
-        header("Location: /$url");
+        header("Location: ".$_SESSION['domain']."$url");
         exit;
         header("Connection: close");
 
