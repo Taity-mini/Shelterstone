@@ -135,21 +135,18 @@ class users_groups
         }
     }
 
-    //Get all groups
-
-    public function getAllGroups($conn)
-    {
-        $sql = "SELECT g.groupID, g.groupName FROM user_groups m, groups g WHERE m.groupID = g.groupID";
+    //List all groups for drop down menus
+    public function listAllGroups($conn) {
+        $sql = "SELECT groupID, groupName FROM groups";
         $stmt = $conn->prepare($sql);
-        //$stmt->bindParam(':member', $this->getMember(), PDO::PARAM_STR);
 
         try {
             $stmt->execute();
             $results = $stmt->fetchAll();
 
             $array = array();
-            foreach ($results as $row) {
-                $array[$row["groupID"]] = $array[$row["groupName"]];
+            foreach($results as $row) {
+                $array[$row['groupID']] = $row['groupName'];
             }
             return $array;
         } catch (PDOException $e) {
@@ -162,7 +159,7 @@ class users_groups
     //Admin ID 1
     public function isAdministrator($conn, $userID)
     {
-        $sql = "SELECT ug.userID FROM user_groups ug, groups g WHERE ug.groupID = g.groupID AND ug.groupID = 1 AND ug.userID = :userID";
+        $sql = "SELECT u.userID FROM user u, groups g WHERE u.groupID = g.groupID AND u.groupID = 1 AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
