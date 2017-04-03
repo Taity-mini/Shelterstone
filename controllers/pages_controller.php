@@ -69,6 +69,7 @@ class pages_controller extends controller
     {
         //Check if user is logged in first
         if (isset($_SESSION['userID'])) {
+            include('./inc/forms.php');
 
             //Perform user profile update
             if (isset($_POST['btnSubmit'])) {
@@ -86,13 +87,28 @@ class pages_controller extends controller
                 $update->setRole($_POST['txtRole']);
                 $update->setCertifications($_POST['txtCertifications']);
                 $update->setLink(($_POST['txtLink']));
+                $update->setGroupID($_POST['sltGroup']);
+
+                //Profile flag checks
+                $approved   = (isset($_POST['chkApproved']));
+                $accredited = (isset($_POST['chkAccredited']));
+                $driver     = (isset($_POST['chkDriver']));
+                $banned     = (isset($_POST['chkBanned']));
+
+                $update->setApproved($approved);
+                $update->setAccredited($accredited);
+                $update->setDriver($driver);
+                $update->setBanned($banned);
+
+
+
 
                 //Update user in the database
                 if ($update->updateUser($conn)) {
                     var_dump($update);
                     $_SESSION['update'] = true;
                     echo "Working";
-                    header('Location: '.$_SESSION["domain"].'/profile/view/' .  $userID);
+                    //header('Location: '.$_SESSION["domain"].'/profile/view/' .  $userID);
                 } else {
                     $_SESSION['error'] = true;
                 }
@@ -105,6 +121,10 @@ class pages_controller extends controller
             $user = new users($userID);
             $user->getAllDetails($conn);
             $this->data['profile'] = $user;
+
+            $groups = new users_groups($user->getUserID(), $user->getGroupID());
+
+            $this->data['group'] = $groups;
             //Extract data array to display variables on view template
             extract($this->data);
             require_once('./views/pages/profile_edit.php');
@@ -178,7 +198,6 @@ class pages_controller extends controller
         require_once('./views/pages/register.php');
 
         //Registration logic
-
         $conn = dbConnect();
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 

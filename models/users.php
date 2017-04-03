@@ -13,7 +13,7 @@ class users
     //class variables based on user and profile fields
 
     private $userID, $groupID, $oauth_uid, $username, $email, $firstName, $lastName, $bio, $interests, $picture, $link, $role, $certifications,
-            $approved, $accredited, $driver, $banned, $created, $modified, $tokenCode;
+        $approved, $accredited, $driver, $banned, $created, $modified, $tokenCode;
 
 
     //Constructor
@@ -91,12 +91,18 @@ class users
 
     public function getCreatedDate()
     {
-        return $this->created;
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->created);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d-m-Y');
     }
 
     public function getModifiedDate()
     {
-        return $this->modified;
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->modified);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d-m-Y H:i:s');
     }
 
     //Profiles fields
@@ -151,6 +157,50 @@ class users
         return $this->tokenCode;
     }
 
+    //Flags
+
+    public function getApproved()
+    {
+        return $this->approved;
+    }
+
+    public function getAccredited()
+    {
+        return $this->accredited;
+    }
+
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    public function getBanned()
+    {
+        return $this->banned;
+    }
+
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . " " . $this->getLastName();
+    }
+
+    //Get total number of registered users count
+    public function getTotalCount($conn)
+    {
+        $sql = "SELECT COUNT(*) FROM users";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetch();
+            $count = $results[0];
+            return $count;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
+
 
 //Setters
 
@@ -162,7 +212,7 @@ class users
 
     public function setGroupID($groupID)
     {
-        $this->groupID  = htmlentities($groupID);
+        $this->groupID = htmlentities($groupID);
     }
 
 
@@ -233,6 +283,28 @@ class users
         $this->certifications = ($certifications);
     }
 
+    //Set flags
+
+    public function setApproved($approved)
+    {
+        $this->approved = htmlentities($approved);
+    }
+
+    public function setAccredited($accredited)
+    {
+        $this->accredited = htmlentities($accredited);
+    }
+
+    public function setDriver($driver)
+    {
+        $this->driver = htmlentities($driver);
+    }
+
+    public function setBanned($banned)
+    {
+        $this->banned = htmlentities($banned);
+    }
+
 //Get all users' details
 
     public function getAllDetails($conn)
@@ -260,6 +332,10 @@ class users
                 $this->setLink($row['link']);
                 $this->setRole($row['role']);
                 $this->setCertifications($row['certifications']);
+                $this->setApproved($row['approved']);
+                $this->setAccredited($row['accredited']);
+                $this->setDriver($row['driver']);
+                $this->setBanned($row['banned']);
                 $this->setCreatedDate($row['created']);
                 $this->setModifiedDate($row['modified']);
             }
@@ -267,29 +343,8 @@ class users
         } catch (PDOException $e) {
             return "Query Failed:" . $e->getMessage();
         }
-
     }
 
-    public function getFullName()
-    {
-        return $this->getFirstName() ." " . $this->getLastName();
-     }
-
-    //Get total number of registered users count
-    public function getTotalCount($conn)
-    {
-        $sql = "SELECT COUNT(*) FROM users";
-        $stmt = $conn->prepare($sql);
-
-        try {
-            $stmt->execute();
-            $results = $stmt->fetch();
-            $count = $results[0];
-            return $count;
-        } catch (PDOException $e) {
-            return "Database query failed: " . $e->getMessage();
-        }
-    }
 
 
 //Creating Functions
@@ -344,45 +399,21 @@ class users
         } catch (PDOException $e) {
             //dbClose($conn);
             return "Create user failed: " . $e->getMessage();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             dbClose($conn);
             return "create failed: " . $e->getMessage();
         }
     }
 
-    //Create user's profile table record
-//    public function createProfile($conn)
-//    {
-//        $this->getUserIDFromUsername($conn);
-//        try {
-//            $sql = "INSERT INTO profiles VALUES (:userID, :email, :firstName, :lastName, :bio, :interests, :picture, :link)";
-//
-//            $stmt = $conn->prepare($sql);
-//
-//            $stmt->bindValue(':userID', $this->getUserID(), PDO::PARAM_STR);
-//            $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_INT);
-//            $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
-//            $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_INT);
-//            $stmt->bindValue(':bio', $this->getBio(), PDO::PARAM_INT);
-//            $stmt->bindValue(':interests', $this->getInterests(), PDO::PARAM_INT);
-//            $stmt->bindValue(':picture', $this->getPicture(), PDO::PARAM_STR);
-//            $stmt->bindValue(':link', $this->link, PDO::PARAM_STR);
-//            $stmt->execute();
-//            return true;
-//        } catch (PDOException $e) {
-//            dbClose($conn);
-//            return "Create profile failed: " . $e->getMessage();
-//        }
-//
-//    }
 
     //Update user's profile
     public function updateUser($conn)
     {
+        $date = date('Y-m-d H:i:s');
         try {
-             $sql = "UPDATE users SET groupID = :groupID, email = :email, firstName = :firstName, lastName = :lastName, bio = :bio, interests = :interests, picture = :picture, link = :link, role = :role, certifications = :certifications WHERE userID = :userID";
-
+            $sql = "UPDATE users SET groupID = :groupID, email = :email, firstName = :firstName, lastName = :lastName, bio = :bio, interests = :interests, picture = :picture, link = :link, role = :role, certifications = :certifications,
+                    approved = :approve, accredited = :accredited, driver = :driver, banned = :banned, modified = :modified
+                    WHERE userID = :userID";
 
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
@@ -396,6 +427,11 @@ class users
             $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
             $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_STR);
             $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_STR);
+            $stmt->bindValue(':approve', $this->getApproved(), PDO::PARAM_INT);
+            $stmt->bindValue(':accredited', $this->getAccredited(), PDO::PARAM_INT);
+            $stmt->bindValue(':driver', $this->getDriver(), PDO::PARAM_INT);
+            $stmt->bindValue(':banned', $this->getBanned(), PDO::PARAM_INT);
+            $stmt->bindValue(':modified', $date, PDO::PARAM_STR);
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
@@ -495,7 +531,6 @@ class users
     }
 
 
-
     public function isBanned($conn)
     {
         $sql = "SELECT userID FROM users u WHERE u.banned = 1  AND u.userID = :userID";
@@ -518,7 +553,7 @@ class users
     }
 
 
-    public function approveUser($conn)
+    public function approveToggleUser($conn)
     {
         if (!$this->isApproved($conn)) {
             $sql = "UPDATE users SET approved = 1 WHERE userID = :userID";
@@ -532,13 +567,37 @@ class users
                 dbClose($conn);
                 return "Approval failed: " . $e->getMessage();
             }
+        } else if ($this->isApproved($conn)) {
+            $sql = "UPDATE users SET approved = 0 WHERE userID = :userID";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
+            try {
+                $stmt->execute();
+                dbClose($conn);
+                return true;
+            } catch (PDOException $e) {
+                dbClose($conn);
+                return "Approval failed: " . $e->getMessage();
+            }
         }
     }
 
-    public function accreditUser($conn)
+    public function accreditToggleUser($conn)
     {
         if (!$this->isAccredited($conn)) {
             $sql = "UPDATE users SET accredited = 1 WHERE userID = :userID";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
+            try {
+                $stmt->execute();
+                dbClose($conn);
+                return true;
+            } catch (PDOException $e) {
+                dbClose($conn);
+                return "Accredit failed: " . $e->getMessage();
+            }
+        } else if ($this->isAccredited($conn)) {
+            $sql = "UPDATE users SET accredited = 0 WHERE userID = :userID";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
             try {
