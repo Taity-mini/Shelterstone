@@ -6,7 +6,14 @@
  * Time: 17:37
  * Edit user's profile
  */
-
+if (isset($_SESSION['error'])) {
+    echo '<br/>';
+    echo '<div class="callout warning">
+          <h5>Profile Update Failed</h5>
+          <p>Form incomplete, errors are highlighted below.</p>
+          </div>';
+    unset($_SESSION['error']);
+}
 
 ?>
 
@@ -94,72 +101,83 @@
             </div>
         </div>
 
-        <fieldset class="fieldset">
-            <legend>Admin Stuff</legend>
-
-            <div class="row collapse">
-                <div class="small-2 columns">
-                    <span><b>Role</b></span>
-                </div>
-                <div class="small-10  columns">
-                    <input type="text" id="txtRole" name="txtRole" maxlength="200"
-                           value="<?= $profile->getRole(); ?>"/>
-                </div>
-            </div>
-
-
-
-            <?php
-
-            echo comboInputSetup(true, "Group", "sltGroup", $profile->getGroupID(), $group->listAllGroups($conn));
-
-            //            $output = '<div class="large-12 medium-12 small-12 columns">
-            //                <label><b>
-            //                    <span class="required">* </span></b>
-            //                <select id="sltGroup" name="sltGroup">';
-            //
-            //            foreach ($group->listAllGroups($conn) as $key => $value) {
-            //                if ($value == $profile->getGroupID() || $key == $profile->getGroupID()) {
-            //                    $output .= '<option selected="selected" value="' . $key . '">' . $value . '</option>';
-            //                } else {
-            //                    $output .= '<option value="' . $key . '">' . $value . '</option>';
-            //                }
-            //            }
-            //            $output .= '</select>';
-            //            echo $output;
+        <?php
+        if ($limitedEdit) {
             ?>
+            <input id="chkDriver" type="checkbox" name="chkDriver" value="1"
+                <?php echo($profile->getDriver() == 1 ? 'checked' : ''); ?>/><label
+                for="Driver"><b>Driver</b></label>
+            <?php
+        } else if (!$limitedEdit) {
+            ?>
+            <fieldset class="fieldset">
+                <legend>Admin Stuff</legend>
 
-            <div class="row collapse">
-                <div class="small-2  columns">
-                    <span class="prefix">Registered Date:</i></span>
+                <div class="row collapse">
+                    <div class="small-2 columns">
+                        <span><b>Role</b></span>
+                    </div>
+                    <div class="small-10  columns">
+                        <input type="text" id="txtRole" name="txtRole" maxlength="200"
+                               value="<?= $profile->getRole(); ?>"/>
+                    </div>
                 </div>
-                <div class="small-10  columns">
-                    <?= $profile->getCreatedDate() ?>
-                </div>
-            </div>
 
-            <div class="row collapse">
-                <div class="small-2  columns">
-                    <span class="prefix">Last Modified Date:</span>
-                </div>
-                <div class="small-10  columns">
-                    <?= $profile->getModifiedDate() ?>
-                </div>
-            </div>
 
-            <fieldset class="large-12s columns">
-                <legend>Profile Flags</legend>
-                <input id="chkApproved" type="checkbox" name="chkApproved" value="1"
-                <?php echo($profile->getApproved() == 1 ? 'checked' : ''); ?>/><label for="Approved"><b>Approved</b></label>
-                <input id="chkApproved" type="checkbox" name="chkAccredited" value="1"
-                <?php echo($profile->getAccredited() == 1 ? 'checked' : ''); ?>/><label for="Accredited"><b>Accredited</b></label>
-                <input id="chkDriver" type="checkbox" name="chkDriver" value="1"
-                <?php echo($profile->getDriver() == 1 ? 'checked' : ''); ?>/><label for="Driver"><b>Driver</b></label>
-                <input id="chkBanned" type="checkbox" name="chkApproved" value="1"
-                <?php echo($profile->getBanned() == 1 ? 'checked' : ''); ?>/><label for="Banned"><b>Banned</b></label>
+                <?php
+
+                echo comboInputSetup(true, "Group", "sltGroup", $profile->getGroupID(), $group->listAllGroups($conn));
+
+                //            $output = '<div class="large-12 medium-12 small-12 columns">
+                //                <label><b>
+                //                    <span class="required">* </span></b>
+                //                <select id="sltGroup" name="sltGroup">';
+                //
+                //            foreach ($group->listAllGroups($conn) as $key => $value) {
+                //                if ($value == $profile->getGroupID() || $key == $profile->getGroupID()) {
+                //                    $output .= '<option selected="selected" value="' . $key . '">' . $value . '</option>';
+                //                } else {
+                //                    $output .= '<option value="' . $key . '">' . $value . '</option>';
+                //                }
+                //            }
+                //            $output .= '</select>';
+                //            echo $output;
+                ?>
+
+                <div class="row collapse">
+                    <div class="small-2  columns">
+                        <span class="prefix">Registered Date:</i></span>
+                    </div>
+                    <div class="small-10  columns">
+                        <?= $profile->getCreatedDate() ?>
+                    </div>
+                </div>
+
+                <div class="row collapse">
+                    <div class="small-2  columns">
+                        <span class="prefix">Last Modified Date:</span>
+                    </div>
+                    <div class="small-10  columns">
+                        <?= $profile->getModifiedDate() ?>
+                    </div>
+                </div>
+
+                <fieldset class="large-12s columns">
+                    <legend>Profile Flags</legend>
+                    <input id="chkApproved" type="checkbox" name="chkApproved" value="1"
+                        <?php echo($profile->getApproved() == 1 ? 'checked' : ''); ?>/><label
+                        for="Approved"><b>Approved</b></label>
+                    <input id="chkApproved" type="checkbox" name="chkAccredited" value="1"
+                        <?php echo($profile->getAccredited() == 1 ? 'checked' : ''); ?>/><label for="Accredited"><b>Accredited</b></label>
+                    <input id="chkDriver" type="checkbox" name="chkDriver" value="1"
+                        <?php echo($profile->getDriver() == 1 ? 'checked' : ''); ?>/><label
+                        for="Driver"><b>Driver</b></label>
+                    <input id="chkBanned" type="checkbox" name="chkApproved" value="1"
+                        <?php echo($profile->getBanned() == 1 ? 'checked' : ''); ?>/> <label
+                        for="Banned"><b>Banned</b></label>
+                </fieldset>
             </fieldset>
-        </fieldset>
-
+        <?php } ?>
         <div class="row collapse">
             <div class="small-5 columns">
                 <input class="button" type="submit" name="btnSubmit" value="Update Profile">
@@ -168,7 +186,5 @@
                 <input class="button" type="reset" value="Reset">
             </div>
         </div>
-
-
     </form>
 </div>

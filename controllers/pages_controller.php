@@ -29,9 +29,7 @@ class pages_controller extends controller
     public function profile()
     {
         if (isset($_SESSION['userID'])) {
-
             $conn = dbConnect();
-
             $user = new users($_SESSION['userID']);
             $user->getAllDetails($conn);
             $this->data['profile'] = $user;
@@ -39,8 +37,8 @@ class pages_controller extends controller
             extract($this->data);
             require_once('./views/pages/profile.php');
 
-        } else { //Show error page otherwise
-            $this->error();
+        } else { //Show login page otherwise
+            $this->redirect("/login");
         }
     }
 
@@ -54,13 +52,19 @@ class pages_controller extends controller
             $userID = $_SESSION['params']['userID'];
             $user = new users($userID);
             $user->getAllDetails($conn);
+
+            //Security and error checks
+            if (!$user->doesExist($conn)) {
+                $this->redirect("/error");
+            }
+
             $this->data['profile'] = $user;
             //Extract data array to display variables on view template
             extract($this->data);
 
             require_once('./views/pages/profile.php');
         } else { //Show error page otherwise
-            $this->error();
+            $this->redirect("/login");
         }
     }
 
@@ -69,67 +73,96 @@ class pages_controller extends controller
     {
         //Check if user is logged in first
         if (isset($_SESSION['userID'])) {
-            include('./inc/forms.php');
+            $conn = dbConnect();
+            $userID = $_SESSION['params']['userID'];
+            $user = new users($userID);
+            $user->getAllDetails($conn);
+            $groups = new users_groups($user->getUserID(), $user->getGroupID());
+            $limited_edit = false;
+
+            //Security and error checks
+            if (!$user->doesExist($conn)) {
+                $this->redirect("/error");
+            }
+
+            //No Full access? Show 403 error message
+            if (!$groups->userFullAccess($conn, $_SESSION['userID'])) {
+                //Not full access and editing someone else's profile - see 403 page
+                if ($_SESSION['userID'] !== $userID) {
+                    $this->redirect("error");
+                    exit;
+                } else if ($_SESSION['userID'] == $userID) {
+                    $limited_edit = true;
+                }
+            }
+
+
 
             //Perform user profile update
             if (isset($_POST['btnSubmit'])) {
                 $conn = dbConnect();
                 $userID = $_SESSION['params']['userID'];
-                //if (isset($_POST['txtUsername']) && (isset($_POST['txtWebsite'])) && (isset($_POST['txtEmail'])) && (isset($_POST['txtFirstName']))&& (isset($_POST['txtLastName']))) {
-                //Get data from fields
-                $update = new users($userID);
-                $update->getAllDetails($conn);
-                $update->setEmail($_POST['txtEmail']);
-                $update->setFirstName($_POST['txtFirstName']);
-                $update->setLastName($_POST['txtLastName']);
-                $update->setBio($_POST['txtBio']);
-                $update->setInterests($_POST['txtInterests']);
-                $update->setRole($_POST['txtRole']);
-                $update->setCertifications($_POST['txtCertifications']);
-                $update->setLink(($_POST['txtLink']));
-                $update->setGroupID($_POST['sltGroup']);
 
-                //Profile flag checks
-                $approved   = (isset($_POST['chkApproved']));
-                $accredited = (isset($_POST['chkAccredited']));
-                $driver     = (isset($_POST['chkDriver']));
-                $banned     = (isset($_POST['chkBanned']));
+                //Input validation checks
+                if ($user->isInputValid($conn, $_POST['txtEmail'], $_POST['txtFirstName'], $_POST['txtLastName'],
+                    $_POST['txtBio'], $_POST['txtInterests'], $_POST['txtLink'], $_POST['txtCertifications'])) {
 
-                $update->setApproved($approved);
-                $update->setAccredited($accredited);
-                $update->setDriver($driver);
-                $update->setBanned($banned);
+                    //Get data from fields
+                    $update = new users($userID);
+                    $update->getAllDetails($conn);
+                    $update->setEmail($_POST['txtEmail']);
+                    $update->setFirstName($_POST['txtFirstName']);
+                    $update->setLastName($_POST['txtLastName']);
+                    $update->setBio($_POST['txtBio']);
+                    $update->setInterests($_POST['txtInterests']);
+                    $update->setCertifications($_POST['txtCertifications']);
+                    $update->setLink(($_POST['txtLink']));
+                    $driver = (isset($_POST['chkDriver']));
+                    $update->setDriver($driver);
 
+                    if (!$limited_edit) {
+                        //Admin only fields
+                        //Profile flag checks
+                        $approved = (isset($_POST['chkApproved']));
+                        $accredited = (isset($_POST['chkAccredited']));
+                        $banned = (isset($_POST['chkBanned']));
 
+                        $update->setApproved($approved);
+                        $update->setAccredited($accredited);
+                        $update->setBanned($banned);
 
+                        $update->setRole($_POST['txtRole']);
+                        $update->setGroupID($_POST['sltGroup']);
+                    }
 
-                //Update user in the database
-                if ($update->updateUser($conn)) {
-                    var_dump($update);
-                    $_SESSION['update'] = true;
-                    echo "Working";
-                    //header('Location: '.$_SESSION["domain"].'/profile/view/' .  $userID);
-                } else {
+                    //Update user in the database
+                    if ($update->updateUser($conn)) {
+                        $_SESSION['update'] = true;
+                        //Redirect to corresponding profile url
+                        if ($limited_edit) {
+                            $this->redirect("/profile");
+                        } else {
+                            $this->redirect("/profile/view/" . $userID);
+                        }
+                    } else {
+                        $_SESSION['error'] = true;
+                    }
+
+                } else { //Show error if input validation fails
                     $_SESSION['error'] = true;
                 }
             }
 
             //Display user data in forms
-            $conn = dbConnect();
-            $userID = $_SESSION['params']['userID'];
-
-            $user = new users($userID);
-            $user->getAllDetails($conn);
             $this->data['profile'] = $user;
-
-            $groups = new users_groups($user->getUserID(), $user->getGroupID());
-
             $this->data['group'] = $groups;
+            $this->data['limitedEdit'] = $limited_edit;
             //Extract data array to display variables on view template
             extract($this->data);
+            include('./inc/forms.php');
             require_once('./views/pages/profile_edit.php');
-        } else { //Show error page otherwise
-            $this->error();
+        } else { //Show login page otherwise
+            $this->redirect("/login");
         }
     }
 
@@ -160,6 +193,11 @@ class pages_controller extends controller
     //Login and registration
     public function login()
     {
+        //If user already logged in - redirect to home screen
+        if (isset($_SESSION['userID'])) {
+            $this->redirect("/");
+        }
+
         require_once('./models/users.php');
         require_once('./models/users_groups.php');
         require_once('./views/pages/login.php');
@@ -179,8 +217,7 @@ class pages_controller extends controller
                     $_SESSION['username'] = htmlentities($_POST['txtUsername']);
                     $_SESSION['userID'] = $user->getUserID();
 
-
-                    echo '<script> location.replace("../"); </script>';
+                    $this->redirect("/");
 
                 } else {
                     $_SESSION['error'] = true;
@@ -193,6 +230,11 @@ class pages_controller extends controller
 
     public function register()
     {
+        //If user already logged in - redirect to home screen
+        if (isset($_SESSION['userID'])) {
+            $this->redirect("/");
+        }
+
         require_once('./models/users.php');
         require_once('./models/users_groups.php');
         require_once('./views/pages/register.php');

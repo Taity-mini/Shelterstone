@@ -866,17 +866,14 @@ class users
 
     //Validation Functions
 
-    public function isInputValid($conn, $username, $email, $firstName, $lastName, $bio, $interests, $picture, $link, $role, $certifications)
+    public function isInputValid($conn, $email, $firstName, $lastName, $bio, $interests,$link, $certifications)
     {
-        if ($this->isUsernameValid($conn, $username)
-            && $this->isEmailValid($email)
+        if ($this->isEmailValid($email)
             && $this->isFirstNameValid($firstName)
             && $this->isLastNameValid($lastName)
             && $this->isBioValid($bio)
             && $this->isInterestsValid($interests)
-            && $this->isPictureValid($picture)
             && $this->isLinkValid($link)
-            && $this->isRoleValid($role)
             && $this->isCertificationsValid($certifications)
         ) {
             return true;
@@ -895,10 +892,8 @@ class users
             $stmt->execute();
             if ($stmt->rowCount() == 0) {
                 return true;
-                //echo 'true';
             } else {
                 return false;
-                // echo 'false';
             }
         } catch (PDOException $e) {
             return "Query failed: " . $e->getMessage();
