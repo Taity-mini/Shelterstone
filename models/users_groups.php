@@ -273,6 +273,28 @@ class users_groups
         }
     }
 
+    //News pages
+    public function newsFullAccess($conn, $userID)
+    {
+        if ($this->isAdministrator($conn, $userID) || $this->isUserCommittee($conn, $userID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function newsViewAccess($conn, $userID)
+    {
+        if ($this->newsFullAccess($conn, $userID)) {
+            return true;
+        } else if ($this->isUserMember($conn, $userID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
     //List Committee members
 
