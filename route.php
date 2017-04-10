@@ -123,6 +123,8 @@ $rules = array(
     'news_add' => "/news/add",
     'news_article' => "/news/(?'newsID'[\w\-]+)",
     'news_edit' => "/news/edit/(?'newsID'[\w\-]+)",
+    'news_type' => "/news/type/(?'type'[\w\-]+)",
+    'news_user' => "/news/user/(?'userID'[\w\-]+)",
 
 //Search
     'search' => "/search",
@@ -203,6 +205,13 @@ foreach ($rules as $action => $rule) {
 
             case 'news_article':
                 call('news', 'article');
+                break;
+
+            case 'news_type':
+                call('news', 'newsByType');
+                break;
+            case 'news_user':
+                call('news', 'newsByUser');
                 break;
 
 

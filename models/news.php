@@ -16,7 +16,7 @@ class news
 
     function _constructor($newsID = -1)
     {
-        $this->newsID = $newsID;
+        $this->newsID = htmlentities($newsID);
     }
 
     //Getters
@@ -41,9 +41,20 @@ class news
         return $this->mainBody;
     }
 
+    //Get Summary of news item
+    public function getSummary()
+    {
+        $output = substr($this->getMainBody(), 0, 250);
+        $output += "...";
+        return $output;
+    }
+
     public function getDate()
     {
-        return $this->date;
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->date);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
     }
 
     public function getType()
@@ -96,9 +107,9 @@ class news
     //Get all details from news table record
     public function getAllDetails($conn)
     {
-        $sql = "SELECT * FROM news WHERE newsID = " . $this->getNewsID();
+        $sql = "SELECT * FROM news WHERE newsID = :newsID";
         $stmt = $conn->prepare($sql);
-
+        $stmt->bindParam(':newsID', $this->getNewsID(), PDO::PARAM_STR);
         try {
             $stmt->execute();
             $results = $stmt->fetchAll();
@@ -115,7 +126,6 @@ class news
             return true;
         } catch (PDOException $e) {
             echo "Query failed: " . $e->getMessage();
-            return "Query failed: " . $e->getMessage();
         }
     }
 
@@ -151,7 +161,6 @@ class news
 
         try {
             $stmt->execute();
-            $this->setID($conn->lastInsertId());
             return true;
         } catch (PDOException $e) {
             return "Create failed: " . $e->getMessage();
@@ -215,9 +224,43 @@ class news
         }
     }
 
-    public function getAllPublicNews($conn)
+    public function getAllNewsFiltered($conn, $type = null, $visibility = null, $userID = null)
     {
-        $sql = "SELECT newsID FROM news WHERE visibility = 1 ORDER BY date DESC";
+        $sql = "SELECT newsID FROM news";
+
+        if (!is_null($type)) {
+            $sql .= " WHERE type = :type";
+        }
+
+        if (!is_null($visibility)) {
+            $sql .= " WHERE visibility = :visibility";
+        }
+
+        $sql .= " ORDER BY date DESC";
+
+        $stmt = $conn->prepare($sql);
+
+        if (!is_null($type)) {
+            $stmt->bindParam(':type', $type, PDO::PARAM_INT);
+        }
+
+        if (!is_null($visibility)) {
+            $stmt->bindParam(':visibility', $visibility, PDO::PARAM_INT);
+        }
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database news query failed: " . $e->getMessage();
+        }
+    }
+
+
+    public function getAllNonCommitteeNews($conn)
+    {
+        $sql = "SELECT newsID FROM news WHERE visibility = 2 AND visibility = 3 ORDER BY date DESC";
 
         $stmt = $conn->prepare($sql);
 
@@ -231,10 +274,50 @@ class news
         }
     }
 
-    public function getAllNewsByType($conn)
+    public function getAllMemberNews($conn)
     {
-        $sql = "SELECT newsID FROM news WHERE type = :type ORDER BY date DESC";
+        $sql = "SELECT newsID FROM news WHERE visibility = 2 ORDER BY date DESC";
+
         $stmt = $conn->prepare($sql);
+
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database public news query failed: " . $e->getMessage();
+        }
+    }
+
+    public function getAllPublicNews($conn)
+    {
+        $sql = "SELECT newsID FROM news WHERE visibility = 3 ORDER BY date DESC";
+
+        $stmt = $conn->prepare($sql);
+
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database public news query failed: " . $e->getMessage();
+        }
+    }
+
+    public function getAllNewsByType($conn, $visibility = null)
+    {
+        if (is_null($visibility)) {
+            $sql = "SELECT newsID FROM news WHERE type = :type ORDER BY date DESC";
+        } else {
+            $sql = "SELECT newsID FROM news WHERE type = :type AND visibility = :visibility ORDER BY date DESC";
+        }
+
+        $stmt = $conn->prepare($sql);
+        if (!is_null($visibility)) {
+            $stmt->bindParam(':visibility', $visibility, PDO::PARAM_INT);
+        }
         $stmt->bindParam(':type', $this->getType(), PDO::PARAM_INT);
 
         try {
@@ -245,6 +328,30 @@ class news
             return "Database news by type query failed: " . $e->getMessage();
         }
     }
+
+    public function getAllNewsByUser($conn, $visibility = null)
+    {
+        if (is_null($visibility)) {
+            $sql = "SELECT newsID FROM news WHERE userID= :userID ORDER BY date DESC";
+        } else {
+            $sql = "SELECT newsID FROM news WHERE userID = :userID AND visibility = :visibility ORDER BY date DESC";
+        }
+
+        $stmt = $conn->prepare($sql);
+        if (!is_null($visibility)) {
+            $stmt->bindParam(':visibility', $visibility, PDO::PARAM_INT);
+        }
+        $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_INT);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database news by user query failed: " . $e->getMessage();
+        }
+    }
+
 
     public function getMostRecent($conn, $limit)
     {
@@ -267,7 +374,7 @@ class news
         $sql = "SELECT newsID FROM news WHERE newsID = :newsID LIMIT 1";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':newsID', $this->newsID, PDO::PARAM_INT);
+        $stmt->bindParam(':newsID', $this->getNewsID(), PDO::PARAM_INT);
 
         try {
             $stmt->execute();
@@ -282,10 +389,46 @@ class news
         }
     }
 
+    //Display functions
+
+    public function displayType()
+    {
+        switch ($this->getType()) {
+            case 1:
+                return "Standard";
+                break;
+            case 2:
+                return "Announcements";
+                break;
+            case 3:
+                return "Competitions";
+                break;
+            case 4:
+                return "Events";
+                break;
+        }
+    }
+
+    public function displayVisibility()
+    {
+        switch ($this->getVisibility()) {
+            case 1:
+                return "Committee";
+                break;
+            case 2:
+                return "Members";
+                break;
+            case 3:
+                return "Public";
+                break;
+        }
+    }
+
 
     //News validation methods
 
-    public function isInputValid($title, $mainBody) {
+    public function isInputValid($title, $mainBody)
+    {
         if ($this->isTitleValid($title) && $this->isMainBodyValid($mainBody)) {
             return true;
         } else {
@@ -293,7 +436,8 @@ class news
         }
     }
 
-    public function isTitleValid($title) {
+    public function isTitleValid($title)
+    {
         if ((strlen($title) > 0) && (strlen($title) <= 250)) {
             return true;
         } else {
@@ -301,16 +445,14 @@ class news
         }
     }
 
-    public function isMainBodyValid($mainBody) {
+    public function isMainBodyValid($mainBody)
+    {
         if ((strlen($mainBody) > 0) && (strlen($mainBody) <= 5000)) {
             return true;
         } else {
             return false;
         }
     }
-
-
-
 
 
 }
