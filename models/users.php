@@ -814,6 +814,50 @@ class users
         }
     }
 
+    //Profile functions
+
+    //Display flag (YES/NO) on profile
+    public function displayFlag($field)
+    {
+        if ($field) {
+            return "Yes";
+        } else {
+            return "No";
+        }
+    }
+
+    //Display profile field in div:
+    public function displayField($field, $description)
+    {
+        $output = '
+            <div class="row collapse">
+                <div class="small-2  columns">
+                <span class="prefix">' . $description . '</span>
+            </div>
+            <div class="small-10  columns">
+               ' . $field . '
+            </div>
+        </div>
+        ';
+        return $output;
+    }
+
+
+    //Display profile field in div:
+    public function displayLinkField($field, $description)
+    {
+        $output = '
+            <div class="row collapse">
+                <div class="small-2  columns">
+                <span class="prefix">' . $description . '</span>
+            </div>
+            <div class="small-10  columns">
+               <a href="' . $field . '">Profile</a>
+            </div>
+        </div>
+        ';
+        return $output;
+    }
 
     //Login Function
     public function Login($userID, $password, $conn)
@@ -866,7 +910,7 @@ class users
 
     //Validation Functions
 
-    public function isInputValid($conn, $email, $firstName, $lastName, $bio, $interests,$link, $certifications)
+    public function isInputValid($conn, $email, $firstName, $lastName, $bio, $interests, $link, $certifications)
     {
         if ($this->isEmailValid($email)
             && $this->isFirstNameValid($firstName)

@@ -19,34 +19,43 @@ if (isset($_SESSION['update'])) {
 ?>
 
 
-
-<h1 class="pageTitle" >Profile</h1>
+<h1 class="pageTitle">Profile</h1>
 
 <h3>Profile Details</h3>
-<p>User's profile: <?=$profile->getUsername()?></p>
 
-<label>
-    <img src="<?= $_SESSION['domain']?>/img/profile.png"/>
-   <b> <?= $profile->getFullName(); ?></b>
-</label>
-<label>
-    Bio:
-    <?= $profile->getBio(); ?>
-</label>
-<label>
-    Interests:
-    <?= $profile->getInterests(); ?>
-</label>
-<label>
-    Role:
-    <?= $profile->getRole(); ?>
-</label>
+<div class="row collapse large-centered">
+    <img src="<?= $_SESSION['domain'] ?>/img/profile.png"/>
+</div>
+<div class="row collapse large-centered">
+    <b> <?= $profile->getFullName(); ?></b>
+</div>
+
+
+<?php
+//Display Profile fields
+
+echo($profile->displayField($profile->getUsername(), "Username:"));
+echo($profile->displayField($profile->getCreatedDate(), "Registered Date:"));
+echo($profile->displayField($profile->getModifiedDate(), "Last Modified Date:"));
+echo($profile->displayField($profile->getBio(), "Bio:"));
+echo($profile->displayField($profile->getInterests(), "Interests:"));
+echo($profile->displayLinkField($profile->getLink(), "Facebook/Website:"));
+echo($profile->displayField($profile->getRole(), "Role"));
+echo($profile->displayField($profile->getCertifications(), "Certifications"));
+
+//Profile Flags
+echo($profile->displayField($profile->displayFlag($profile->isDriver($conn)), "Driver"));
+echo($profile->displayField($profile->displayFlag($profile->isApproved($conn)), "Approved"));
+echo($profile->displayField($profile->displayFlag($profile->isAccredited($conn)), "Accredited"));
+echo($profile->displayField($profile->displayFlag($profile->isBanned($conn)), "Banned:"));
+?>
+
 
 <h3>Competition Results</h3>
 
 <h3>Climbing Log Details</h3>
 
-<a href="/profile/edit/<?=$profile->getUserID()?>" class="button">Edit Profile</a>
+<a href="/profile/edit/<?= $profile->getUserID() ?>" class="button">Edit Profile</a>
 
 
 
