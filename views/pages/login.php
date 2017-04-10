@@ -27,16 +27,16 @@ if (isset($_SESSION['error'])) {
             //Input validation checks
             if (isset($_POST["btnSubmit"])) {
                 if (empty($_POST["txtFirstName"])) {
-                    echo ' <label>username
+                    echo ' <label>Username
                             <input type="text" placeholder="username" name="txtUsername" value ="' . $_POST["txtUsername"] . '">
                             </label>';
                 } else {
-                    echo ' <label>username
+                    echo ' <label>Username
                             <input type="text" placeholder="username" name="txtUsername">
                             </label>';
                 }
             } else {
-                echo ' <label>username
+                echo ' <label>Username
                             <input type="text" placeholder="username" name="txtUsername">
                             </label>';
             }
@@ -45,8 +45,10 @@ if (isset($_SESSION['error'])) {
                 <input type="password" placeholder="Password" name="txtPassword">
             </label>
             <!--            <input id="show-password" type="checkbox"><label for="show-password">Show password</label>-->
-            <p><input class="button large-centered" type="submit" name="btnLogin" value="Login">
-            </p>
+            <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
+                <input class="button" type="submit" name="btnLogin" value="Login">
+            </div>
+
             <p class="text-center"><a href="#">Forgot your password?</a></p>
         </div>
     </form>
