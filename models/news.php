@@ -14,7 +14,7 @@ class news
 
     private $newsID, $userID, $title, $mainBody, $date, $type, $visibility;
 
-    function _constructor($newsID = -1)
+    function __construct($newsID = -1)
     {
         $this->newsID = htmlentities($newsID);
     }

@@ -15,7 +15,7 @@ class memberships
     private $memberShipID, $userID, $type, $paid, $startDate, $endDate;
 
     //Constructor
-    function _constructor($memberShipID = -1)
+    function __construct($memberShipID = -1)
     {
         $this->memberShipID = htmlentities($memberShipID);
     }
