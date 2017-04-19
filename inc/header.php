@@ -34,6 +34,39 @@ if (isset($_SESSION['userID'])) {
 
     <!--Favicon code END -->
     <script src="<?php echo $domain ?>/js/vendor/modernizr.js"></script>
+
+    <!--highslide js START-->
+    <script type="text/javascript" src="<?php echo $domain ?>/highslide/highslide-with-gallery.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo $domain ?>/highslide/highslide.css"/>
+
+    <!--
+        2) Optionally override the settings defined at the top
+        of the highslide.js file. The parameter hs.graphicsDir is important!
+    -->
+
+    <script type="text/javascript">
+        hs.graphicsDir = '<?php echo $domain ?>/highslide/graphics/';
+        hs.align = 'center';
+        hs.transitions = ['expand', 'crossfade'];
+        hs.outlineType = 'rounded-white';
+        hs.fadeInOut = true;
+        //hs.dimmingOpacity = 0.75;
+
+        // Add the controlbar
+        hs.addSlideshow({
+            //slideshowGroup: 'group1',
+            interval: 5000,
+            repeat: false,
+            useControls: true,
+            fixedControls: 'fit',
+            overlayOptions: {
+                opacity: .75,
+                position: 'bottom center',
+                hideOnMouseOut: true
+            }
+        });
+    </script>
+    <!--highslide js END-->
 </head>
 <body>
 <div class="row column text-center">
