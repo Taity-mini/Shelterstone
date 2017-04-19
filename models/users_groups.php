@@ -294,6 +294,27 @@ class users_groups
         }
     }
 
+    //Gallery Pages
+
+    public function galleryFullAccess($conn, $userID)
+    {
+        if ($this->isAdministrator($conn, $userID) || $this->isUserCommittee($conn, $userID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function galleryViewAccess($conn, $userID)
+    {
+        if ($this->galleryFullAccess($conn, $userID)) {
+            return true;
+        } else if ($this->isUserMember($conn, $userID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
     //List Committee members

@@ -6,7 +6,124 @@
  * Time: 00:33
  * View individual album based on ID
  */
-?>
-<h1 class="pageTitle" >Gallery | View album: </h1>
 
-<p>List of photos in album..</p>
+if (isset($_SESSION['upload'])) {
+    echo '<br/>';
+    echo '<div class="callout success">
+          <h5>Photo Successfully uploaded!</h5>
+          </div>';
+    unset($_SESSION['upload']);
+}
+
+if (isset($_SESSION['delete'])) {
+    echo '<br/>';
+    echo '<div class="callout alert">
+          <h5>Photo Successfully Deleted!</h5>
+          </div>';
+    unset($_SESSION['delete']);
+}
+
+if (isset($_SESSION['update'])) {
+    echo '<br/>';
+    echo '<div class="callout success">
+          <h5>Album Successfully Updated!</h5>
+          </div>';
+    unset($_SESSION['update']);
+}
+
+
+echo '<h1 class="pageTitle" >Gallery | View album: ' . $albums->getAlbumName() . ' </h1>';
+
+if ($photoList == null) {
+    echo "Sorry no photos are added to this album at the moment. Please come back later.";
+} else {
+
+    echo '<div class="row medium-up-3 large-up-6">
+          <div class="highslide-gallery">';
+
+    foreach ($photoList as $photos) {
+        $photo = new gallery_photos();
+        $photo->setPhotoID($photos["photoID"]);
+        $photo->getAllDetails($conn);
+        $author->setUserID($photo->getUserID());
+        $author->getAllDetails($conn);
+        $photosLink = $_SESSION['domain'] . "/gallery/photo/" . $photo->getPhotoID();
+        $photoFileLink = $_SESSION['domain'] . $photo->getFullFilePath();
+
+        echo '
+        <div class="column">
+        <a href="' . $photo->getFullFilePath() . '" class="highslide" onclick="return hs.expand(this)">
+                <img style="max-width:250px; max-height:250px;" class="thumbnail" src="' . $photo->getFullFilePath() . '" alt="Highslide JS"
+                     title="Click to enlarge" />
+            </a>
+            
+            <div class="highslide-caption">
+            Title: ' . $photo->getTitle() . '<br>
+            Description: ' . $photo->getDescription() . '<br>
+            <label> By:' . $author->getFullName() . '
+            <b><a href="' . $photosLink . '">View the Photo</a></b>
+            </div>
+
+        </div>
+    ';
+    }
+    echo '</div></div>';
+}
+
+if ($edit) {
+    echo '<div class="large-2 large-centered medium-6 medium-centered small-12 small-centered columns">
+    <div class="row">
+        <a href="/gallery/upload/" class="button">Upload Photos</a>
+    </div>
+    </div>';
+    $_SESSION['albumUpload'] = $albums->getAlbumID();
+}
+
+?>
+
+
+<div class="row">
+    <h4 align="center"> Album Details:
+        <?php
+        if ($edit) {
+            echo ' <a href="/gallery/edit/' . $albums->getAlbumID() . '" class="button">[Edit]</a>';
+        }
+        ?>
+    </h4>
+    <table>
+        <tr>
+            <th>Album Title:</th>
+            <td><?= $albums->getAlbumName() ?></td>
+        </tr>
+        <tr>
+            <th>Album Description:</th>
+            <td><?= $albums->getAlbumDescription() ?></td>
+        </tr>
+        <tr>
+            <th>Album Type:</th>
+            <td><?= $albums->displayType() ?></td>
+        </tr>
+        <tr>
+            <th>Author:</th>
+            <td><?= $author->getFullName() ?></td>
+        </tr>
+        <tr>
+            <th>Created Date:</th>
+            <td><?= $albums->getCreatedDate() ?></td>
+        </tr>
+        <tr>
+            <th>Last Modified Date</th>
+            <td><?= $albums->getModifiedDate() ?></td>
+        </tr>
+    </table>
+</div>
+
+<div class="row ">
+    <div class="separator"></div>
+    <div class="small-centered columns">
+        <a href="/gallery/" class="button">Return to gallery</a>
+    </div>
+</div>
+
+
+

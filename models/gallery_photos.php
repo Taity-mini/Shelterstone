@@ -41,6 +41,16 @@ class gallery_photos
         return $this->filePath;
     }
 
+    public function getFullFilePath()
+    {
+        return $_SESSION['domain'].$this->filePath;
+    }
+
+    public function getLocalFilePath()
+    {
+        return $_SERVER['DOCUMENT_ROOT']. $this->filePath;
+    }
+
     public function getTitle()
     {
         return $this->title;
@@ -54,12 +64,18 @@ class gallery_photos
 
     public function getCreatedDate()
     {
-        return $this->created;
+
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->created);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
     }
 
     public function getModifiedDate()
     {
-        return $this->modified;
+        $date = new DateTime($this->modified);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
     }
 
 
@@ -157,7 +173,7 @@ class gallery_photos
     {
         try {
             //SQL Statement
-            $sql = "INSERT into gallery_photos VALUES (:userID, :albumID,  :filePath, :title , :photoDescription, :created, :modified)";
+            $sql = "INSERT into gallery_photos VALUES (NULL,:userID, :albumID,  :filePath, :title , :photoDescription, :created, :modified)";
 
             //Save current date time to variable for insertion
             $date = date('Y-m-d H:i:s');
@@ -203,7 +219,7 @@ class gallery_photos
 
 
         try {
-            unlink($this->getFilePath());
+            unlink($this->getLocalFilePath());
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
@@ -214,14 +230,15 @@ class gallery_photos
     public function update($conn)
     {
         try {
-            $sql = "UPDATE photos SET title = :title, description = :description, modified = :modified WHERE photoID = :photoID";
+            $sql = "UPDATE gallery_photos SET title = :title, description = :description, modified = :modified WHERE photoID = :photoID";
 
+            $date = date('Y-m-d H:i:s');
             $stmt = $conn->prepare($sql);
 
-            $stmt->bindParam(':photoID', $this->getPhotoID(), PDO::PARAM_STR);
+            $stmt->bindParam(':photoID', $this->getPhotoID(), PDO::PARAM_INT);
             $stmt->bindParam(':title', $this->getTitle(), PDO::PARAM_STR);
-            $stmt->bindParam(':description', $this->getDescription(), PDO::PARAM_INT);
-            $stmt->bindValue(':modified', $this->getModifiedDate(), PDO::PARAM_INT);
+            $stmt->bindParam(':description', $this->getDescription(), PDO::PARAM_STR);
+            $stmt->bindValue(':modified', $date, PDO::PARAM_STR);
 
             $stmt->execute();
             return true;
@@ -280,7 +297,7 @@ class gallery_photos
                 }
                 return true;
             } else {
-                $this->setFilePath('../images/placeholder.jpg');
+                $this->setFilePath('/img/placeholder.jpg');
                 return false;
             }
         } catch (PDOException $e) {
@@ -330,8 +347,11 @@ class gallery_photos
 
     public function uploadPhoto()
     {
-        $target_dir = "../uploads/photos/";
+        $target_dir = $_SERVER['DOCUMENT_ROOT']."/uploads/photos/";
         $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+
+        $filePath = "/uploads/photos/" . basename($_FILES["fileToUpload"]["name"]) ;
+
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
         // Check if image file is a actual image or fake image
@@ -372,7 +392,7 @@ class gallery_photos
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                $this->setFilePath($target_file);
+                $this->setFilePath($filePath);
                 return true;
 
                 echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";

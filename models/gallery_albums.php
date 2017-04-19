@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Andrew Tait (1504693)
@@ -7,17 +8,16 @@
  * Gallery album model class
  *
  */
-
 class gallery_album
 {
     // Gallery Album Class Variables/properties
 
-    private $albumID, $userID, $albumName, $albumDescription, $created, $modified, $visibility;
+    private $albumID, $userID, $albumName, $albumDescription, $created, $modified, $type;
 
     //Constructor
-    function _constructor($albumID = -1)
+    function __construct($albumID = -1)
     {
-        $this->albumID = htmlentities($albumID);
+        $this->albumID = $albumID;
     }
 
     //Getters
@@ -44,18 +44,29 @@ class gallery_album
 
     public function getCreatedDate()
     {
-        return $this->created;
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->created);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
     }
 
     public function getModifiedDate()
     {
-        return $this->modified;
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->modified);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
     }
 
 
     public function getVisibility()
     {
         return $this->visibility;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 
     //Setters
@@ -95,6 +106,11 @@ class gallery_album
         $this->visibility = htmlentities($visibility);
     }
 
+    public function setType($type)
+    {
+        $this->type = htmlentities($type);
+    }
+
 
     //Main Methods
 
@@ -115,6 +131,7 @@ class gallery_album
                 $this->setCreatedDate($row['created']);
                 $this->setModifiedDate($row['modified']);
                 $this->setVisibility($row["visibility"]);
+                $this->setType($row['type']);
             }
             return true;
         } catch (PDOException $e) {
@@ -141,7 +158,7 @@ class gallery_album
     {
         try {
             //SQL Statement
-            $sql = "INSERT into gallery_albums VALUES (:userID, :albumName, :albumDescription, :created, :modified, :visibility)";
+            $sql = "INSERT into gallery_albums VALUES (NULL,:userID, :albumName, :albumDescription, :created, :modified, :visibility, :type)";
             $date = date('Y-m-d H:i:s');
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
@@ -149,7 +166,9 @@ class gallery_album
             $stmt->bindParam(':albumDescription', $this->getAlbumDescription(), PDO::PARAM_STR);
             $stmt->bindParam(':created', $date, PDO::PARAM_STR);
             $stmt->bindParam(':modified', $date, PDO::PARAM_STR);
-            $stmt->bindParam(':visibility', $this->getVisibility(), PDO::PARAM_STR);
+            $stmt->bindParam(':visibility', $this->getVisibility(), PDO::PARAM_INT);
+            $stmt->bindParam(':type', $this->getType(), PDO::PARAM_INT);
+
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
@@ -163,14 +182,15 @@ class gallery_album
 
     public function update($conn)
     {
-        $sql = "UPDATE gallery_albums SET albumName = :albumName, albumDescription = :albumDescription, modified = :modified, visibility = :visibility WHERE albumID = :albumID";
+        $sql = "UPDATE gallery_albums SET albumName = :albumName, albumDescription = :albumDescription, modified = :modified, visibility = :visibility, type = :type WHERE albumID = :albumID";
         $stmt = $conn->prepare($sql);
         $date = date('Y-m-d H:i:s');
         $stmt->bindParam(':albumID', $this->getAlbumID(), PDO::PARAM_STR);
         $stmt->bindParam(':albumName', $this->getAlbumName(), PDO::PARAM_STR);
         $stmt->bindParam(':albumDescription', $this->getAlbumDescription(), PDO::PARAM_STR);
         $stmt->bindParam(':modified', $date, PDO::PARAM_STR);
-        $stmt->bindParam(':visibility', $this->getVisibility(), PDO::PARAM_STR);
+        $stmt->bindParam(':visibility', $this->getVisibility(), PDO::PARAM_INT);
+        $stmt->bindParam(':type', $this->getType(), PDO::PARAM_INT);
         try {
             $stmt->execute();
             dbClose($conn);
@@ -214,14 +234,36 @@ class gallery_album
     }
 
 
-  //Listing functions
-
+    //Listing functions
 
 
 //List all albums in the database and from user from optional parameter
     public function listAllAlbums($conn, $userID = null)
     {
         $sql = "SELECT * FROM gallery_albums a";
+
+        if (!is_null($userID)) {
+            $sql .= " WHERE a.userID = :userID";
+        }
+
+        $stmt = $conn->prepare($sql);
+
+        if (!is_null($userID)) {
+            $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
+        }
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
+
+    public function listAllPublicAlbums($conn, $userID = null)
+    {
+        $sql = "SELECT * FROM gallery_albums a WHERE a.visibility = 1";
 
         if (!is_null($userID)) {
             $sql .= " WHERE a.userID = :userID";
@@ -271,6 +313,7 @@ class gallery_album
         }
     }
 
+
     //Get latest albums based on limit parameter
     public function getLatestAlbums($conn, $limit)
     {
@@ -306,8 +349,30 @@ class gallery_album
         }
     }
 
-    //Validation functions
-    public function isInputValid($name, $description)
+    public function displayType()
+    {
+        switch ($this->getType()) {
+            case 1:
+                return "Standard";
+                break;
+
+            case 2:
+                return "Personal";
+                break;
+
+            case 3:
+                return "Competitions";
+                break;
+            case 4:
+                return "Events";
+                break;
+        }
+    }
+
+
+//Validation functions
+    public
+    function isInputValid($name, $description)
     {
         if ($this->isNameValid($name) && $this->isDescriptionValid($description)) {
             return true;
@@ -316,7 +381,8 @@ class gallery_album
         }
     }
 
-    private function isNameValid($name)
+    private
+    function isNameValid($name)
     {
         if ((strlen($name) > 0) && (strlen($name) <= 50)) {
             return true;
@@ -325,7 +391,8 @@ class gallery_album
         }
     }
 
-    private function isDescriptionValid($description)
+    private
+    function isDescriptionValid($description)
     {
         if (strlen($description) <= 250) {
             return true;
