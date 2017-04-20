@@ -10,7 +10,7 @@
 //Logged in checks/functions
 
 if (isset($_SESSION['userID'])) {
-    echo "logged in";
+    //echo "logged in";
     require_once('./models/users.php');
     require_once('./models/users_groups.php');
     $conn = dbConnect();
@@ -31,6 +31,16 @@ if (isset($_SESSION['userID'])) {
     <link rel="stylesheet" href="<?php echo $domain ?>/css/app.css">
     <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
     <!--Favicon code START-->
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $domain ?>/img/ico/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="<?php echo $domain ?>/img/ico/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="<?php echo $domain ?>/img/ico/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="<?php echo $domain ?>/img/ico/manifest.json">
+    <link rel="mask-icon" href="<?php echo $domain ?>/img/ico/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="<?php echo $domain ?>/img/ico/favicon.ico">
+    <meta name="msapplication-config" content="<?php echo $domain ?>/img/ico/browseQrconfig.xml">
+    <meta name="theme-color" content="#ffffff">
 
     <!--Favicon code END -->
     <script src="<?php echo $domain ?>/js/vendor/modernizr.js"></script>
