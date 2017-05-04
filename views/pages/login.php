@@ -16,6 +16,8 @@ if (isset($_SESSION['error'])) {
           </div>';
     unset($_SESSION['error']);
 }
+
+
 ?>
 
 <div class="medium-6 medium-centered large-6 large-centered columns">
@@ -55,7 +57,10 @@ if (isset($_SESSION['error'])) {
 </div>
 <div class="row">
     <div class="small-5 small-centered columns">
-        <button href="#" class="facebook button split"><span></span>sign in with facebook</button>
+<!--        --><?php
+//        echo '<a href="' . htmlspecialchars($loginUrl) . '">Log in with Facebook!</a>';
+//        ?>
+<!--        <button href="#" class="facebook button split"><span></span>sign in with facebook</button>-->
     </div>
 </div>
 

@@ -22,8 +22,7 @@ abstract class controller
 
     }
 
-    public function renderView()
-    {
-
-    }
 }
+
+
+

@@ -58,5 +58,6 @@ foreach ($newsList as $news) {
 
 //If user has editing privileges then display create news button
 if ($create) {
+    echo'</br>';
     echo '<a href="/news/add" class="button">Create news article</a>';
 }

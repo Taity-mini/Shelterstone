@@ -62,7 +62,9 @@ if (isset($_SESSION['error'])) {
             <div class="large-12 medium-12 small-12 columns">
                 <label><b>
                         <span class="required">* </span>Visibility (Publicly accessible?)</b>
+                    <input type='hidden' value='0' name='chkVisibility'/>
                     <input id="chkVisibility" type="checkbox" name="chkVisibility" value="1"  <?php echo($albums->getVisibility() == 1 ? 'checked' : ''); ?>/>
+
                 </label>
             </div>
         </div>

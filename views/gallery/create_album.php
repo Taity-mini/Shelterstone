@@ -6,10 +6,19 @@
  * Time: 00:34
  * Create new album
  */
+
+if (isset($_SESSION['error'])) {
+    echo '<br/>';
+    echo '<div class="callout alert">
+          <h5>Create album error!</h5>
+          <p>One or more fields was not filled in, please try again!</p>
+          </div>';
+    unset($_SESSION['Error']);
+}
+
 ?>
 <h1 class="pageTitle">Gallery | Create album</h1>
 
-<p>Create new album form</p>
 <div class="small-6 small-centered large-10 large-centered columns">
     <form action="" method="post">
         <div class="row">
@@ -52,7 +61,7 @@
             <div class="large-12 medium-12 small-12 columns">
                 <label><b>
                         <span class="required">* </span>Visibility (Publicly accessible?)</b>
-
+                    <input type='hidden' value='0' name='chkVisibility'/>
                     <input id="chkApproved" type="checkbox" name="chkVisibility" value="1"/>
                 </label>
             </div>

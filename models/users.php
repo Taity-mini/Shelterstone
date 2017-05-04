@@ -354,7 +354,6 @@ class users
     public function create($conn, $password)
     {
         try {
-            ini_set('display_errors', true);
             //First let's hash the password with the bcrypt function
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -859,6 +858,7 @@ class users
         return $output;
     }
 
+
     //Login Function
     public function Login($userID, $password, $conn)
     {
@@ -910,7 +910,7 @@ class users
 
     //Validation Functions
 
-    public function isInputValid($conn, $email, $firstName, $lastName, $bio, $interests, $link, $certifications)
+    public function isInputValid($email, $firstName, $lastName, $bio, $interests, $link, $certifications)
     {
         if ($this->isEmailValid($email)
             && $this->isFirstNameValid($firstName)

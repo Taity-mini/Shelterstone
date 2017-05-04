@@ -14,6 +14,51 @@ class pages_controller extends controller
     //Standard pages
     public function home()
     {
+
+        require_once('./models/gallery_photos.php');
+        require_once('./models/gallery_albums.php');
+        require_once('./models/users.php');
+        require_once('./models/news.php');
+
+
+        $conn = dbConnect();
+        $user = new users();
+        $newsArticle = new news();
+
+        //Security checks - select which news visibility to display
+        if (isset($_SESSION['userID'])) {
+            $groups = new users_groups();
+            if (!$groups->userFullAccess($conn, $_SESSION['userID'])) {
+                $newsList = $newsArticle->getAllNonCommitteeNews($conn);
+            } else {
+                $newsList = $newsArticle->getAlLNews($conn);
+            }
+        } else {
+            $newsList = $newsArticle->getAllPublicNews($conn);
+        }
+
+
+        $albums = new gallery_album("7");
+        if ($albums->doesExist($conn)) {
+            $photos = new gallery_photos();
+            $photos->setAlbumID($albums->getAlbumID());
+            $photo_listing = $photos->listPhotoAlbum($conn);
+        } else {
+            $photos = null;
+            $photo_listing = null;
+        }
+
+
+        $this->data['newsArticle'] = $newsArticle;
+        $this->data['newsList'] = $newsList;
+        $this->data['author'] = $user;
+        $this->data['albums'] = $albums;
+        $this->data['photos'] = $photos;
+        $this->data['photoList'] = $photo_listing;
+
+        //Extract data array to display variables on view template
+        extract($this->data);
+
         require_once('./views/pages/home.php');
     }
 
@@ -68,6 +113,7 @@ class pages_controller extends controller
         }
     }
 
+
     //Edit other user's profile
     public function profile_edit()
     {
@@ -97,7 +143,6 @@ class pages_controller extends controller
             }
 
 
-
             //Perform user profile update
             if (isset($_POST['btnSubmit'])) {
                 $conn = dbConnect();
@@ -105,7 +150,8 @@ class pages_controller extends controller
 
                 //Input validation checks
                 if ($user->isInputValid($conn, $_POST['txtEmail'], $_POST['txtFirstName'], $_POST['txtLastName'],
-                    $_POST['txtBio'], $_POST['txtInterests'], $_POST['txtLink'], $_POST['txtCertifications'])) {
+                    $_POST['txtBio'], $_POST['txtInterests'], $_POST['txtLink'], $_POST['txtCertifications'])
+                ) {
 
                     //Get data from fields
                     $update = new users($userID);

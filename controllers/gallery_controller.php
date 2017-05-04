@@ -9,7 +9,6 @@
  */
 class gallery_controller extends controller
 {
-
     public function home()
     {
         require_once('./models/gallery_photos.php');
@@ -29,16 +28,16 @@ class gallery_controller extends controller
             $groups = new users_groups();
             if (!$groups->galleryFullAccess($conn, $_SESSION['userID'])) {
                 $albumsList = $album->listAllAlbums($conn);
-                $heading = "Index";
+                $heading = "Gallery | Index";
                 $description = "All albums by Shelterstone members";
             } else {
                 $adding = true;
-                $heading = "Index";
+                $heading = "Gallery | Index";
                 $description = "All albums by Shelterstone members";
                 $albumsList = $album->listAllAlbums($conn);
             }
         } else {
-            $heading = "Index";
+            $heading = "Gallery | Index";
             $description = "All public Shelterstone gallery albums";
             $albumsList = $album->listAllPublicAlbums($conn);
         }
@@ -134,6 +133,12 @@ class gallery_controller extends controller
         $users = new Users($photos->getUserID());
         $albums = new gallery_album($photos->getAlbumID());
         $albums->getAllDetails($conn);
+
+
+        if (!isset($_SESSION['userID']) && $albums->getVisibility() == 0) {
+            $this->redirect("/login");
+        }
+
         $users->getAllDetails($conn);
 
         $canEdit = false;
@@ -195,7 +200,7 @@ class gallery_controller extends controller
             require_once('./views/gallery/create_album.php');
 
         } else {
-            $this->redirect("/login");
+            $this->redirect('/login');
         }
     }
 
@@ -315,7 +320,7 @@ class gallery_controller extends controller
                     $albums->setAlbumName(htmlentities($_POST['txtName']));
                     $albums->setAlbumDescription(htmlentities($_POST['txtDescription']));
 
-                    if (isset($_POST['chkVisibility']) && !$limitedAccess) {
+                    if (!$limitedAccess) {
                         $albums->setVisibility(htmlentities($_POST['chkVisibility']));
                     }
                     $albums->setType(htmlentities($_POST['sltType']));
@@ -364,8 +369,7 @@ class gallery_controller extends controller
         }
     }
 
-    public
-    function editPhoto()
+    public function editPhoto()
     {
         if (isset($_SESSION['userID'])) {
             require_once('./models/gallery_photos.php');
@@ -412,9 +416,9 @@ class gallery_controller extends controller
                 if ($photos->delete($conn)) {
                     $_SESSION['deletePhoto'] = true;
                     $this->redirect("/gallery/album/" . $albumID);
+                } else {
+                    $_SESSION['error'] = true;
                 }
-            } else {
-                $_SESSION['error'] = true;
             }
 
             //Display user data in forms
@@ -434,15 +438,143 @@ class gallery_controller extends controller
 
 
 //Other methods
-    public
-    function personalAlbum()
+    public function personalAlbum()
     {
-        require_once('./views/gallery/personal_album.php');
+        if (isset($_SESSION['userID'])) {
+
+            require_once('./models/gallery_photos.php');
+            require_once('./models/gallery_albums.php');
+            require_once('./models/users.php');
+
+            $conn = dbConnect();
+            $userID = $_SESSION['userID'];
+            $user = new users();
+            $user->setUserID($userID);
+            $album = new gallery_album();
+            $adding = false;
+            $photo = new gallery_photos();
+
+            $heading = "";
+            $description = "";
+
+
+            $albumsList = $album->listAllAlbums($conn, $userID);
+            $heading = "Personal Albums";
+            $description = "All albums by" . $user->getFullName();
+
+            //Display user data in forms
+            $this->data['albums'] = $album;
+            $this->data['albumList'] = $albumsList;
+            $this->data['author'] = $user;
+            $this->data['photos'] = $photo;
+            $this->data['create'] = true;
+            $this->date['heading'] = $heading;
+            $this->date['description'] = $description;
+
+            //Extract data array to display variables on view template
+            extract($this->data);
+
+            require_once('./views/gallery/index.php');
+        } else {
+            $this->redirect("/login");
+        }
+
     }
 
     public function events()
     {
-        require_once('./views/gallery/events.php');
+        require_once('./models/gallery_photos.php');
+        require_once('./models/gallery_albums.php');
+        require_once('./models/users.php');
+
+        $conn = dbConnect();
+        $user = new users();
+        $album = new gallery_album();
+        $adding = false;
+        $photo = new gallery_photos();
+
+        $heading = "";
+        $description = "";
+
+        if (isset($_SESSION['userID'])) {
+            $groups = new users_groups();
+            if (!$groups->galleryFullAccess($conn, $_SESSION['userID'])) {
+                $albumsList = $album->listAllAlbumsByType($conn, 4);
+                $heading = "Gallery | Events";
+                $description = "All event albums by Shelterstone members";
+            } else {
+                $adding = true;
+                $heading = "Gallery | Events";
+                $description = "All event albums by Shelterstone members";
+                $albumsList = $album->listAllAlbumsByType($conn, 4);
+            }
+        } else {
+            $heading = "Gallery | Events";
+            $description = "All  public event Shelterstone gallery albums";
+            $albumsList = $album->listAllPublicAlbumsByType($conn, 4);
+        }
+
+        //Display user data in forms
+        $this->data['albums'] = $album;
+        $this->data['albumList'] = $albumsList;
+        $this->data['author'] = $user;
+        $this->data['photos'] = $photo;
+        $this->data['create'] = $adding;
+        $this->date['heading'] = $heading;
+        $this->date['description'] = $description;
+
+        //Extract data array to display variables on view template
+        extract($this->data);
+
+        require_once('./views/gallery/index.php');
+    }
+
+    public function competitions()
+    {
+        require_once('./models/gallery_photos.php');
+        require_once('./models/gallery_albums.php');
+        require_once('./models/users.php');
+
+        $conn = dbConnect();
+        $user = new users();
+        $album = new gallery_album();
+        $adding = false;
+        $photo = new gallery_photos();
+
+        $heading = "";
+        $description = "";
+
+        if (isset($_SESSION['userID'])) {
+            $groups = new users_groups();
+            if (!$groups->galleryFullAccess($conn, $_SESSION['userID'])) {
+                $albumsList = $album->listAllAlbumsByType($conn, 3);
+                $heading = "Gallery |Competitions";
+                $description = "All competition albums by Shelterstone members";
+            } else {
+                $adding = true;
+                $heading = "Gallery | Competitions";
+                $description = "All competition albums by Shelterstone members";
+                $albumsList = $album->listAllAlbumsByType($conn, 3);
+            }
+        } else {
+            $heading = "Gallery | Competitions";
+            $description = "All  public competition Shelterstone gallery albums";
+            $albumsList = $album->listAllPublicAlbumsByType($conn, 3);
+        }
+
+        //Display user data in forms
+        $this->data['albums'] = $album;
+        $this->data['albumList'] = $albumsList;
+        $this->data['author'] = $user;
+        $this->data['photos'] = $photo;
+        $this->data['create'] = $adding;
+        $this->date['heading'] = $heading;
+        $this->date['description'] = $description;
+
+        //Extract data array to display variables on view template
+        extract($this->data);
+
+        require_once('./views/gallery/index.php');
     }
 
 }

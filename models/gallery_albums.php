@@ -261,6 +261,52 @@ class gallery_album
         }
     }
 
+    public function listAllAlbumsByType($conn, $type = null)
+    {
+        $sql = "SELECT * FROM gallery_albums a";
+
+        if (!is_null($type)) {
+            $sql .= " WHERE a.type = :type";
+        }
+
+        $stmt = $conn->prepare($sql);
+
+        if (!is_null($type)) {
+            $stmt->bindParam(':type', $type, PDO::PARAM_STR);
+        }
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
+
+    public function listAllPublicAlbumsByType($conn, $type = null)
+    {
+        $sql = "SELECT * FROM gallery_albums a WHERE a.visibility = 1 ";
+
+        if (!is_null($type)) {
+            $sql .= "AND a.type = :type";
+        }
+
+        $stmt = $conn->prepare($sql);
+
+        if (!is_null($type)) {
+            $stmt->bindParam(':type', $type, PDO::PARAM_INT);
+        }
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            return $results;
+        } catch (PDOException $e) {
+            return "Database query failed: " . $e->getMessage();
+        }
+    }
+
     public function listAllPublicAlbums($conn, $userID = null)
     {
         $sql = "SELECT * FROM gallery_albums a WHERE a.visibility = 1";

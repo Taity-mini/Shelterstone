@@ -32,14 +32,13 @@ if (isset($_SESSION['update'])) {
 }
 
 
-echo '<h1 class="pageTitle" >Gallery | View album: ' . $albums->getAlbumName() . ' </h1>';
+echo '<h1 class="pageTitle" >Gallery | ' . $albums->getAlbumName() . ' </h1>';
 
 if ($photoList == null) {
-    echo "Sorry no photos are added to this album at the moment. Please come back later.";
+    echo "<p>Sorry no photos are added to this album at the moment. Please come back later.</p>";
 } else {
 
-    echo '<div class="row medium-up-3 large-up-6">
-          <div class="highslide-gallery">';
+    echo '<div class="row small-12 medium-up-4 large-up-4 highslide">';
 
     foreach ($photoList as $photos) {
         $photo = new gallery_photos();
@@ -53,21 +52,21 @@ if ($photoList == null) {
         echo '
         <div class="column">
         <a href="' . $photo->getFullFilePath() . '" class="highslide" onclick="return hs.expand(this)">
-                <img style="max-width:250px; max-height:250px;" class="thumbnail" src="' . $photo->getFullFilePath() . '" alt="Highslide JS"
+                <img style="width:260px; height:260px;" class="thumbnail" src="' . $photo->getFullFilePath() . '" alt="Highslide JS"
                      title="Click to enlarge" />
             </a>
             
             <div class="highslide-caption">
-            Title: ' . $photo->getTitle() . '<br>
-            Description: ' . $photo->getDescription() . '<br>
-            <label> By:' . $author->getFullName() . '
+            <b>Title:</b> ' . $photo->getTitle() . '<br>
+            <b>Description:</b> ' . $photo->getDescription() . '<br>
+             <b>By:</b>' . $author->getFullName() . ' <br>
             <b><a href="' . $photosLink . '">View the Photo</a></b>
             </div>
 
         </div>
     ';
     }
-    echo '</div></div>';
+    echo '</div>';
 }
 
 if ($edit) {
@@ -80,8 +79,6 @@ if ($edit) {
 }
 
 ?>
-
-
 <div class="row">
     <h4 align="center"> Album Details:
         <?php

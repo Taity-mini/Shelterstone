@@ -6,6 +6,15 @@
  * Time: 23:54
  * Edit news article
  */
+if (isset($_SESSION['error'])) {
+    echo '<br/>';
+    echo '<div class="callout warning">
+          <h5>Update news error!</h5>
+          <p>One or more fields are not filled in, please try again</p>
+          </div>';
+    unset($_SESSION['error']);
+}
+
 ?>
 <h1 class="pageTitle">Edit News ID: <?= $newsArticle->getNewsID(); ?> </h1>
 

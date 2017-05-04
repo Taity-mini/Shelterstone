@@ -18,10 +18,7 @@
                 <p>&copy; <?php echo date("Y"); ?> Copyright Shelterstone</p>
             </div>
             <div class="large-6 columns">
-
-                <ul class="inline-list right">
-                    <li><a href="#">Links go here</a></li>
-                </ul>
+                <p><i>Website Developed by Andrew Tait</i></p>
             </div>
         </div>
 </footer>

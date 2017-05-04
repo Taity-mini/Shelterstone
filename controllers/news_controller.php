@@ -29,7 +29,7 @@ class news_controller extends controller
         //Security checks - select which news visibility to display
         if (isset($_SESSION['userID'])) {
             $groups = new users_groups();
-            if (!$groups->userFullAccess($conn, $_SESSION['userID'])) {
+            if (!$groups->newsFullAccess($conn, $_SESSION['userID'])) {
                 $newsList = $newsArticle->getAllNonCommitteeNews($conn);
                 $heading = "News";
                 $description = "All member/public news from Shelterstone";
@@ -121,18 +121,30 @@ class news_controller extends controller
             if (isset($_POST['btnSubmit'])) {
                 $conn = dbConnect();
 
-                $news = new News();
 
-                $news->setTitle($_POST['txtTitle']);
-                $news->setUserID($_SESSION['userID']);
-                $news->setMainBody($_POST['txtBody']);
-                $news->setType($_POST['sltType']);
-                $news->setVisibility($_POST['sltVisibility']);
+                if ($_POST['sltType'] != '' && $_POST['sltVisibility'] != '' ) {
+                    $news = new News();
 
-                if ($news->create($conn)) {
-                    $_SESSION['create'] = true;
-                    $this->redirect("/news");
+                    $news->setTitle($_POST['txtTitle']);
+                    $news->setUserID($_SESSION['userID']);
+                    $news->setMainBody($_POST['txtBody']);
+                    $news->setType($_POST['sltType']);
+                    $news->setVisibility($_POST['sltVisibility']);
+
+                    if ($news->isInputValid($news->getTitle(), $news->getMainBody())) {
+                        if ($news->create($conn)) {
+                            $_SESSION['create'] = true;
+                            $this->redirect("/news");
+                        } else {
+                            $_SESSION['error'] = true;
+                        }
+                    } else {
+                        $_SESSION['error'] = true;
+                    }
+                } else {
+                    $_SESSION['error'] = true;
                 }
+
             }
 
             require_once('./views/news/create_news.php');
@@ -176,6 +188,13 @@ class news_controller extends controller
                 $conn = dbConnect();
                 $newsID = $_SESSION['params']['newsID'];
                 $news = new news();
+
+                if ($_POST['sltType'] != '') {
+                    //do something
+                } else {
+                    $_SESSION['error'] = true;
+                }
+
                 $news->setNewsID($newsID);
                 $news->setTitle($_POST['txtTitle']);
                 $news->setUserID($_SESSION['userID']);
@@ -183,11 +202,17 @@ class news_controller extends controller
                 $news->setType($_POST['sltType']);
                 $news->setVisibility($_POST['sltVisibility']);
 
-                if ($news->update($conn)) {
-                    $_SESSION['update'] = true;
-                    $this->redirect("/news/" . $newsID);
-                }
 
+                if ($news->isInputValid($news->getTitle(), $news->getMainBody())) {
+                    if ($news->update($conn)) {
+                        $_SESSION['update'] = true;
+                        $this->redirect("/news/" . $newsID);
+                    } else {
+                        $_SESSION['error'] = true;
+                    }
+                } else {
+                    $_SESSION['error'] = true;
+                }
             }
 
             //Perform Delete

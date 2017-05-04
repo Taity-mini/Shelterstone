@@ -28,9 +28,9 @@ echo '<h1 class="pageTitle">' . $heading . '</h1>';
 echo '<p>' . $description . '</p>';
 
 if ($albumList == null) {
-    echo "Sorry there hasn't been any gallery albums added currently. Please come back later.";
+    echo "<p>Sorry there hasn't been any gallery albums added currently. Please come back later.</p>";
 } else {
-    echo '<div class="row medium-up-3 large-up-4">';
+    echo '<div class="row small-12 medium-up-4 large-up-4">';
 
 
     foreach ($albumList as $albums) {
@@ -44,12 +44,13 @@ if ($albumList == null) {
         $albumsLink = $_SESSION['domain'] . "/gallery/album/" . $album->getAlbumID();
 
         echo '
-        <div class="column">
-            <h3>' . $album->getAlbumName() . '</h3>
-       
-            <p>Author:' . $author->getFullName() . '
-            <a href="'.$albumsLink.'"><img style="max-width:250px; max-height:250px;" class="thumbnail" src="'.$photos->getFullFilePath().'"></a>
-           ' . $album->getAlbumDescription() . '</p>
+        <div class="column img_wrap">
+            <h3 class="albumTitle">' . $album->getAlbumName() . '</h3>
+            <a href="'.$albumsLink.'"><img style="width:250px; height:250px;" class="thumbnail" src="'.$photos->getFullFilePath().'"></a>
+            <p class="img__description"><b>Author:</b> '. $author->getFullName() . '
+            </br><b>Description:</b> '. $album->getAlbumDescription() . ' 
+            </br><b>Type:</b> '. $album->displayType() . '
+            </p>
         </div>    
      
     ';
@@ -59,7 +60,11 @@ if ($albumList == null) {
 
 //If user has editing privileges then display create new album button
 if ($create) {
-    echo '<a href="/gallery/add" class="button">Create new Album</a>';
+    echo'<div class="large-2 large-centered medium-6 medium-centered small-12 small-centered columns">';
+    echo '<div class ="row">
+            <a href="/gallery/add" class="button">Create new Album</a>
+    </div>
+    </div>';
 }
 
 

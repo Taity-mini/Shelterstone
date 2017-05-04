@@ -6,6 +6,16 @@
  * Time: 23:53
  * Create news article
  */
+
+if (isset($_SESSION['error'])) {
+    echo '<br/>';
+    echo '<div class="callout warning">
+          <h5>Create news error!</h5>
+          <p>One or more fields are not filled in, please try again</p>
+          </div>';
+    unset($_SESSION['error']);
+}
+
 ?>
 <h1 class="pageTitle">Create news article</h1>
 
@@ -25,9 +35,7 @@
             <div class="large-12 medium-12 small-12 columns">
                 <label><b>
                         <span class="required">* </span>Main Body</b>
-                    <textarea id="txtBody" name="txtBody" placeholder="Enter content" rows="10"
-                              class="input-group-field"
-                              maxlength="5000"></textarea>
+                    <textarea id="txtBody" name="txtBody"  placeholder="Enter Content" rows="10" maxlength="5000"></textarea>
                 </label>
             </div>
         </div>

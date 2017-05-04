@@ -55,9 +55,6 @@ $rules = array(
 //main pages
 //
 
-//    'contactus' => "/contactus",
-//    'blog' => "/blog",
-//    'blog_article' => "/blog/(?'blogID'[\w\-]+)",
 
 //About us
     'about' => "/about/club_information",
@@ -83,6 +80,7 @@ $rules = array(
 //Galleries
     'gallery' => "/gallery",
     'gallery_events' => "/gallery/events",
+    'gallery_comps' => "/gallery/competitions",
     'gallery_add' => "/gallery/add",
     'gallery_upload' => "/gallery/upload",
     'gallery_photo' => "/gallery/photo/(?'photoID'[\w\-]+)",
@@ -266,6 +264,11 @@ foreach ($rules as $action => $rule) {
             case 'gallery_events':
                 call('gallery', 'events');
                 break;
+
+            case 'gallery_comps':
+                call('gallery', 'competitions');
+                break;
+
 
             case 'gallery_photo':
                 call('gallery', 'viewPhoto');

@@ -260,7 +260,7 @@ class news
 
     public function getAllNonCommitteeNews($conn)
     {
-        $sql = "SELECT newsID FROM news WHERE visibility = 2 AND visibility = 3 ORDER BY date DESC";
+        $sql = "SELECT newsID FROM news WHERE visibility = 2 OR visibility = 3 ORDER BY date DESC";
 
         $stmt = $conn->prepare($sql);
 
@@ -290,7 +290,7 @@ class news
         }
     }
 
-    public function getAllPublicNews($conn)
+    public function getAllPublicNews($conn, $limit= null)
     {
         $sql = "SELECT newsID FROM news WHERE visibility = 3 ORDER BY date DESC";
 

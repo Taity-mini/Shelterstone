@@ -126,22 +126,20 @@ if (isset($_SESSION['error'])) {
 
                 <?php
 
-                echo comboInputSetup(true, "Group", "sltGroup", $profile->getGroupID(), $group->listAllGroups($conn));
+                         $output = '<div class="large-12 medium-12 small-12 columns">
+                                <label><b>
+                                    <span class="required">* Group </span></b>
+                                <select id="sltGroup" name="sltGroup">';
 
-                //            $output = '<div class="large-12 medium-12 small-12 columns">
-                //                <label><b>
-                //                    <span class="required">* </span></b>
-                //                <select id="sltGroup" name="sltGroup">';
-                //
-                //            foreach ($group->listAllGroups($conn) as $key => $value) {
-                //                if ($value == $profile->getGroupID() || $key == $profile->getGroupID()) {
-                //                    $output .= '<option selected="selected" value="' . $key . '">' . $value . '</option>';
-                //                } else {
-                //                    $output .= '<option value="' . $key . '">' . $value . '</option>';
-                //                }
-                //            }
-                //            $output .= '</select>';
-                //            echo $output;
+                            foreach ($group->listAllGroups($conn) as $key => $value) {
+                                if ($value == $profile->getGroupID() || $key == $profile->getGroupID()) {
+                                    $output .= '<option selected="selected" value="' . $key . '">' . $value . '</option>';
+                                } else {
+                                    $output .= '<option value="' . $key . '">' . $value . '</option>';
+                                }
+                            }
+                            $output .= '</select>';
+                            echo $output;
                 ?>
 
                 <div class="row collapse">

@@ -93,7 +93,7 @@ if (isset($_SESSION['userID'])) {
 <!-- Start Top Bar -->
 <div class="top-bar" id="main-menu">
     <div class="top-bar-left">
-        <ul class="menu" data-responsive-menu="drilldown large-dropdown">
+        <ul class="menu text-center" data-responsive-menu="drilldown large-dropdown">
             <li class="menu-text">RGU: Shelterstone</li>
             <li class="has-submenu">
                 <a href="<?php echo $domain ?>/">Home</a>
@@ -124,7 +124,12 @@ if (isset($_SESSION['userID'])) {
                 <ul class="submenu menu vertical" data-submenu>
                     <li><a href="<?php echo $domain ?>/gallery">Gallery List</a></li>
                     <li><a href="<?php echo $domain ?>/gallery/events">Events</a></li>
-                    <li><a href="<?php echo $domain ?>/gallery/personal">Personal Album</a></li>
+                    <li><a href="<?php echo $domain ?>/gallery/competitions">Competitions</a></li>
+                    <?php
+                    if (isset($_SESSION['userID'])) {
+                        echo '<li><a href="'.$domain.'/gallery/personal">Personal Album</a></li>';
+                    }
+                    ?>
                 </ul>
             </li>
             <li class="singleLink"><a href="<?php echo $domain ?>/competitions">Competitions</a></li>
