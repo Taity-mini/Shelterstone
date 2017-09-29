@@ -15,7 +15,7 @@ class users_groups
     private $groupID, $groupName, $groupDescription, $userID;
 
     //Constructor
-    function _constructor($userID = "zzz", $groupID = -1)
+    function __construct($userID = "zzz", $groupID = -1)
     {
         $this->userID = htmlentities($userID);
         $this->groupID = htmlentities($groupID);
@@ -71,7 +71,7 @@ class users_groups
 
     public function create($conn)
     {
-        $sql = "INSERT INTO user_groups VALUES(:userID, :groupID)";
+        $sql = "INSERT INTO groups VALUES(:userID, :groupID)";
         $stmt = $conn->prepare($sql);
 
         $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
@@ -87,11 +87,11 @@ class users_groups
 
     //Delete group from user
 
-    public function delete($conn, $userID)
+    public function delete($conn, $groupID)
     {
-        $sql = "DELETE FROM user_groups WHERE userID = :userID";
+        $sql = "DELETE FROM groups WHERE groupID = :groupID";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
+        $stmt->bindParam(':userID', $groupID, PDO::PARAM_STR);
 
         try {
             $stmt->execute();
@@ -112,9 +112,9 @@ class users_groups
     public function getAllDetails($conn)
     {
         try {
-            $sql = "SELECT * FROM user_groups ug, groups g WHERE ug.userID = :userID and ug.groupID = g.groupID";
+            $sql = "SELECT * FROM groups g WHERE g.groupID = :groupID";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
+            $stmt->bindParam(':groupID', $this->getGroupID(), PDO::PARAM_STR);
 
             try {
                 $stmt->execute();
@@ -310,6 +310,28 @@ class users_groups
         if ($this->galleryFullAccess($conn, $userID)) {
             return true;
         } else if ($this->isUserMember($conn, $userID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    //CMS
+    public function pageFullAccess($conn, $userID)
+    {
+        if ($this->isAdministrator($conn, $userID) || $this->isUserCommittee($conn, $userID)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //File upload/delete/view System
+
+    public function filesFullAccess($conn, $userID)
+    {
+        if ($this->isAdministrator($conn, $userID) || $this->isUserCommittee($conn, $userID)) {
             return true;
         } else {
             return false;

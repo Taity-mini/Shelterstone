@@ -772,6 +772,52 @@ class users
     }
 
 
+    //Mass Update methods
+
+    public function approveAllUsers($conn)
+    {
+        $sql = "UPDATE users SET approved = 1 WHERE approved = 0";
+        $stmt = $conn->prepare($sql);
+        try {
+            $stmt->execute();
+            dbClose($conn);
+            return true;
+        } catch (PDOException $e) {
+            dbClose($conn);
+            return "Approval failed: " . $e->getMessage();
+        }
+    }
+
+    public function accreditAllUsers($conn)
+    {
+        $sql = "UPDATE users SET accredited = 1 WHERE accredited = 0";
+        $stmt = $conn->prepare($sql);
+        try {
+            $stmt->execute();
+            dbClose($conn);
+            return true;
+        } catch (PDOException $e) {
+            dbClose($conn);
+            return "Approval failed: " . $e->getMessage();
+        }
+    }
+
+    public function removeAllBans($conn)
+    {
+        $sql = "UPDATE users SET banned = 0 WHERE banned = 1";
+        $stmt = $conn->prepare($sql);
+        try {
+            $stmt->execute();
+            dbClose($conn);
+            return true;
+        } catch (PDOException $e) {
+            dbClose($conn);
+            return "Approval failed: " . $e->getMessage();
+        }
+    }
+
+
+
     //Checking boolean methods
     //Does the user exist
     public function doesExist($conn)
