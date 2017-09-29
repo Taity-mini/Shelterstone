@@ -6,7 +6,7 @@
  * Date: 11/03/2017
  * Time: 01:08
  */
-class climbing_controller
+class climbing_controller extends controller
 {
     public function listLogbooks()
     {

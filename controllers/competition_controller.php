@@ -7,7 +7,7 @@
  * Competitions pages controller
  */
 
-class competition_controller
+class competition_controller  extends controller
 {
     function constructor()
     {

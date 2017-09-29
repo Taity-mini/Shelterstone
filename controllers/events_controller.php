@@ -7,7 +7,7 @@
  * Event pages controller
  */
 
-class events_controller
+class events_controller  extends controller
 {
 
     function constructor()

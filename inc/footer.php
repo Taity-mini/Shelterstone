@@ -9,6 +9,7 @@
 ?>
 <!--END Main Content-->
 </div>
+</div>
 <!--START FOOTER-->
 <footer class="row">
         <hr/>

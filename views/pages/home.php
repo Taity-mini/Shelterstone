@@ -21,7 +21,6 @@
 
             if ($photoList != null) {
 
-
                 $count = 0;
                 $max = sizeof($photoList);
 
@@ -107,8 +106,8 @@ foreach ($newsList as $news) {
     $newsArticle->getAllDetails($conn);
     $author->setUserID($newsArticle->getUserID());
     $author->getAllDetails($conn);
-    $newsLink = $_SESSION['domain'] . "/news/" . $newsArticle->getNewsID();
-    $typeLink = $_SESSION['domain'] . "/news/type/" . $newsArticle->getType();
+    $newsLink = $_SESSION['domain'] . "news/" . $newsArticle->getNewsID();
+    $typeLink = $_SESSION['domain'] . "news/type/" . $newsArticle->getType();
 
     echo '
     <div class="row medium-8 large-12 columns">

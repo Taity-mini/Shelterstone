@@ -7,17 +7,6 @@
  * Login page view template
  */
 
-
-if (isset($_SESSION['error'])) {
-    echo '<br/>';
-    echo '<div class="callout warning">
-          <h5>Login Error!</h5>
-          <p>The username and/or password you entered was incorrect.</p>
-          </div>';
-    unset($_SESSION['error']);
-}
-
-
 ?>
 
 <div class="medium-6 medium-centered large-6 large-centered columns">
@@ -26,31 +15,22 @@ if (isset($_SESSION['error'])) {
         <div class="row column log-in-form">
             <h4 class="text-center">Log in with your username</h4>
             <?php
-            //Input validation checks
-            if (isset($_POST["btnSubmit"])) {
-                if (empty($_POST["txtFirstName"])) {
-                    echo ' <label>Username
-                            <input type="text" placeholder="username" name="txtUsername" value ="' . $_POST["txtUsername"] . '">
-                            </label>';
-                } else {
-                    echo ' <label>Username
-                            <input type="text" placeholder="username" name="txtUsername">
-                            </label>';
-                }
+            if (isset($_SESSION['error'])) {
+                echo '<p class="alert-box alert radius centre">The username and/or password you entered was incorrect.</p>';
+                unset($_SESSION['error']);
+
+                echo formStart();
+                echo textInputEmptyError(true, "Username", "txtUsername", "errUsername", "", 8);
+                echo passwordInputEmptyError(true, "Password", "txtPassword", "errPassword", "", 50);
+                echo formEndWithButton("Login");
             } else {
-                echo ' <label>Username
-                            <input type="text" placeholder="username" name="txtUsername">
-                            </label>';
+                echo formStart();
+                echo textInputBlank(true, "Username", "txtUsername", 8);
+                echo passwordInputBlank(true, "Password", "txtPassword", 50);
+                echo formEndWithButton("Login");
             }
             ?>
-            <label>Password
-                <input type="password" placeholder="Password" name="txtPassword">
-            </label>
-            <!--            <input id="show-password" type="checkbox"><label for="show-password">Show password</label>-->
-            <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
-                <input class="button" type="submit" name="btnLogin" value="Login">
             </div>
-
             <p class="text-center"><a href="#">Forgot your password?</a></p>
         </div>
     </form>

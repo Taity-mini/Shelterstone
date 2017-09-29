@@ -10,18 +10,29 @@
 
 ?>
 
+<nav aria-label="You are here:" role="navigation">
+    <ul class="breadcrumbs">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Features</a></li>
+        <li class="disabled">Gene Splicing</li>
+        <li>
+            <span class="show-for-sr">Current: </span> Cloning
+        </li>
+    </ul>
+</nav>
+
 <h1 class="pageTitle" >History</h1>
 
 <div class="row text-center">
         <div class="separator"></div>
         <div class ="highslide-gallery small-6 small-centered columns">
-            <a id="thumb1" href="<?php echo $_SESSION['domain']?>/img/shelterstone_crag.jpg" class ="highslide" onclick="return hs.expand(this)">
-                <img class="displayed" src="<?php echo $_SESSION['domain']?>/img/shelterstone_crag.jpg" alt="Highslide JS"
+            <a id="thumb1" href="<?php echo $_SESSION['domain']?>img/shelterstone_crag.jpg" class ="highslide" onclick="return hs.expand(this)">
+                <img class="displayed" src="<?php echo $_SESSION['domain']?>img/shelterstone_crag.jpg" alt="Highslide JS"
                      title="Click to enlarge" />
             </a>
             <div class="highslide-caption">
                 Shelterstone Crag <br/>
-                <b><a href="<?php echo $_SESSION['domain']?>/img/shelterstone_crag.jpg">View the Photo</a></b>
+                <b><a href="<?php echo $_SESSION['domain']?>img/shelterstone_crag.jpg">View the Photo</a></b>
             </div>
         </div>
 </div>

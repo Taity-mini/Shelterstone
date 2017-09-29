@@ -16,6 +16,7 @@ if (isset($_SESSION['userID'])) {
     $conn = dbConnect();
 
     $users = new users($_SESSION['userID']);
+    $groups = new users_groups();
 
     $users->getAllDetails($conn);
 //    var_dump($users);
@@ -27,27 +28,27 @@ if (isset($_SESSION['userID'])) {
 <head>
     <meta charset="UTF-8">
     <title>RGU ShelterStone</title>
-    <link rel="stylesheet" href="<?php echo $domain ?>/css/foundation.min.css">
-    <link rel="stylesheet" href="<?php echo $domain ?>/css/app.css">
+    <link rel="stylesheet" href="<?php echo $domain ?>css/foundation.min.css">
     <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo $domain ?>css/app.css">
     <!--Favicon code START-->
 
-
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $domain ?>/img/ico/apple-touch-icon.png">
-    <link rel="icon" type="image/png" href="<?php echo $domain ?>/img/ico/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="<?php echo $domain ?>/img/ico/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="<?php echo $domain ?>/img/ico/manifest.json">
-    <link rel="mask-icon" href="<?php echo $domain ?>/img/ico/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="shortcut icon" href="<?php echo $domain ?>/img/ico/favicon.ico">
-    <meta name="msapplication-config" content="<?php echo $domain ?>/img/ico/browseQrconfig.xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $domain ?>img/ico/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="<?php echo $domain ?>img/ico/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="<?php echo $domain ?>img/ico/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="<?php echo $domain ?>img/ico/manifest.json">
+    <link rel="mask-icon" href="<?php echo $domain ?>img/ico/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="<?php echo $domain ?>img/ico/favicon.ico">
+    <meta name="msapplication-config" content="<?php echo $domain ?>img/ico/browseQrconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
     <!--Favicon code END -->
-    <script src="<?php echo $domain ?>/js/vendor/modernizr.js"></script>
+
+    <script src="<?php echo $domain ?>js/vendor/jquery.js"></script>
 
     <!--highslide js START-->
-    <script type="text/javascript" src="<?php echo $domain ?>/highslide/highslide-with-gallery.js"></script>
-    <link rel="stylesheet" type="text/css" href="<?php echo $domain ?>/highslide/highslide.css"/>
+    <script type="text/javascript" src="<?php echo $domain ?>highslide/highslide-with-gallery.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo $domain ?>highslide/highslide.css"/>
 
     <!--
         2) Optionally override the settings defined at the top
@@ -55,7 +56,7 @@ if (isset($_SESSION['userID'])) {
     -->
 
     <script type="text/javascript">
-        hs.graphicsDir = '<?php echo $domain ?>/highslide/graphics/';
+        hs.graphicsDir = '<?php echo $domain ?>highslide/graphics/';
         hs.align = 'center';
         hs.transitions = ['expand', 'crossfade'];
         hs.outlineType = 'rounded-white';
@@ -77,10 +78,12 @@ if (isset($_SESSION['userID'])) {
         });
     </script>
     <!--highslide js END-->
+
+    <script src='<?php echo $domain ?>tinymce/tinymce.min.js'></script>
 </head>
 <body>
 <div class="row column text-center">
-    <a href="<?php echo $domain ?>/"><img src="<?php echo $domain ?>/img/ShelterstoneLogo_Small.svg"/></a>
+    <a href="<?php echo $domain ?>"><img src="<?php echo $domain ?>img/ShelterstoneLogo_Small.svg"/></a>
 </div>
 
 
@@ -96,74 +99,84 @@ if (isset($_SESSION['userID'])) {
         <ul class="menu text-center" data-responsive-menu="drilldown large-dropdown">
             <li class="menu-text">RGU: Shelterstone</li>
             <li class="has-submenu">
-                <a href="<?php echo $domain ?>/">Home</a>
+                <a href="<?php echo $domain ?>">Home</a>
                 <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/news">News</a></li>
-                    <li><a href="<?php echo $domain ?>/news/announcements">Announcements</a></li>
+                    <li><a href="<?php echo $domain ?>news">News</a></li>
+                    <li><a href="<?php echo $domain ?>news/announcements">Announcements</a></li>
                 </ul>
             </li>
             <li class="has-submenu">
                 <a href="#">About</a>
                 <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/about/club_information">Club Information</a></li>
-                    <li><a href="<?php echo $domain ?>/about/committee">Committee</a></li>
-                    <li><a href="<?php echo $domain ?>/about/join_us">Join Us!</a></li>
-                    <li><a href="<?php echo $domain ?>/about/history">History</a></li>
+                    <li><a href="<?php echo $domain ?>about/club_information">Club Information</a></li>
+                    <li><a href="<?php echo $domain ?>about/committee">Committee</a></li>
+                    <li><a href="<?php echo $domain ?>about/join_us">Join Us!</a></li>
+                    <li><a href="<?php echo $domain ?>about/history">History</a></li>
                 </ul>
             </li>
             <li class="has-submenu">
-                <a href="<?php echo $domain ?>/events">Events</a>
+                <a href="<?php echo $domain ?>events">Events</a>
                 <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/events">Event List</a></li>
-                    <li><a href="<?php echo $domain ?>/events/trips">Trips</a></li>
-                    <li><a href="<?php echo $domain ?>/events/competitions">Competitions</a></li>
+                    <li><a href="<?php echo $domain ?>events">Event List</a></li>
+                    <li><a href="<?php echo $domain ?>events/trips">Trips</a></li>
+                    <li><a href="<?php echo $domain ?>events/competitions">Competitions</a></li>
                 </ul>
             </li>
             <li class="has-submenu">
-                <a href="<?php echo $domain ?>/gallery">Galleries</a>
+                <a href="<?php echo $domain ?>gallery">Galleries</a>
                 <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/gallery">Gallery List</a></li>
-                    <li><a href="<?php echo $domain ?>/gallery/events">Events</a></li>
-                    <li><a href="<?php echo $domain ?>/gallery/competitions">Competitions</a></li>
+                    <li><a href="<?php echo $domain ?>gallery">Gallery List</a></li>
+                    <li><a href="<?php echo $domain ?>gallery/events">Events</a></li>
+                    <li><a href="<?php echo $domain ?>gallery/competitions">Competitions</a></li>
                     <?php
                     if (isset($_SESSION['userID'])) {
-                        echo '<li><a href="'.$domain.'/gallery/personal">Personal Album</a></li>';
+                        echo '<li><a href="' . $domain . 'gallery/personal">Personal Album</a></li>';
                     }
                     ?>
                 </ul>
             </li>
-            <li class="singleLink"><a href="<?php echo $domain ?>/competitions">Competitions</a></li>
+            <li class="singleLink"><a href="<?php echo $domain ?>competitions">Competitions</a></li>
             <?php
             if (isset($_SESSION['userID'])) {
                 echo '<li class="has-submenu">
-                <a href="' . $domain . '/profile">Profile</a>
+                <a href="' . $domain . 'profile">Profile</a>
                 <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="' . $domain . '/climbing_log">Climbing Log</a></li>
-                    <li><a href="' . $domain . '/profile">Personal Details</a></li>
+                    <li><a href="' . $domain . 'climbing_log">Climbing Log</a></li>
+                    <li><a href="' . $domain . 'profile">Personal Details</a></li>
                 </ul>
             </li>';
             }
 
-            ?>
-            <li class="has-submenu">
-                <a href="#">Committee</a>
-                <ul class="submenu menu vertical" data-submenu>
-                    <li><a href="<?php echo $domain ?>/committee/member_management">Member Management</a></li>
-                    <li><a href="<?php echo $domain ?>/committee/event_management">Event Management</a></li>
-                    <li><a href="<?php echo $domain ?>/committee/agenda">Agenda's & Minutes</a></li>
-                </ul>
-            </li>
-            <?php
+
             if (isset($_SESSION['userID'])) {
-                echo '<li class="singleLink"><a href="' . $domain . '/Logout">Logout</a></li>';
+                $conn = dbConnect();
+                $groups = new users_groups();
+                if ($groups->isUserCommittee($conn, $_SESSION['userID']) || $groups->isAdministrator($conn, $_SESSION['userID'])) {
+
+
+                    ?>
+                    <li class="has-submenu">
+                        <a href="#">Committee</a>
+                        <ul class="submenu menu vertical" data-submenu>
+                            <li><a href="<?php echo $domain ?>committee/member_management">Member Management</a></li>
+                            <li><a href="<?php echo $domain ?>committee/event_management">Event Management</a></li>
+                            <li><a href="<?php echo $domain ?>committee/agenda">Agenda's & Minutes</a></li>
+                        </ul>
+                    </li>
+                    <?php
+                }
+
+            }
+            if (isset($_SESSION['userID'])) {
+                echo '<li class="singleLink"><a href="' . $domain . 'Logout">Logout</a></li>';
             } else {
 
                 ?>
                 <li class="has-submenu">
-                    <a href="<?php echo $domain ?>/login">Login</a>
+                    <a href="<?php echo $domain ?>login">Login</a>
                     <ul class="submenu menu vertical" data-submenu>
-                        <li><a href="<?php echo $domain ?>/login">Sign in</a></li>
-                        <li><a href="<?php echo $domain ?>/register">Register</a></li>
+                        <li><a href="<?php echo $domain ?>login">Sign in</a></li>
+                        <li><a href="<?php echo $domain ?>register">Register</a></li>
                     </ul>
                 </li>
                 <?php
