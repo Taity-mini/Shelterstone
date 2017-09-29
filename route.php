@@ -43,6 +43,11 @@ function call($controller, $action)
         case'committee':
             $controller = new committee_controller();
             break;
+
+
+        case'files':
+            $controller = new files_controller();
+            break;
     }
 
     $controller->{$action}();
@@ -131,6 +136,27 @@ $rules = array(
     'login' => "/login",
     'logout' => "/logout",
     'register' => "/register",
+
+
+//Files
+    'files' => "/files",
+    'uploadFile' => "/files/upload",
+    'viewFile' => "/files/view/(?'fileID'[\w\-]+)",
+    'editFile' => "/files/edit/(?'fileID'[\w\-]+)",
+    'downloadFile' => "/files/download/(?'fileID'[\w\-]+)",
+
+//CMS Page System
+    'pages' => "/pages",
+    'addPage' => "/pages/add",
+    'viewPage' => "/pages/view/(?'pageID'[\w\-]+)",
+    'editPage' => "/pages/edit/(?'pageID'[\w\-]+)",
+    'deletePage' => "/pages/delete/(?'pageID'[\w\-]+)",
+
+//Freshers
+    'freshers' => "/freshers",
+    'addFreshers' => "/freshers/add",
+
+
 //
 // Home Page
 //
@@ -325,9 +351,25 @@ foreach ($rules as $action => $rule) {
                 break;
 
             //Committee
+
+            //Member Management
             case 'member_management':
                 call('committee', 'member_management');
                 break;
+
+            case 'banUser':
+                call('committee', $action);
+                break;
+
+            case 'approveUser':
+                call('committee', $action);
+                break;
+
+
+            case 'accreditUser':
+                call('committee', $action);
+                break;
+
 
             case 'event_management':
                 call('committee', $action);
@@ -352,6 +394,58 @@ foreach ($rules as $action => $rule) {
 
             case 'competition_edit':
                 call('competition', $action);
+                break;
+
+
+             //Files
+            case 'files':
+                call('files', 'home');
+                break;
+
+            case 'uploadFile':
+                call('files', $action);
+                break;
+
+            case 'viewFile':
+                call('files', $action);
+                break;
+
+            case 'editFile':
+                call('files', $action);
+                break;
+
+            case 'downloadFile':
+                call('files', $action);
+                break;
+
+            //CMS Pages
+            case 'pages':
+                call('pages', 'pageIndex');
+                break;
+
+            case 'addPage':
+                call('pages', $action);
+                break;
+
+            case 'editPage':
+                call('pages', $action);
+                break;
+
+
+            case 'deletePage':
+                call('pages', $action);
+                break;
+
+            case 'viewPage':
+                call('pages', $action);
+                break;
+
+            case 'freshers':
+                call('pages', $action);
+                break;
+
+            case 'addFreshers':
+                call('pages', $action);
                 break;
 
             default:
