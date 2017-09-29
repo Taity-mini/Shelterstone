@@ -48,8 +48,8 @@ class gallery_controller extends controller
         $this->data['author'] = $user;
         $this->data['photos'] = $photo;
         $this->data['create'] = $adding;
-        $this->date['heading'] = $heading;
-        $this->date['description'] = $description;
+        $this->data['heading'] = $heading;
+        $this->data['description'] = $description;
 
         //Extract data array to display variables on view template
         extract($this->data);
@@ -126,7 +126,7 @@ class gallery_controller extends controller
 
 
         if (!$photos->doesExist($conn)) {
-            $this->redirect("/error");
+            $this->redirect("error");
         }
 
 
@@ -136,7 +136,7 @@ class gallery_controller extends controller
 
 
         if (!isset($_SESSION['userID']) && $albums->getVisibility() == 0) {
-            $this->redirect("/login");
+            $this->redirect("login");
         }
 
         $users->getAllDetails($conn);
@@ -172,8 +172,9 @@ class gallery_controller extends controller
             require_once('./models/gallery_photos.php');
             require_once('./models/gallery_albums.php');
             require_once('./models/users.php');
+            include('./inc/forms.inc.php');
             $conn = dbConnect();
-
+            $albums = new gallery_album();
             //If create new button is submitted
             if (isset($_POST['btnSubmit'])) {
 
@@ -181,26 +182,35 @@ class gallery_controller extends controller
                 $user->getAllDetails($conn);
                 $albums = new gallery_album();
 
-                if (isset($_POST['txtName']) && (isset($_POST['txtDescription']))) {
-                    $albums->setAlbumName(htmlentities($_POST['txtName']));
-                    $albums->setAlbumDescription(htmlentities($_POST['txtDescription']));
-                    $albums->setVisibility(htmlentities($_POST['chkVisibility']));
-                    $albums->setType(htmlentities($_POST['sltType']));
-                    $albums->setUserID($user->getUserID());
+                if (isset($_POST['txtName']) && (isset($_POST['txtDescription'])) && (isset($_POST['sltType']))) {
 
-                    if ($albums->create($conn)) {
-                        $_SESSION['create'] = true;
-                        $this->redirect("/gallery");
+                    if ($albums->isInputValid($_POST['txtName'], ($_POST['txtDescription']))) {
+
+                        $albums->setAlbumName(htmlentities($_POST['txtName']));
+                        $albums->setAlbumDescription(htmlentities($_POST['txtDescription']));
+                        $albums->setVisibility(htmlentities($_POST['chkVisibility']));
+                        $albums->setType(htmlentities($_POST['sltType']));
+                        $albums->setUserID($user->getUserID());
+
+                        if ($albums->create($conn)) {
+                            $_SESSION['create'] = true;
+                            $this->redirect("gallery");
+                        }
                     }
                 } else {
                     $_SESSION['error'] = true;
                 }
             }
 
+            $this->data['albums'] = $albums;
+
+            //Extract data array to display variables on view template
+            extract($this->data);
+
             require_once('./views/gallery/create_album.php');
 
         } else {
-            $this->redirect('/login');
+            $this->redirect('login');
         }
     }
 
@@ -212,6 +222,7 @@ class gallery_controller extends controller
             require_once('./models/gallery_photos.php');
             require_once('./models/gallery_albums.php');
             require_once('./models/users.php');
+            include('./inc/forms.inc.php');
 
             $conn = dbConnect();
             $album = new gallery_album();
@@ -234,19 +245,20 @@ class gallery_controller extends controller
                 $photos = new gallery_photos();
 
                 if (isset($_POST['txtTitle']) && (isset($_POST['txtDescription']))) {
-
-
                     $photos->setAlbumID(htmlentities($_POST['sltAlbum']));
                     $photos->setUserID($user->getUserID());
                     $photos->setTitle(htmlentities($_POST['txtTitle']));
                     $photos->setDescription(htmlentities($_POST['txtDescription']));
 
-
                     if ($photos->uploadPhoto()) {
                         if ($photos->create($conn)) {
                             $_SESSION['upload'] = true;
-                            $this->redirect("/gallery/album/" . $photos->getAlbumID());
+                            unset($_SESSION['albumUpload']);
+                            $this->redirect("gallery/album/" . $photos->getAlbumID());
+                            exit;
                         }
+                    } else {
+                        $_SESSION['error'] = true;
                     }
                 } else {
                     $_SESSION['error'] = true;
@@ -263,7 +275,7 @@ class gallery_controller extends controller
             require_once('./views/gallery/upload.php');
 
         } else {
-            $this->redirect("/login");
+            $this->redirect("login");
         }
     }
 
@@ -276,6 +288,7 @@ class gallery_controller extends controller
             require_once('./models/gallery_photos.php');
             require_once('./models/gallery_albums.php');
             require_once('./models/users.php');
+            include('./inc/forms.inc.php');
 
             $conn = dbConnect();
 
@@ -286,7 +299,7 @@ class gallery_controller extends controller
 
 
             if (!$albums->doesExist($conn)) {
-                $this->redirect("/error");
+                $this->redirect("error");
             }
 
             $users = new users($_SESSION['userID']);
@@ -306,9 +319,8 @@ class gallery_controller extends controller
             }
 
             if (!$canEdit) {
-                $this->redirect("/gallery/");
+                $this->redirect("gallery/");
             }
-
 
             if (isset($_POST['btnSubmit'])) {
 
@@ -317,18 +329,24 @@ class gallery_controller extends controller
                 $albums = new gallery_album($_SESSION['params']['albumID']);
                 $albums->getAllDetails($conn);
                 if (isset($_POST['txtName']) && (isset($_POST['txtDescription']))) {
-                    $albums->setAlbumName(htmlentities($_POST['txtName']));
-                    $albums->setAlbumDescription(htmlentities($_POST['txtDescription']));
+                    if ($albums->isInputValid($_POST['txtName'], $_POST['txtDescription'])) {
 
-                    if (!$limitedAccess) {
-                        $albums->setVisibility(htmlentities($_POST['chkVisibility']));
-                    }
-                    $albums->setType(htmlentities($_POST['sltType']));
+                        $albums->setAlbumName(htmlentities($_POST['txtName']));
+                        $albums->setAlbumDescription(htmlentities($_POST['txtDescription']));
+
+                        if (!$limitedAccess) {
+                            $albums->setVisibility(htmlentities($_POST['chkVisibility']));
+                        }
+                        $albums->setType(htmlentities($_POST['sltType']));
 
 
-                    if ($albums->update($conn)) {
-                        $_SESSION['update'] = true;
-                        $this->redirect("/gallery/album/" . $albums->getAlbumID());
+                        if ($albums->update($conn)) {
+                            $_SESSION['update'] = true;
+                            $this->redirect("gallery/album/" . $albums->getAlbumID());
+                        }
+
+                    } else {
+                        $_SESSION['error'] = true;
                     }
                 } else {
                     $_SESSION['error'] = true;
@@ -348,7 +366,7 @@ class gallery_controller extends controller
                     //Finally delete album
                     if ($albums->delete($conn)) {
                         $_SESSION['delete'] = true;
-                        $this->redirect("/gallery/");
+                        $this->redirect("gallery/");
                     }
                 } else {
                     $_SESSION['error'] = true;
@@ -365,7 +383,7 @@ class gallery_controller extends controller
 
             require_once('./views/gallery/edit_album.php');
         } else {
-            $this->redirect("/login");
+            $this->redirect("login");
         }
     }
 
@@ -375,6 +393,7 @@ class gallery_controller extends controller
             require_once('./models/gallery_photos.php');
             require_once('./models/gallery_albums.php');
             require_once('./models/users.php');
+            include('./inc/forms.inc.php');
 
             $conn = dbConnect();
 
@@ -388,7 +407,7 @@ class gallery_controller extends controller
 
 
             if (!$photos->doesExist($conn)) {
-                $this->redirect("/error");
+                $this->redirect("error");
             }
 
             if (isset($_POST['btnSubmit'])) {
@@ -400,7 +419,7 @@ class gallery_controller extends controller
 
                     if ($photos->update($conn)) {
                         $_SESSION['update'] = true;
-                        $this->redirect("/gallery/photo/" . $photos->getPhotoID());
+                        $this->redirect("gallery/photo/" . $photos->getPhotoID());
                         die();
                     }
                 } else {
@@ -415,7 +434,7 @@ class gallery_controller extends controller
                 //Finally delete photo
                 if ($photos->delete($conn)) {
                     $_SESSION['deletePhoto'] = true;
-                    $this->redirect("/gallery/album/" . $albumID);
+                    $this->redirect("gallery/album/" . $albumID);
                 } else {
                     $_SESSION['error'] = true;
                 }
@@ -431,7 +450,7 @@ class gallery_controller extends controller
 
             require_once('./views/gallery/edit_photo.php');
         } else {
-            $this->redirect("/login");
+            $this->redirect("login");
         }
 
     }
@@ -450,6 +469,7 @@ class gallery_controller extends controller
             $userID = $_SESSION['userID'];
             $user = new users();
             $user->setUserID($userID);
+            $user->getAllDetails($conn);
             $album = new gallery_album();
             $adding = false;
             $photo = new gallery_photos();
@@ -460,7 +480,7 @@ class gallery_controller extends controller
 
             $albumsList = $album->listAllAlbums($conn, $userID);
             $heading = "Personal Albums";
-            $description = "All albums by" . $user->getFullName();
+            $description = "All albums by " . $user->getFullName();
 
             //Display user data in forms
             $this->data['albums'] = $album;
@@ -476,7 +496,7 @@ class gallery_controller extends controller
 
             require_once('./views/gallery/index.php');
         } else {
-            $this->redirect("/login");
+            $this->redirect("login");
         }
 
     }

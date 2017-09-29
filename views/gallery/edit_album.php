@@ -16,49 +16,51 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']);
 }
 
+echo '<div class="small-6 small-centered large-10 large-centered columns">';
+
+echo '<h1 class="pageTitle" >Gallery | Edit album: '.$albums->getAlbumName().'</h1>';
+
+echo formStart();
+
+
+    if (isset($_POST["btnSubmit"])) {
+        if (empty($_POST["txtName"])) {
+            echo textInputEmptyError(true, "Album Name", "txtName", "errEmptyTitle", "Please enter a Album Name", 100);
+        } else {
+            echo textInputPostback(true, "Album Name", "txtName", $_POST["txtName"], 100);
+        }
+    } else {
+        echo textInputSetup(true, "Album Name", "txtName",$albums->getAlbumName(), 100);
+    }
+
+    if (isset($_POST["btnSubmit"])) {
+        if (empty($_POST["txtDescription"])) {
+            echo textareaInputEmptyError(true, "Album Description", "txtDescription", "errEmptyDescription", "Please enter a Main Body", 250, 4);
+        } else {
+            echo textareaInputPostback(true, "Album Description", "txtDescription", $_POST["txtDescription"], 250, 4);
+        }
+    } else {
+        echo textareaInputSetup(true, "Album Description", "txtDescription", $albums->getAlbumDescription(), 250, 4);
+    }
+
+
+    if (isset($_POST["btnSubmit"])) {
+        echo comboInputPostback(true, "Type", "sltType", $_POST["sltType"], $albums->listTypes());
+    } else {
+        if (!is_null($albums->getType())) {
+            echo comboInputSetup(true, "Type", "sltType", $albums->getType(), $albums->listTypes());
+        } else {
+            echo comboInputBlank(true, "Type", "sltType", "Please select...", $albums->listTypes());
+        }
+    }
+
+
 ?>
-<h1 class="pageTitle" >Gallery | Edit album: <?=$albums->getAlbumName()?></h1>
-
-<div class="small-6 small-centered large-10 large-centered columns">
-    <form action="" method="post">
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label>
-                    <span><b>Album Name</b></span>
-                    <input type="text" id="txtName" name="txtName" maxlength="20" value="<?=$albums->getAlbumName()?>"/>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label>
-                    <span><b>Album Description</b></span>
-                    <textarea id="txtDescription" name="txtDescription" rows="4" maxlength="250"><?=$albums->getAlbumDescription()?></textarea>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Type</b>
-                    <select id="sltType" name="sltType">
-                        <option value="1" <?= ($albums->getType() == 1) ? "selected" : ""; ?> >Standard</option>
-                        <option value="2" <?= ($albums->getType() == 2) ? "selected" : ""; ?>  >Personal</option>
-                        <option value="3" <?= ($albums->getType() == 3) ? "selected" : ""; ?> >Competitions</option>
-                        <option value="4" <?= ($albums->getType() == 4) ? "selected" : ""; ?> >Events</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-
         <?php
             if(!$limitedAccess)
             {
         ?>
-        <div class="row">
+
             <div class="large-12 medium-12 small-12 columns">
                 <label><b>
                         <span class="required">* </span>Visibility (Publicly accessible?)</b>
@@ -67,19 +69,16 @@ if (isset($_SESSION['error'])) {
 
                 </label>
             </div>
-        </div>
         <?php }?>
+        <div class="large-12 medium-12 small-12 columns" style="margin-left: auto; margin-right: auto">
 
-        <div class="large-12 medium-12 small-12 columns">
-            <div class="row">
                 <input class="success button" type="submit" name="btnSubmit" value="Update Album">
                 <input type="submit" name="btnDelete" class="alert button" value="Delete Album"
                        onclick="return confirm('Are you sure? This WILL delete this album and all the photos in it.')">
+            <input class="button" type="reset" value="Reset">
             </div>
-            <div class="row">
-                <input class="button" type="reset" value="Reset">
-            </div>
-        </div>
+
+
 </div>
 </form>
 </div>

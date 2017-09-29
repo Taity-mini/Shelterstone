@@ -16,39 +16,48 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']);
 }
 
+echo '<h1 class="pageTitle">Gallery | Edit Photo ID: '.$photos->getPhotoID().'</h1>';
+
+echo '<div class="small-6 small-centered large-10 large-centered columns">';
+echo formStart();
+
+
+
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["txtTitle"])) {
+        echo textInputEmptyError(true, "Photo Title", "txtTitle", "errEmptyTitle", "Please enter a Photo Title", 20);
+    } else {
+        echo textInputPostback(true, "Photo Title", "txtTitle", $_POST["txtName"], 20);
+    }
+} else {
+    echo textInputSetup(true, "Photo Title", "txtName",$photos->getTitle(), 20);
+}
+
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["txtDescription"])) {
+        echo textareaInputEmptyError(false, "Photo Description", "txtDescription", "errEmptyDescription", "Please enter a Main Body", 250, 2);
+    } else {
+        echo textareaInputPostback(false, "Photo Description", "txtDescription", $_POST["txtDescription"], 250, 2);
+    }
+} else {
+    echo textareaInputSetup(false, "Photo Description", "txtDescription", $photos->getDescription(), 250, 2);
+}
+
+
+
 ?>
-<h1 class="pageTitle">Gallery | Edit Photo ID: <?=$photos->getPhotoID()?></h1>
-
-<form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post" style="text-align: center"
-      enctype="multipart/form-data">
-    <div class="small-6 small-centered large-10 large-centered columns">
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label>
-                    <span><b>Photo Title</b></span>
-                    <input type="text" id="txtTitle" name="txtTitle" maxlength="20" value="<?=$photos->getTitle()?>"/>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label>
-                    <span><b>Photo Description</b></span>
-                    <textarea id="txtDescription" name="txtDescription" rows="2" maxlength="250"><?=$photos->getDescription()?></textarea>
-                </label>
-            </div>
-        </div>
         <div class="large-12 medium-12 small-12 columns">
-            <div class="row">
                 <input class="success button" type="submit" name="btnSubmit" value="Update Photo">
                 <input type="submit" name="btnDelete" class="alert button" value="Delete Photo"
                        onclick="return confirm('Are you sure? This WILL delete this photo')">
                 <input class="button" type="reset" value="Reset">
-            </div>
         </div>
 </form>
 
+</div>
+</div>
+
+</div>
 </div>
 <div class="row ">
     <div class ="small-centered columns">

@@ -41,7 +41,7 @@ if ($albumList == null) {
         $photos->setAlbumID($album->getAlbumID());
         $photos->getLatestPhoto($conn);
 
-        $albumsLink = $_SESSION['domain'] . "/gallery/album/" . $album->getAlbumID();
+        $albumsLink = $_SESSION['domain'] . "gallery/album/" . $album->getAlbumID();
 
         echo '
         <div class="column img_wrap">

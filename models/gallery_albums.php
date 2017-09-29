@@ -237,6 +237,22 @@ class gallery_album
     //Listing functions
 
 
+    //List functions
+
+//
+
+
+    public function listTypes()
+    {
+        $types = array(
+            1  => "Standard",
+            2  => "Personal",
+            3  => "Competitions",
+            4  => "Events",
+        );
+        return $types;
+    }
+
 //List all albums in the database and from user from optional parameter
     public function listAllAlbums($conn, $userID = null)
     {

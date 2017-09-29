@@ -46,7 +46,8 @@ if ($photoList == null) {
         $photo->getAllDetails($conn);
         $author->setUserID($photo->getUserID());
         $author->getAllDetails($conn);
-        $photosLink = $_SESSION['domain'] . "/gallery/photo/" . $photo->getPhotoID();
+        $photosLink = $_SESSION['domain'] . "gallery/photo/" . $photo->getPhotoID();
+        $photosEditLink = $_SESSION['domain'] . "gallery/photo/edit/" . $photo->getPhotoID();
         $photoFileLink = $_SESSION['domain'] . $photo->getFullFilePath();
 
         echo '
@@ -56,11 +57,22 @@ if ($photoList == null) {
                      title="Click to enlarge" />
             </a>
             
-            <div class="highslide-caption">
+            <div class="highslide-caption float-center">
             <b>Title:</b> ' . $photo->getTitle() . '<br>
             <b>Description:</b> ' . $photo->getDescription() . '<br>
              <b>By:</b>' . $author->getFullName() . ' <br>
-            <b><a href="' . $photosLink . '">View the Photo</a></b>
+             <a href="'. $photosLink . '" class="button">View</a>
+             <a href="'. $photosEditLink . '" class=" success button">Edit</a>
+            </div>
+            
+             <div class="text-center">
+                <a href="'. $photosLink . '" class="button">View</a>';
+                if($edit)
+                {
+                    echo ' <a href="'.$photosEditLink.'" class="success button">Edit</a>';
+                }
+                echo '
+            
             </div>
 
         </div>
