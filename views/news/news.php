@@ -35,23 +35,29 @@ foreach ($newsList as $news) {
     $newsArticle->getAllDetails($conn);
     $author->setUserID($newsArticle->getUserID());
     $author->getAllDetails($conn);
-    $newsLink = $_SESSION['domain'] . "/news/" . $newsArticle->getNewsID();
-    $typeLink = $_SESSION['domain'] . "/news/type/" . $newsArticle->getType();
+    $newsLink = $_SESSION['domain'] . "news/" . $newsArticle->getNewsID();
+    $typeLink = $_SESSION['domain'] . "news/type/" . $newsArticle->getType();
 
     echo '
     <div class="row medium-8 large-12 columns">
      <div class="blog-post">
         <h3><a href="' . $newsLink . '">' . $newsArticle->getTitle() . '</a>
             <small>' . $newsArticle->getDate() . '</small>
-        </h3>
+            ';
+    if ($edit) {
+        echo ' <a href="/news/edit/' . $newsArticle->getNewsID() . '" class="button">[Edit]</a>';
+    }
+     echo '  </h3>
         <p>' . $newsArticle->getMainBody() . '</p>
         <div class="callout">
             <ul class="menu simple">
                 <li>Author: ' . $author->getFullName() . '</li>
                 <li><a href="' . $typeLink . '">Type: ' . $newsArticle->displayType() . '</a></li>
+                <li>Visibility:'.$newsArticle->displayVisibility().'</li>
             </ul>
         </div>
      </div>
+     <hr>
     </div>
     ';
 }

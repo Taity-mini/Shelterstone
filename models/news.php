@@ -86,7 +86,7 @@ class news
 
     public function setMainBody($mainBody)
     {
-        $this->mainBody = htmlentities($mainBody);
+        $this->mainBody = $mainBody;
     }
 
     public function setDate($date)
@@ -387,6 +387,29 @@ class news
         } catch (PDOException $e) {
             return "Database news exist query failed: " . $e->getMessage();
         }
+    }
+
+    //List functions
+
+    public function listTypes()
+    {
+        $types = array(
+            1  => "Standard",
+            2  => "Announcements",
+            3  => "Competitions",
+            4  => "Events",
+        );
+        return $types;
+    }
+
+    public function listVisibilities ()
+    {
+        $types = array(
+            1  => "Committee",
+            2  => "Members",
+            3  => "Public",
+        );
+        return $types;
     }
 
     //Display functions

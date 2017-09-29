@@ -21,6 +21,7 @@ class news_controller extends controller
         $user = new users();
         $newsArticle = new news();
         $adding = false;
+        $canEdit = false;
 
         $heading = "";
         $description = "";
@@ -35,6 +36,7 @@ class news_controller extends controller
                 $description = "All member/public news from Shelterstone";
             } else {
                 $adding = true;
+                $canEdit = true;
                 $heading = "News";
                 $description = "All news from Shelterstone";
                 $newsList = $newsArticle->getAlLNews($conn);
@@ -51,6 +53,7 @@ class news_controller extends controller
         $this->data['newsList'] = $newsList;
         $this->data['author'] = $user;
         $this->data['create'] = $adding;
+        $this->data['edit'] = $canEdit;
         $this->date['heading'] = $heading;
         $this->date['description'] = $description;
 
@@ -97,10 +100,6 @@ class news_controller extends controller
         require_once('./views/news/news_article.php');
     }
 
-    public function announcements()
-    {
-        require_once('./views/news/announcements.php');
-    }
 
     //Creating and editing
 
@@ -109,12 +108,14 @@ class news_controller extends controller
         if (isset($_SESSION['userID'])) {
             require_once('./models/news.php');
             require_once('./models/users.php');
+            include('./inc/forms.inc.php');
 
             $conn = dbConnect();
+            $news = new news();
 
             $groups = new users_groups();
             if (!$groups->newsFullAccess($conn, $_SESSION['userID'])) {
-                $this->redirect("/error");
+                $this->redirect("error");
             }
 
             //Perform update
@@ -127,14 +128,14 @@ class news_controller extends controller
 
                     $news->setTitle($_POST['txtTitle']);
                     $news->setUserID($_SESSION['userID']);
-                    $news->setMainBody($_POST['txtBody']);
+                    $news->setMainBody($_POST['txtMainBody']);
                     $news->setType($_POST['sltType']);
                     $news->setVisibility($_POST['sltVisibility']);
 
                     if ($news->isInputValid($news->getTitle(), $news->getMainBody())) {
                         if ($news->create($conn)) {
                             $_SESSION['create'] = true;
-                            $this->redirect("/news");
+                            $this->redirect("news");
                         } else {
                             $_SESSION['error'] = true;
                         }
@@ -146,10 +147,11 @@ class news_controller extends controller
                 }
 
             }
-
+            $this->data['newsArticle'] = $news;
+            extract($this->data);
             require_once('./views/news/create_news.php');
         } else { //Show login page otherwise
-            $this->redirect("/login");
+            $this->redirect("login");
         }
 
     }
@@ -160,6 +162,7 @@ class news_controller extends controller
         if (isset($_SESSION['userID'])) {
             require_once('./models/news.php');
             require_once('./models/users.php');
+            include('./inc/forms.inc.php');
 
             $conn = dbConnect();
 
@@ -172,13 +175,13 @@ class news_controller extends controller
 
             // Security and error checks
             if (!$news->doesExist($conn)) {
-                $this->redirect("/error");
+                $this->redirect("error");
             }
 
             //Check if logged in user has full access for editing news article
             $groups = new users_groups();
             if (!$groups->newsFullAccess($conn, $_SESSION['userID'])) {
-                $this->redirect("/error");
+                $this->redirect("error");
             }
 
 
@@ -198,7 +201,7 @@ class news_controller extends controller
                 $news->setNewsID($newsID);
                 $news->setTitle($_POST['txtTitle']);
                 $news->setUserID($_SESSION['userID']);
-                $news->setMainBody($_POST['txtBody']);
+                $news->setMainBody($_POST['txtMainBody']);
                 $news->setType($_POST['sltType']);
                 $news->setVisibility($_POST['sltVisibility']);
 
@@ -206,7 +209,7 @@ class news_controller extends controller
                 if ($news->isInputValid($news->getTitle(), $news->getMainBody())) {
                     if ($news->update($conn)) {
                         $_SESSION['update'] = true;
-                        $this->redirect("/news/" . $newsID);
+                        $this->redirect("news/" . $newsID);
                     } else {
                         $_SESSION['error'] = true;
                     }
@@ -224,7 +227,7 @@ class news_controller extends controller
 
                 if ($news->delete($conn)) {
                     $_SESSION['delete'] = true;
-                    $this->redirect("/news");
+                    $this->redirect("news");
 
                 } else {
                     $_SESSION['error'] = true;
@@ -240,11 +243,10 @@ class news_controller extends controller
 
             //Extract data array to display variables on view template
             extract($this->data);
-            include('./inc/forms.php');
             require_once('./views/news/edit_news.php');
 
         } else { //Show login page otherwise
-            $this->redirect("/login");
+            $this->redirect("login");
         }
     }
 
@@ -260,13 +262,14 @@ class news_controller extends controller
         $user = new users();
         $newsArticle = new news();
         $adding = false;
+        $canEdit = false;
 
 
         $typeID = $_SESSION['params']['type'];
 
         //Check if typeID is valid
         if (!in_array($typeID, range(1, 4))) {
-            $this->redirect("/error");
+            $this->redirect("error");
         }
 
         $newsArticle->setType($typeID);
@@ -282,6 +285,7 @@ class news_controller extends controller
 
             } else {
                 $adding = true;
+                $canEdit = true;
                 $description = "All " . $newsArticle->displayType() . " News from Shelterstone";
                 $newsList = $newsArticle->getAllNewsByType($conn);
             }
@@ -294,6 +298,7 @@ class news_controller extends controller
         //Display user data in forms
         $this->data['newsArticle'] = $newsArticle;
         $this->data['newsList'] = $newsList;
+        $this->data['edit'] = $canEdit;
         $this->data['author'] = $user;
         $this->data['create'] = $adding;
         $this->date['heading'] = $heading;
@@ -322,7 +327,7 @@ class news_controller extends controller
         //Check if typeID is valid
         //Security and error checks
         if (!$user->doesExist($conn)) {
-            $this->redirect("/error");
+            $this->redirect("error");
         }
 
         $newsArticle->setUserID($userID);
@@ -338,6 +343,7 @@ class news_controller extends controller
 
             } else {
                 $adding = true;
+                $canEdit = true;
                 $description = "All News from Shelterstone by: " . $user->getFullName();
                 $newsList = $newsArticle->getAllNewsByUser($conn);
             }
@@ -351,6 +357,7 @@ class news_controller extends controller
         $this->data['newsArticle'] = $newsArticle;
         $this->data['newsList'] = $newsList;
         $this->data['author'] = $user;
+        $this->data['edit'] = $canEdit;
         $this->data['create'] = $adding;
         $this->date['heading'] = $heading;
         $this->date['description'] = $description;

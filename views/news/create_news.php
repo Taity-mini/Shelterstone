@@ -7,6 +7,17 @@
  * Create news article
  */
 
+?>
+<script>
+    tinymce.init({
+        selector: '#txtMainBody',
+        plugins: 'advlist, table, autolink, code, contextmenu, imagetools, fullscreen, hr,  colorpicker, preview, spellchecker, link, autosave, lists, visualblocks'
+    });
+</script>
+
+<div class="small-6 small-centered large-10 large-centered columns">
+<h1 class="pageTitle">Create news article</h1>
+<?php
 if (isset($_SESSION['error'])) {
     echo '<br/>';
     echo '<div class="callout warning">
@@ -16,61 +27,58 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']);
 }
 
+echo '<div class="large-12 medium-12 small-12 columns">';
+echo formStart();
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["txtTitle"])) {
+        echo textInputEmptyError(true, "News Title", "txtTitle", "errEmptyTitle", "Please enter a News Title", 100);
+    } else {
+        echo textInputPostback(true, "News Title", "txtTitle", $_POST["txtTitle"], 100);
+    }
+} else {
+    echo textInputBlank(true, "News Title", "txtTitle", 100);
+}
+
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["txtMainBody"])) {
+        echo textareaInputEmptyError(true, "Main Body", "txtMainBody", "errEmptyBody", "Please enter a Main Body", 5000, 15);
+    } else {
+        echo textareaInputPostback(true, "Main Body", "txtMainBody", $_POST["txtMainBody"], 5000, 15);
+    }
+} else {
+    echo textareaInputBlank(true, "Main Body", "txtMainBody", 5000, 15);
+}
+
+
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["sltType"])) {
+        echo comboInputEmptyError(true, "Type", "sltType", "Please select...", "errEmptType", "Please select a Type", $newsArticle->listTypes());
+    } else {
+        echo comboInputPostback(true, "Type", "sltType", $_POST["sltType"], $newsArticle->listTypes());
+    }
+} else {
+    echo comboInputBlank(true, "Type", "sltType", "Please select...", $newsArticle->listTypes());
+}
+
+
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["sltVisibility"])) {
+        echo comboInputEmptyError(true, "Visibility", "sltVisibility", "Please select...", "errEmptVisibility", "Please select a Visibility level", $newsArticle->listVisibilities());
+    } else {
+        echo comboInputPostback(true, "Visibility", "sltVisibility", $_POST["sltVisibility"],$newsArticle->listVisibilities());
+    }
+} else {
+    echo comboInputBlank(true, "Visibility", "sltVisibility", "Please select...", $newsArticle->listVisibilities());
+}
+
 ?>
-<h1 class="pageTitle">Create news article</h1>
 
-<div class="small-6 small-centered large-10 large-centered columns">
-    <form method="post">
-        <p class="required">* indicates a required field</p>
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>News Title</b>
-                    <input type="text" id="txtTitle" name="txtTitle" maxlength="100" placeholder="Enter a title"/>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Main Body</b>
-                    <textarea id="txtBody" name="txtBody"  placeholder="Enter Content" rows="10" maxlength="5000"></textarea>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Type</b>
-                    <select id="sltType" name="sltType">
-                        <option value="" selected="selected">Please select...</option>
-                        <option value="1">Standard</option>
-                        <option value="2">Announcements</option>
-                        <option value="3">Competitions</option>
-                        <option value="4">Events</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Visibility</b>
-                    <select id="sltVisibility" name="sltVisibility">
-                        <option value="" selected="selected">Please select...</option>
-                        <option value="1">Committee</option>
-                        <option value="2">Members</option>
-                        <option value="3">Public</option>
-                    </select>
-                </label>
-            </div>
-        </div>
         <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
                 <input class="button" type="submit" name="btnSubmit" value="Create news">
                 <input class="button" type="reset" value="Reset">
         </div>
+    <a href="javascript: history.go(-1)" class="button">Go Back</a>
     </form>
+</div>
+</div>
 </div>

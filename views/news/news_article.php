@@ -15,8 +15,8 @@ if (isset($_SESSION['update'])) {
     unset($_SESSION['update']);
 }
 
-$typeLink = $_SESSION['domain'] . "/news/type/" . $newsArticle->getType();
-$userLink = $_SESSION['domain'] . "/news/user/" . $newsArticle->getUserID();
+$typeLink = $_SESSION['domain'] . "news/type/" . $newsArticle->getType();
+$userLink = $_SESSION['domain'] . "news/user/" . $newsArticle->getUserID();
 
 ?>
 <div class="blog-post">

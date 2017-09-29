@@ -6,6 +6,25 @@
  * Time: 23:54
  * Edit news article
  */
+
+
+?>
+<script>
+    tinymce.init({
+        selector: '#txtMainBody',
+        plugins: 'advlist, table, autolink, code, contextmenu, imagetools, fullscreen, hr,  colorpicker, preview, spellchecker, link, autosave, lists, visualblocks'
+    });
+</script>
+
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>news" role="link">News</a></li>
+    <li class="current">Edit a News Item</li>
+</ul>
+
+<h1 class="pageTitle">Edit News ID: <?= $newsArticle->getNewsID(); ?> </h1>
+
+<?php
 if (isset($_SESSION['error'])) {
     echo '<br/>';
     echo '<div class="callout warning">
@@ -15,72 +34,60 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']);
 }
 
-?>
-<h1 class="pageTitle">Edit News ID: <?= $newsArticle->getNewsID(); ?> </h1>
+    echo '<div class="large-12 medium-12 small-12 columns">';
+    echo formStart();
+    if (isset($_POST["btnSubmit"])) {
+        if (empty($_POST["txtTitle"])) {
+            echo textInputEmptyError(true, "News Title", "txtTitle", "errEmptyTitle", "Please enter a News Title", 100);
+        } else {
+            echo textInputPostback(true, "News Title", "txtTitle", $_POST["txtTitle"], 100);
+        }
+    } else {
+        echo textInputSetup(true, "News Title", "txtTitle", $newsArticle->getTitle(), 100);
+    }
 
-<div class="large-12 medium-12 small-12 columns">
-    <form method="post">
+    if (isset($_POST["btnSubmit"])) {
+        if (empty($_POST["txtMainBody"])) {
+            echo textareaInputEmptyError(true, "Main Body", "txtMainBody", "errEmptyBody", "Please enter a Main Body", 5000, 15);
+        } else {
+            echo textareaInputPostback(true, "Main Body", "txtMainBody", $_POST["txtMainBody"], 5000, 15);
+        }
+    } else {
+        echo textareaInputSetup(true, "Main Body", "txtMainBody", $newsArticle->getMainBody(), 5000, 15);
+    }
 
 
-        <p class="required">* indicates a required field</p>
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>News Title</b>
-                    <input type="text" id="txtTitle" name="txtTitle" maxlength="100"
-                           value="<?= $newsArticle->getTitle(); ?>"/>
-                </label>
-            </div>
-        </div>
+    if (isset($_POST["btnSubmit"])) {
+        echo comboInputPostback(true, "Type", "sltType", $_POST["sltType"], $newsArticle->listTypes());
+    } else {
+        if (!is_null($newsArticle->getType())) {
+            echo comboInputSetup(true, "Type", "sltType", $newsArticle->getType(), $newsArticle->listTypes());
+        } else {
+            echo comboInputBlank(true, "Type", "sltType", "Please select...", $newsArticle->listTypes());
+        }
+    }
 
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Main Body</b>
-                    <textarea id="txtBody" name="txtBody" rows="10" maxlength="5000"><?= $newsArticle->getMainBody(); ?></textarea>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Visibility</b>
-                    <select id="sltType" name="sltType">
-                        <option value="1" <?= ($newsArticle->getType() == 1) ? "selected" : ""; ?>>Standard</option>
-                        <option value="2" <?= ($newsArticle->getType() == 2) ? "selected" : ""; ?>>Announcements</option>
-                        <option value="3" <?= ($newsArticle->getType() == 3) ? "selected" : ""; ?>>Competitions</option>
-                        <option value="4" <?= ($newsArticle->getType() == 4) ? "selected" : ""; ?>>Events</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="large-12 medium-12 small-12 columns">
-                <label><b>
-                        <span class="required">* </span>Type</b>
-                    <select id="sltVisibility" name="sltVisibility">
-                        <option value="1" <?= ($newsArticle->getVisibility() == 1) ? "selected" : ""; ?>>Committee
-                        </option>
-                        <option value="2" <?= ($newsArticle->getVisibility() == 2) ? "selected" : ""; ?>>Members
-                        </option>
-                        <option value="3" <?= ($newsArticle->getVisibility() == 3) ? "selected" : ""; ?>>Public</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-        <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
+    if (isset($_POST["btnSubmit"])) {
+        echo comboInputPostback(true, "Visibility", "sltVisibility", $_POST["sltVisibility"], $newsArticle->listVisibilities());
+    } else {
+        if (!is_null($newsArticle->getVisibility())) {
+            echo comboInputSetup(true, "Visibility", "sltVisibility", $newsArticle->getVisibility(), $newsArticle->listVisibilities());
+        } else {
+            echo comboInputBlank(true, "Visibility", "sltVisibility", "Please select...", $newsArticle->listVisibilities());
+        }
+    }
+    ?>
+        <div class="large-5 large-centered medium-8 medium-centered small-12 small-centered columns">
             <div class="row">
                 <input class="success button" type="submit" name="btnUpdate" value="Update News">
                 <input type="submit" name="btnDelete" class="alert button" value="Delete News Article"
                        onclick="return confirm('Are you sure? This WILL delete this news article.')">
+
             </div>
             <div class="row">
                 <input class="button" type="reset" value="Reset">
             </div>
-
         </div>
+    <a href="javascript: history.go(-1)" class="button">Go Back</a>
     </form>
 </div>
