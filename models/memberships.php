@@ -43,13 +43,31 @@ class memberships
 
     public function getStartDate()
     {
-        return $this->startDate;
+        return $this->endDate;
     }
 
     public function getEndDate()
     {
         return $this->endDate;
     }
+
+    public function displayStartDate()
+    {
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->startDate);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
+    }
+
+    public function displayEndDate()
+    {
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->endDate);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
+    }
+
+
 
     //Setters
     public function setMemberShipID($memberShipID)
@@ -98,8 +116,8 @@ class memberships
 
             foreach ($results as $row) {
                 $this->setUserID($row['userID']);
-                $this->getType($row['type']);
-                $this->getPaid($row['paid']);
+                $this->setType($row['type']);
+                $this->setPaid($row['paid']);
                 $this->setStartDate($row['startDate']);
                 $this->setEndDate($row['endDate']);
             }
@@ -125,6 +143,8 @@ class memberships
             $stmt->bindParam(':paid', $this->getPaid(), PDO::PARAM_STR);
             $stmt->bindValue(':startDate', $startDate, PDO::PARAM_STR);
             $stmt->bindValue(':endDate', $endDate, PDO::PARAM_STR);
+
+            $stmt->execute();
             return true;
 
         } catch (PDOException $e) {
@@ -268,6 +288,28 @@ class memberships
         }
     }
 
+    public function listTypes()
+    {
+        $types = array(
+            0  => "One Semester",
+            1  => "Full Membership",
+        );
+        return $types;
+    }
+
+
+    public function displayPaid()
+    {
+        switch ($this->getType()) {
+            case 0:
+                return "No";
+                break;
+
+            case 1:
+                return "Yes";
+                break;
+        }
+    }
 
     //Input validation
 
@@ -278,6 +320,22 @@ class memberships
         } else {
             return false;
         }
+    }
+
+
+
+    public function dateInRange($startDate, $endDate)
+    {
+        $now = new DateTime();
+        $startdate = new DateTime($startDate);
+        $enddate = new DateTime($endDate);
+
+        if($startdate <= $now && $now <= $enddate) {
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
 

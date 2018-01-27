@@ -15,9 +15,11 @@
         <div class="row column log-in-form">
             <h4 class="text-center">Log in with your username</h4>
             <?php
+
             if (isset($_SESSION['error'])) {
                 echo '<p class="alert-box alert radius centre">The username and/or password you entered was incorrect.</p>';
                 unset($_SESSION['error']);
+
 
                 echo formStart();
                 echo textInputEmptyError(true, "Username", "txtUsername", "errUsername", "", 8);
@@ -28,6 +30,8 @@
                 echo textInputBlank(true, "Username", "txtUsername", 8);
                 echo passwordInputBlank(true, "Password", "txtPassword", 50);
                 echo formEndWithButton("Login");
+
+                echo '<a href="'.htmlspecialchars($loginURL).'"><img src="./img/fblogin-btn.png"></a>';
             }
             ?>
             </div>

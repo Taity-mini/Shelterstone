@@ -77,6 +77,11 @@ class pages_controller extends controller
             $conn = dbConnect();
             $user = new users($_SESSION['userID']);
             $user->getAllDetails($conn);
+            if($user->getPicture() == null)
+            {
+                $user->setPicture($_SESSION['domain'].'/img/profile.png');
+            }
+
             $this->data['profile'] = $user;
             //Extract data array to display variables on view template
             extract($this->data);
@@ -97,6 +102,11 @@ class pages_controller extends controller
             $userID = $_SESSION['params']['userID'];
             $user = new users($userID);
             $user->getAllDetails($conn);
+
+            if($user->getPicture() == null)
+            {
+                $user->setPicture($_SESSION['domain'].'/img/profile.png');
+            }
 
             //Security and error checks
             if (!$user->doesExist($conn)) {
@@ -251,7 +261,13 @@ class pages_controller extends controller
         include('./inc/forms.inc.php');
         require_once('./models/users.php');
         require_once('./models/users_groups.php');
+        include('./inc/fbConfig.php');
 
+
+        $helper = $fb->getRedirectLoginHelper();
+
+        // Get login url
+        $loginURL = $helper->getLoginUrl($redirectURL, $fbPermissions);
 
         $conn = dbConnect();
 

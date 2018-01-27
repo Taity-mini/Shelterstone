@@ -24,7 +24,8 @@ if (isset($_SESSION['update'])) {
 <h3>Profile Details</h3>
 
 <div class="row collapse large-centered">
-    <img src="<?= $_SESSION['domain'] ?>/img/profile.png"/>
+
+    <img width=160px; height="160px"; src="<?=$profile->getPicture();?>"/>
 </div>
 <div class="row collapse large-centered">
     <b> <?= $profile->getFullName(); ?></b>

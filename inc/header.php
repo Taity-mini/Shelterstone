@@ -56,6 +56,26 @@ if (isset($_SESSION['userID'])) {
     -->
 
     <script type="text/javascript">
+        // Remove the ugly Facebook appended hash
+        // <https://github.com/jaredhanson/passport-facebook/issues/12>
+        (function removeFacebookAppendedHash() {
+            if (!window.location.hash || window.location.hash !== '#_=_')
+                return;
+            if (window.history && window.history.replaceState)
+                return window.history.replaceState('', document.title, window.location.pathname + window.location.search);
+            // Prevent scrolling by storing the page's current scroll offset
+            var scroll = {
+                top: document.body.scrollTop,
+                left: document.body.scrollLeft
+            };
+            window.location.hash = "";
+            // Restore the scroll offset, should be flicker free
+            document.body.scrollTop = scroll.top;
+            document.body.scrollLeft = scroll.left;
+        }());
+    </script>
+
+    <script type="text/javascript">
         hs.graphicsDir = '<?php echo $domain ?>highslide/graphics/';
         hs.align = 'center';
         hs.transitions = ['expand', 'crossfade'];
@@ -151,14 +171,20 @@ if (isset($_SESSION['userID'])) {
             if (isset($_SESSION['userID'])) {
                 $conn = dbConnect();
                 $groups = new users_groups();
+                //Committee only!
                 if ($groups->isUserCommittee($conn, $_SESSION['userID']) || $groups->isAdministrator($conn, $_SESSION['userID'])) {
-
 
                     ?>
                     <li class="has-submenu">
                         <a href="#">Committee</a>
                         <ul class="submenu menu vertical" data-submenu>
-                            <li><a href="<?php echo $domain ?>committee/member_management">Member Management</a></li>
+                            <li><a href="#">Members</a>
+                                <ul class="submenu menu vertical" data-submenu>
+                                    <li><a href="<?php echo $domain ?>committee/member_management">Member Management</a></li>
+                                    <li><a href="<?php echo $domain ?>committee/memberships">Memberships</a></li>
+                                    <li><a href="<?php echo $domain ?>freshers">Freshers</a></li>
+                                </ul>
+                            </li>
                             <li><a href="<?php echo $domain ?>committee/event_management">Event Management</a></li>
                             <li><a href="<?php echo $domain ?>committee/agenda">Agenda's & Minutes</a></li>
                         </ul>

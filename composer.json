@@ -1,0 +1,15 @@
+{
+  "name": "AndrewTait/rgu_shelterstone",
+  "description": "website for rgu shelterstone",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Andrew Tait",
+      "email": "1504693@rgu.ac.uk"
+    }
+  ],
+  "require": {
+    "facebook/graph-sdk": "^5.6"
+  }
+}

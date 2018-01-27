@@ -265,7 +265,7 @@ class users
 
     public function setPicture($picture)
     {
-        $this->picture = htmlentities($picture);
+        $this->picture = $picture;
     }
 
     public function setLink($link)
@@ -391,7 +391,7 @@ class users
             $stmt->bindValue(':tokenCode', $this->getTokenCode(), PDO::PARAM_STR);
             $stmt->execute();
 
-            var_dump($stmt->debugDumpParams());
+            ///var_dump($stmt->debugDumpParams());
 
             return true;
 
@@ -401,6 +401,77 @@ class users
         } catch (Exception $e) {
             dbClose($conn);
             return "create failed: " . $e->getMessage();
+        }
+    }
+
+    //Facebook login/update
+
+    public function checkUser($conn){
+        //check is user exists first
+        $sql = "SELECT userID FROM users WHERE oauth_uid = :oauth LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':oauth',  $this->getOauthUID(), PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $this->setUserID($results[0]['userID']);
+            if (count($results) > 0) {
+                $date = date('Y-m-d H:i:s');
+                try {
+                    $sql = "UPDATE users SET email = :email, firstName = :firstName, lastName = :lastName, picture = :picture, link = :link, modified = :modified
+                    WHERE userID = :userID";
+
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindValue('userID', $this->getUserID(), PDO::PARAM_STR);
+                    $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_STR);
+                    $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
+                    $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_STR);
+                    $stmt->bindValue(':picture', $this->getPicture(), PDO::PARAM_STR);
+                    $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
+                    $stmt->bindValue(':modified', $date, PDO::PARAM_STR);
+                    $stmt->execute();
+                    return true;
+                } catch (PDOException $e) {
+                    return "update user failed: " . $e->getMessage();
+                }
+            } else {
+                //Save current date time to variable for insertion
+                $date = date('Y-m-d H:i:s');
+
+                //SQL Statement
+                //$sql = "INSERT INTO `users` (`userID`, `groupID`, `oauth_uid`, `username`, `password`, `email`, `firstName`, `lastName`, `bio`, `interests`, `picture`, `link`, `role`, `certifications`, `approved`, `accredited`, `driver`, `banned`, `created`, `modified`, `tokenCode`) VALUES (NULL, :groupID, :oauth, :username, :password, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approved, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
+                $sql = "INSERT INTO users VALUES (null, :groupID, :oauth ,:username, null, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approve, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(':groupID', 3, PDO::PARAM_INT);
+                $stmt->bindValue(':oauth', $this->getOauthUID(), PDO::PARAM_STR);
+                $stmt->bindValue(':username', $this->getUsername(), PDO::PARAM_STR);
+
+
+                //Profile Fields
+
+                $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_STR);
+                $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
+                $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_STR);
+                $stmt->bindValue(':bio', $this->getBio(), PDO::PARAM_STR);
+                $stmt->bindValue(':interests', $this->getInterests(), PDO::PARAM_INT);
+                $stmt->bindValue(':picture', $this->getPicture(), PDO::PARAM_STR);
+                $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
+                $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_STR);
+                $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_STR);
+                $stmt->bindValue(':approve', 0, PDO::PARAM_INT);
+                $stmt->bindValue(':accredited', 0, PDO::PARAM_INT);
+                $stmt->bindValue(':driver', 0, PDO::PARAM_INT);
+                $stmt->bindValue(':banned', 0, PDO::PARAM_INT);
+                $stmt->bindValue(':created', $date, PDO::PARAM_STR);
+                $stmt->bindValue(':modified', $date, PDO::PARAM_STR);
+                $stmt->bindValue(':tokenCode', $this->getTokenCode(), PDO::PARAM_STR);
+                $stmt->execute();
+                return true;
+            }
+        } catch (PDOException $e) {
+            return "User exist query failed: " . $e->getMessage();
         }
     }
 
@@ -461,6 +532,29 @@ class users
         } catch (PDOException $e) {
             return "Database query failed: " . $e->getMessage();
         }
+    }
+
+
+    public function listAllUsersDropdown($conn)
+    {
+        $sql = "SELECT * FROM users u";
+
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+
+            $array = array();
+            foreach ($results as $result) {
+                $array[$result["userID"]] = $result["firstName"] . " " . $result["lastName"];
+            }
+
+            return $array;
+        } catch (PDOException $e) {
+            return "List all users failed: " . $e->getMessage();
+        }
+
     }
 
 

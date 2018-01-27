@@ -47,7 +47,7 @@ function formEndWithButton($buttonText, $delete = false, $back = false)
     if (!$delete && !$back) {
         return '</div>                   
                     <div class="row">
-                        <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
+                        <div class="large-8 large-centered medium-6 medium-centered small-12 small-centered columns">
                             <input type="submit" name="btnSubmit" value="' . $buttonText . '" class="medium radius button middle h6 capitalise"/>
                              <input class="button" type="reset" value="Reset">
                         </div>

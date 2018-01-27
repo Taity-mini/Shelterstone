@@ -118,6 +118,9 @@ $rules = array(
     'member_management' => "/committee/member_management",
     'event_management' => "/committee/event_management",
     'agenda' => "/committee/agenda",
+    'memberships' => "/committee/memberships",
+    'editMemberships' => "/committee/memberships/edit/(?'memID'[\w\-]+)",
+
 
 
 //News page
@@ -357,19 +360,14 @@ foreach ($rules as $action => $rule) {
                 call('committee', 'member_management');
                 break;
 
-            case 'banUser':
-                call('committee', $action);
+
+            case 'memberships':
+                call('committee', 'memberships');
                 break;
 
-            case 'approveUser':
+            case 'editMemberships':
                 call('committee', $action);
                 break;
-
-
-            case 'accreditUser':
-                call('committee', $action);
-                break;
-
 
             case 'event_management':
                 call('committee', $action);
