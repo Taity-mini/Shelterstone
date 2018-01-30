@@ -43,7 +43,7 @@ class memberships
 
     public function getStartDate()
     {
-        return $this->endDate;
+        return $this->startDate;
     }
 
     public function getEndDate()
@@ -54,7 +54,7 @@ class memberships
     public function displayStartDate()
     {
         //Convert mysql date format to UK format
-        $date = new DateTime($this->startDate);
+        $date = new DateTime($this->getStartDate());
         $date->setTimezone(new DateTimeZone('Europe/London'));
         return $date->format('d/m/Y');
     }
@@ -62,11 +62,10 @@ class memberships
     public function displayEndDate()
     {
         //Convert mysql date format to UK format
-        $date = new DateTime($this->endDate);
+        $date = new DateTime($this->getEndDate());
         $date->setTimezone(new DateTimeZone('Europe/London'));
         return $date->format('d/m/Y');
     }
-
 
 
     //Setters
@@ -92,12 +91,12 @@ class memberships
 
     public function setStartDate($startDate)
     {
-        $this->startDate = htmlentities($startDate);
+        $this->startDate = $startDate;
     }
 
     public function setEndDate($endDate)
     {
-        $this->endDate = htmlentities($endDate);
+        $this->endDate = $endDate;
     }
 
     //CRUD methods
@@ -130,9 +129,9 @@ class memberships
     public function create($conn)
     {
         try {
-            //Save current date time to variable for insertion
-            $startDate = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getStartDate())));
-            $endDate = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getEndDate())));
+//            //Save current date time to variable for insertion
+//            $startDate = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getStartDate())));
+//            $endDate = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getEndDate())));
 
 
             //SQL Statement
@@ -141,8 +140,8 @@ class memberships
             $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
             $stmt->bindParam(':type', $this->getType(), PDO::PARAM_STR);
             $stmt->bindParam(':paid', $this->getPaid(), PDO::PARAM_STR);
-            $stmt->bindValue(':startDate', $startDate, PDO::PARAM_STR);
-            $stmt->bindValue(':endDate', $endDate, PDO::PARAM_STR);
+            $stmt->bindValue(':startDate', $this->getStartDate(), PDO::PARAM_STR);
+            $stmt->bindValue(':endDate', $this->getEndDate(), PDO::PARAM_STR);
 
             $stmt->execute();
             return true;
@@ -159,8 +158,6 @@ class memberships
             $sql = "UPDATE memberships SET userID = :userID, type = :type, paid = :paid, startDate = :startDate, endDate= :endDate
                     WHERE memberShipID = :memberShipID";
 
-            $startDate = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getStartDate())));
-            $endDate = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getEndDate())));
 
             $stmt = $conn->prepare($sql);
 
@@ -168,8 +165,8 @@ class memberships
             $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
             $stmt->bindParam(':type', $this->getType(), PDO::PARAM_STR);
             $stmt->bindParam(':paid', $this->getPaid(), PDO::PARAM_STR);
-            $stmt->bindValue(':startDate', $startDate, PDO::PARAM_STR);
-            $stmt->bindValue(':endDate', $endDate, PDO::PARAM_STR);
+            $stmt->bindValue(':startDate', $this->getStartDate(), PDO::PARAM_STR);
+            $stmt->bindValue(':endDate', $this->getEndDate(), PDO::PARAM_STR);
 
             $stmt->execute();
             return true;
@@ -225,6 +222,52 @@ class memberships
         } catch (PDOException $e) {
             return "Check membership record exists query failed: " . $e->getMessage();
         }
+    }
+
+    private function isDateBetweenDates(DateTime $date, DateTime $startDate, DateTime $endDate)
+    {
+        return $date > $startDate && $date < $endDate;
+    }
+
+
+    public function calculateMemberShipDate()
+    {
+        //local variables
+
+        //dates based off 2018 calender: http://www.rgu.ac.uk/areas-of-study/academic-calendar/academic-calendar/
+        $currentYear = date('o');
+        $nextYear = $currentYear + 1;
+        $previousYear = $currentYear - 1;
+        $now = new DateTime(date("Y-m-d"));
+
+        $semesterOneStart = new DateTime();
+        $semesterOneEnd = new DateTime();
+        $semesterOneStart->setDate($currentYear, 8, 10);
+        $semesterOneEnd->setDate($currentYear, 12, 21);
+        $semesterTwoStart = new DateTime();
+        $semesterTwoEnd = new DateTime();
+        $semesterTwoStart->setDate($nextYear, 1, 28);
+        $semesterTwoEnd->setDate($nextYear, 5, 13);
+
+
+        switch ($this->getType()) {
+            case 0:
+                if ($this->isDateBetweenDates($semesterOneStart, $semesterOneEnd, $now)) {
+                    $this->setStartDate($semesterOneStart->format('Y-m-d'));
+                    $this->setEndDate($semesterOneEnd->format('Y-m-d'));
+                } else if ($this->isDateBetweenDates($semesterTwoStart, $semesterTwoEnd, $now)) {
+                    $this->setStartDate($semesterTwoStart->format('Y-m-d'));
+                    $this->setEndDate($semesterTwoEnd->format('Y-m-d'));
+                }
+                break;
+
+            case 1:
+                $this->setStartDate($semesterOneStart->format('Y-m-d'));
+                $this->setEndDate($semesterTwoEnd->format('Y-m-d'));
+                break;
+
+        }
+
     }
 
     //List memberships - ALL or by userID
@@ -291,8 +334,8 @@ class memberships
     public function listTypes()
     {
         $types = array(
-            0  => "One Semester",
-            1  => "Full Membership",
+            0 => "One Semester",
+            1 => "Full Membership",
         );
         return $types;
     }
@@ -323,16 +366,15 @@ class memberships
     }
 
 
-
     public function dateInRange($startDate, $endDate)
     {
         $now = new DateTime();
         $startdate = new DateTime($startDate);
         $enddate = new DateTime($endDate);
 
-        if($startdate <= $now && $now <= $enddate) {
+        if ($startdate <= $now && $now <= $enddate) {
             return true;
-        }else{
+        } else {
             return false;
         }
 

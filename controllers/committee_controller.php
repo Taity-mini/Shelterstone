@@ -118,9 +118,8 @@ class committee_controller extends controller
                     $membership->setType($_POST['sltType']);
                     $membership->setPaid($_POST['chkPaid']);
 
-                    $date = date("Y/m/d");
-                    $membership->setStartDate($date);
-                    $membership->setEndDate($date);
+                    $membership->calculateMemberShipDate();
+
 
                     if ($membership->create($conn)) {
                         $_SESSION['memberShipCreate'] = true;
@@ -190,6 +189,8 @@ class committee_controller extends controller
 //                    }
 
                     $membership->setPaid($payment);
+                    $membership->calculateMemberShipDate();
+
 
 
                     if ($membership->update($conn)) {

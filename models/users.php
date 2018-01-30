@@ -419,11 +419,12 @@ class users
             if (count($results) > 0) {
                 $date = date('Y-m-d H:i:s');
                 try {
-                    $sql = "UPDATE users SET email = :email, firstName = :firstName, lastName = :lastName, picture = :picture, link = :link, modified = :modified
+                    $sql = "UPDATE users SET groupID = :groupID, email = :email, firstName = :firstName, lastName = :lastName, picture = :picture, link = :link, modified = :modified
                     WHERE userID = :userID";
 
                     $stmt = $conn->prepare($sql);
-                    $stmt->bindValue('userID', $this->getUserID(), PDO::PARAM_STR);
+                    $stmt->bindValue(':groupID', $this->getGroupID(), PDO::PARAM_STR);
+                    $stmt->bindValue(':userID', $this->getUserID(), PDO::PARAM_STR);
                     $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_STR);
                     $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
                     $stmt->bindValue(':lastName', $this->getLastName(), PDO::PARAM_STR);
@@ -438,13 +439,14 @@ class users
             } else {
                 //Save current date time to variable for insertion
                 $date = date('Y-m-d H:i:s');
+                $this->createFBUsername();
 
                 //SQL Statement
                 //$sql = "INSERT INTO `users` (`userID`, `groupID`, `oauth_uid`, `username`, `password`, `email`, `firstName`, `lastName`, `bio`, `interests`, `picture`, `link`, `role`, `certifications`, `approved`, `accredited`, `driver`, `banned`, `created`, `modified`, `tokenCode`) VALUES (NULL, :groupID, :oauth, :username, :password, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approved, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
                 $sql = "INSERT INTO users VALUES (null, :groupID, :oauth ,:username, null, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approve, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
 
                 $stmt = $conn->prepare($sql);
-                $stmt->bindValue(':groupID', 3, PDO::PARAM_INT);
+                $stmt->bindValue(':groupID', $this->getGroupID(), PDO::PARAM_INT);
                 $stmt->bindValue(':oauth', $this->getOauthUID(), PDO::PARAM_STR);
                 $stmt->bindValue(':username', $this->getUsername(), PDO::PARAM_STR);
 
@@ -460,7 +462,7 @@ class users
                 $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
                 $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_STR);
                 $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_STR);
-                $stmt->bindValue(':approve', 0, PDO::PARAM_INT);
+                $stmt->bindValue(':approve', $this->getApproved(), PDO::PARAM_INT);
                 $stmt->bindValue(':accredited', 0, PDO::PARAM_INT);
                 $stmt->bindValue(':driver', 0, PDO::PARAM_INT);
                 $stmt->bindValue(':banned', 0, PDO::PARAM_INT);
@@ -475,6 +477,14 @@ class users
         }
     }
 
+
+    //Create custom Facebook username based on first/last name and outh_uid.
+    private function createFBUsername()
+    {
+        $username = substr($this->getFirstName(), 0,1) . "." . $this->getLastName(). "_";
+        $username .= substr($this->getOauthUID(),-4,4);
+        $this->setUserName($username);
+    }
 
     //Update user's profile
     public function updateUser($conn)

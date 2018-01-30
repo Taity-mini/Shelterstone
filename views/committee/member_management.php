@@ -86,10 +86,11 @@ if ($toAccredit !=null) {
         $userlink = "../profile/view/" . $row['userID'];
 
 
-        echo '<td> <a href="' . $userlink . '">' . $userName->getUsername() . '</a></td>';
         echo '<td>' . $userName->getFirstName() . ' '.$userName->getLastName().'</td>';
+        echo '<td> <a href="' . $userlink . '">' . $userName->getUsername() . '</a></td>';
         echo '<td>'.$group->getGroupName().'</td>';
-        echo '<td align="center"><button type="button" class="button" data-value0="1" data-value1="' . $userName->getUserID() . '">Accredit</button></td>';   echo "<tr>";
+        echo '<td align="center"><button type="button" class="button" data-value0="1" data-value1="' . $userName->getUserID() . '">Accredit</button></td>';
+        echo "<tr>";
     }
     echo "</table>";
     echo '<form action="" method="post"><input type="submit" name="btnAccreditAll" class="button large-text-center" value="Accredit All Users"
@@ -136,6 +137,7 @@ if ($membersList !=null) {
         echo '<td>'.$userName->getRole().'</td>';
         echo '<td><a href="' . $userlink . '">View</a></td>';
         echo '<td><a href="' . $editlink . '">Edit</a></td>';
+        echo "<tr>";
     }
     echo "</table><hr>";
 } else {

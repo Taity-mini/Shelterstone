@@ -48,8 +48,8 @@ function formEndWithButton($buttonText, $delete = false, $back = false)
         return '</div>                   
                     <div class="row">
                         <div class="large-8 large-centered medium-6 medium-centered small-12 small-centered columns">
-                            <input type="submit" name="btnSubmit" value="' . $buttonText . '" class="medium radius button middle h6 capitalise"/>
-                             <input class="button" type="reset" value="Reset">
+                            <input type="submit" name="btnSubmit" value="' . $buttonText . '" class="button expanded"/>
+                             <input class="button expanded" type="reset" value="Reset">
                         </div>
                     </div>
                 </div></div>           
