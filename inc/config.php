@@ -15,7 +15,7 @@ $mysqlusername = "root";
 $mysqlpassword = "";
 $mysqldatabase = "shelterstone";
 $host = "localhost";
-$domain ="http://shelterstone.dev/";
+$domain ="http://localhost.rgushelterstone.co.uk/";
 
 //Database connection and close function using PDO methods
 

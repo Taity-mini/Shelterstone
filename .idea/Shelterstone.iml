@@ -4,6 +4,16 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/server" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/Authentication" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/Exceptions" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/FileUpload" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/GraphNodes" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/Helpers" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/Http" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/HttpClients" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/PersistentData" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/PseudoRandomString" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/Url" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/graph-sdk" />
     </content>
     <orderEntry type="inheritedJdk" />

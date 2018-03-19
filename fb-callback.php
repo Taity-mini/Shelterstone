@@ -5,9 +5,10 @@ require_once('./inc/fbConfig.php');
 require_once('./models/users.php');
 
 
+
 $helper = $fb->getRedirectLoginHelper();
 try {
-    $accessToken = $helper->getAccessToken();
+    $accessToken = $helper->getAccessToken($redirectURL);
 } catch (Facebook\Exceptions\FacebookResponseException $e) {
     // When Graph returns an error
     echo 'Graph returned an error: ' . $e->getMessage();
