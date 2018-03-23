@@ -50,6 +50,7 @@ if (isset($_SESSION['userID'])) {
     <script type="text/javascript" src="<?php echo $domain ?>highslide/highslide-with-gallery.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $domain ?>highslide/highslide.css"/>
 
+
     <!--
         2) Optionally override the settings defined at the top
         of the highslide.js file. The parameter hs.graphicsDir is important!

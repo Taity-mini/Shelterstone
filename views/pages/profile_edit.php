@@ -98,11 +98,25 @@ echo '<fieldset class="fieldset">
                 <legend>Admin Stuff</legend>';
 
 
-if (isset($_POST["btnSubmit"])) {
-    echo textInputPostback(false, "Role", "txtRole", $_POST["txtLink"], 200);
-} else {
-    echo textInputSetup(false, "Role", "txtRole", $profile->getRole(), 200);
-}
+//if (isset($_POST["btnSubmit"])) {
+//    echo textInputPostback(false, "Role", "txtRole", $_POST["txtLink"], 200);
+//} else {
+//    echo textInputSetup(false, "Role", "txtRole", $profile->getRole(), 200);
+//}
+
+    if (isset($_POST["btnSubmit"])) {
+        echo comboInputPostback(true, "Role", "sltRole", $_POST["sltRole"], $roleList);
+    } else {
+        if (!is_null($profile->getGroupID())) {
+            echo comboInputSetup(true, "Role", "sltRole", $profile->getRole(), $roleList);
+        } else {
+            echo comboInputBlank(true, "Role", "sltRole", "Please select...", $roleList);
+        }
+    }
+
+//    echo comboInputBlank(true, "Role", "sltRole", "Please select...", $roleList);
+
+
 
 
     if (isset($_POST["btnSubmit"])) {

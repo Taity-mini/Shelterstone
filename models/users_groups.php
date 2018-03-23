@@ -345,7 +345,8 @@ class users_groups
     {
         //$sql = "SELECT userID FROM users u, user_groups ug, groups g WHERE ug.groupID = g.groupID AND g.groupID IN (2,3,4,5,6) AND u.userID = :userID";
 
-        $sql = "SELECT u.userID FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.userID = :userID ORDER BY g.groupID ASC";
+        $sql = "SELECT u.userID, r.roleID FROM users u, groups g, roles r WHERE u.groupID = g.groupID AND u.role = r.roleID AND u.groupID = 2 ORDER BY r.roleID";
+
 
         $stmt = $conn->prepare($sql);
 
@@ -355,17 +356,19 @@ class users_groups
 
             $array = array();
             foreach ($results as $result) {
-                if (array_key_exists($result["groupID"], $array)) {
-                    $list = $array[$result["groupID"]];
+                if (array_key_exists($result["roleID"], $array)) {
+                    $list = $array[$result["roleID"]];
                     array_push($list, $result["userID"]);
-                    $array[$result["groupID"]] = $list;
+                    $array[$result["roleID"]] = $list;
                 } else {
                     $list = array();
                     array_push($list, $result["userID"]);
-                    $array[$result["groupID"]] = $list;
+                    $array[$result["roleID"]] = $list;
                 }
             }
             return $array;
+
+//            return $results;
         } catch (PDOException $e) {
             return "List Committee Query failed: " . $e->getMessage();
         }

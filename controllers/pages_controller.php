@@ -21,6 +21,7 @@ class pages_controller extends controller
         require_once('./models/news.php');
 
 
+
         $conn = dbConnect();
         $user = new users();
         $newsArticle = new news();
@@ -73,6 +74,7 @@ class pages_controller extends controller
     //Profile for current user
     public function profile()
     {
+        require_once('./models/roles.php');
         if (isset($_SESSION['userID'])) {
             $conn = dbConnect();
             $user = new users($_SESSION['userID']);
@@ -96,6 +98,7 @@ class pages_controller extends controller
     //View other user's profile
     public function viewProfile()
     {
+        require_once('./models/roles.php');
         if (isset($_SESSION['userID'])) {
 
             $conn = dbConnect();
@@ -127,6 +130,7 @@ class pages_controller extends controller
     //Edit other user's profile
     public function profile_edit()
     {
+
         //Check if user is logged in first
         if (isset($_SESSION['userID'])) {
             $conn = dbConnect();
@@ -135,6 +139,12 @@ class pages_controller extends controller
             $user->getAllDetails($conn);
             $groups = new users_groups($user->getUserID(), $user->getGroupID());
             $limited_edit = false;
+
+            $roles = new roles();
+
+            $roleList = $roles->listAllRoles($conn);
+
+
 
             //Security and error checks
             if (!$user->doesExist($conn)) {
@@ -189,7 +199,7 @@ class pages_controller extends controller
                             $update->setAccredited($accredited);
                             $update->setBanned($banned);
 
-                            $update->setRole($_POST['txtRole']);
+                            $update->setRole($_POST['sltRole']);
                             $update->setGroupID($_POST['sltGroup']);
                         }
 
@@ -218,6 +228,7 @@ class pages_controller extends controller
             $this->data['profile'] = $user;
             $this->data['group'] = $groups;
             $this->data['limitedEdit'] = $limited_edit;
+            $this->data['roleList'] = $roleList;
             //Extract data array to display variables on view template
             extract($this->data);
             include('./inc/forms.inc.php');
@@ -237,6 +248,26 @@ class pages_controller extends controller
 
     public function committee()
     {
+        $conn = dbConnect();
+        $committee  = new users_groups();
+
+        $committeeList = $committee->ListCommittee($conn);
+
+        //Obsecure emails from bots/crawlers
+        function myobfiscate($emailaddress)
+        {
+            $email = $emailaddress;
+            $obfuscatedEmail = null;
+            $length = strlen($email);
+            for ($i = 0; $i < $length; $i++) {
+                $obfuscatedEmail .= "&#" . ord($email[$i]) . ";";
+            }
+            return $obfuscatedEmail;
+        }
+
+        require_once('./models/roles.php');
+
+
         require_once('./views/pages/committee.php');
     }
 
