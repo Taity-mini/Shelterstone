@@ -1,3 +1,9 @@
+$(document).ready(function () {
+    $("#revealEmails").click(function () {
+        $(".emailHider").toggle();
+    });
+});
+
 $(function() {
     $('[type="date"]').datepicker({
         changeMonth: true,
