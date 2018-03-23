@@ -226,9 +226,5 @@ if ($bannedUsers !=null) {
 
 ?>
 
-<script>
+<script type="text/javascript" async src="<?php echo $_SESSION['domain'] ?>js/committee.js"></script>
 
-
-
-
-</script>
