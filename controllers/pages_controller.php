@@ -130,7 +130,7 @@ class pages_controller extends controller
     //Edit other user's profile
     public function profile_edit()
     {
-
+        require_once('./models/roles.php');
         //Check if user is logged in first
         if (isset($_SESSION['userID'])) {
             $conn = dbConnect();
@@ -248,6 +248,8 @@ class pages_controller extends controller
 
     public function committee()
     {
+        require_once('./models/users.php');
+        require_once('./models/users_groups.php');
         $conn = dbConnect();
         $committee  = new users_groups();
 

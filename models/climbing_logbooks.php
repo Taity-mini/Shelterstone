@@ -44,7 +44,10 @@ class climbing_logbooks
 
     public function getDate()
     {
-        return $this->date;
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->date);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d/m/Y');
     }
 
     public function getNotes()
@@ -115,17 +118,18 @@ class climbing_logbooks
 
     public function create($conn)
     {
-        $sql = "INSERT INTO climbing_logbook VALUES(:userID, :locationID, :logType, :date, :notes)";
+        $sql = "INSERT INTO climbing_logbook VALUES(NULL,:userID, :locationID, :logType, :Logdate, :notes)";
         $stmt = $conn->prepare($sql);
 
         //Save current date time to variable for insertion
-        $date = date('Y-m-d H:i:s');
+        $date = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getDate())));
+
 
         $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
         $stmt->bindParam(':locationID', $this->getLocationID(), PDO::PARAM_STR);
         $stmt->bindParam(':logType', $this->getLogType(), PDO::PARAM_STR);
-        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
-        $stmt->bindParam(':logType', $this->getNotes(), PDO::PARAM_STR);
+        $stmt->bindParam(':Logdate', $date, PDO::PARAM_STR);
+        $stmt->bindParam(':notes', $this->getNotes(), PDO::PARAM_STR);
 
         try {
             $stmt->execute();
@@ -224,14 +228,14 @@ class climbing_logbooks
 
         $stmt = $conn->prepare($sql);
 
+
         if (!is_null($userID)) {
-            $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
+            $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
         }
         if (!is_null($locationID)) {
-            $stmt->bindParam(':locationID', $locationID, PDO::PARAM_STR);
+            $stmt->bindParam(':locationID', $locationID, PDO::PARAM_INT);
         }
 
-        $stmt = $conn->prepare($sql);
 
         try {
             $stmt->execute();
@@ -241,6 +245,32 @@ class climbing_logbooks
             return "Database List logbooks query failed: " . $e->getMessage();
         }
     }
+
+
+    //List functions
+
+    public function listTypes()
+    {
+        $types = array(
+            1  => "Indoor",
+            2  => "Outdoors",
+        );
+        return $types;
+    }
+
+
+    public function displayType()
+    {
+        switch ($this->getLogType()) {
+            case 1:
+                return "Indoor";
+                break;
+            case 2:
+                return "Outdoor";
+                break;
+        }
+    }
+
 
 //Validation functions
 

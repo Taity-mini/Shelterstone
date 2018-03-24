@@ -105,10 +105,11 @@ $rules = array(
     //Logbook
     'climbing_log' => "/climbing_log",
     'climbing_logbook' => "/climbing_log/logbook/(?'logID'[\w\-]+)",
+    'climbing_logbook_edit' => "/climbing_log/logbook/edit/(?'logID'[\w\-]+)",
 
     //Locations
     'climbing_log_locations' => "/climbing_log/locations",
-    'climbing_log_location_edit' => "/climbing_log/locations/(?'locationID'[\w\-]+)",
+    'climbing_log_location_edit' => "/climbing_log/locations/edit/(?'locationID'[\w\-]+)",
 
     //Routes
     'climbing_log_route' => "/climbing_log/route/(?'routeID'[\w\-]+)",
@@ -336,12 +337,16 @@ foreach ($rules as $action => $rule) {
                 call('climbing', 'logbook');
                 break;
 
+            case 'climbing_logbook_edit':
+                call('climbing', 'editLogbook');
+                break;
+
             case 'climbing_log_locations':
                 call('climbing', 'locations');
                 break;
 
-            case 'climbing_log_locations_edit':
-                call('climbing', 'EditLocations');
+            case 'climbing_log_location_edit':
+                call('climbing', 'editLocations');
                 break;
 
 

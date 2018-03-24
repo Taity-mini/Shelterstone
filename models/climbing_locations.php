@@ -17,7 +17,7 @@ class climbing_locations
 
     function _constructor($locationID = -1)
     {
-        $this->locationID = htmlentities($locationID);
+        $this->locationID = $locationID;
     }
 
     //Getters
@@ -34,7 +34,7 @@ class climbing_locations
 
     public function getLocationDescription()
     {
-        return $this->getLocationDescription();
+        return $this->locationDescription;
     }
 
     //Setters
@@ -59,8 +59,9 @@ class climbing_locations
 
     public function getAllDetails($conn)
     {
-        $sql = "SELECT * FROM climbing_locations WHERE locationID = " . $this->getLocationID();
+        $sql = "SELECT * FROM climbing_locations WHERE locationID = :locationID";
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':locationID', $this->getLocationID(), PDO::PARAM_INT);
 
         try {
             $stmt->execute();
@@ -80,11 +81,11 @@ class climbing_locations
 
     public function create($conn)
     {
-        $sql = "INSERT INTO climbing_location VALUES(:locationName, :locationDescription)";
+        $sql = "INSERT INTO climbing_locations VALUES(NULL,:locationName, :locationDescription)";
         $stmt = $conn->prepare($sql);
 
         $stmt->bindParam(':locationName', $this->getLocationName(), PDO::PARAM_STR);
-        $stmt->bindParam(':locationDescription', $this->getLocationName(), PDO::PARAM_STR);
+        $stmt->bindParam(':locationDescription', $this->getLocationDescription(), PDO::PARAM_STR);
 
         try {
             $stmt->execute();
@@ -116,15 +117,35 @@ class climbing_locations
 
     public function delete($conn)
     {
-        $sql = "DELETE FROM climbing_locations";
+        $sql = "DELETE FROM climbing_locations WHERE locationID = :locationID";
 
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':locationID', $this->getLocationID(), PDO::PARAM_INT);
 
+        $stmt->execute();
         try {
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
             return "Delete climbing location failed: " . $e->getMessage();
+        }
+    }
+
+    public function inUse($conn){
+        $sql = "SELECT locationID FROM climbing_logbook WHERE locationID = :locationID LIMIT 1";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':locationID', $this->getLocationID(), PDO::PARAM_STR);
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            if (count($results) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return "Check climbing location is in use query failed: " . $e->getMessage();
         }
     }
 
@@ -162,6 +183,26 @@ class climbing_locations
             return "Database List locations query failed: " . $e->getMessage();
         }
     }
+
+
+    public function listAllLocationsDropdown($conn) {
+        $sql = "SELECT locationID, locationName FROM climbing_locations";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+
+            $array = array();
+            foreach ($results as $result) {
+                $array[$result["locationID"]] = $result["locationName"];
+            }
+            return $array;
+        } catch (PDOException $e) {
+            return "Query failed: " . $e->getMessage();
+        }
+    }
+
 
     //Validation functions
 

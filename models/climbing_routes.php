@@ -218,6 +218,50 @@ class climbing_routes
         }
     }
 
+    public function listTypes()
+    {
+        $types = array(
+            1  => "Boulder",
+            2  => "Solo",
+            3  => "DWS",
+            4  => "Lead",
+            5  => "Alt-Lead",
+            6  => "Second",
+            7  => "Top Rope",
+        );
+        return $types;
+    }
+
+    public function displayType()
+    {
+        switch ($this->getType()) {
+            case 1:
+                return "Boulder";
+                break;
+            case 2:
+                return "Solo";
+                break;
+            case 3:
+                return "DWS";
+                break;
+            case 4:
+                return "Lead";
+                break;
+
+            case 4:
+                return "Alt-Lead";
+                break;
+
+            case 5:
+                return "Second";
+                break;
+
+            case 5:
+                return "Top Rope";
+                break;
+        }
+    }
+
  //Validation functions
 
     public function isInputValid($name, $style, $grade) {
