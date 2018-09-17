@@ -5,6 +5,13 @@ Extra styling on top of foundation framework
 
 */
 
+html,
+body {
+    margin:0;
+    padding:0;
+    height:100%;
+}
+
 .title-bar {
     background: #662383;
 }
@@ -12,37 +19,107 @@ Extra styling on top of foundation framework
 
 /*Main layout elements*/
 
+/**Wrapper*/
+
+#container {
+
+    min-height:100%;
+    position:relative;
+}
+
+
 #content
 {
+    padding: 10px 10px 30px;
     border: 30px #0a0a0a;
 }
+
+
+
+
+
+/*Footer*/
+
+footer {
+    position: relative;
+    bottom:0;
+    width:100%;
+    background-color: #800a72;
+    height: 200px;
+
+}
+
+.footer_background{
+    background-color: #800a72;
+    margin-top:10px;
+    color:white;
+}
+
+footer a {
+    color:white;
+}
+
+footer a:hover{
+    color:white;
+    text-decoration: underline;
+}
+
+.sponsor-logo{
+    width:170px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.rgu-logos{
+    width:150px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.social-media i{
+    font-size: 1.2rem;
+}
+
+/*Orbit Fix*/
+
+ul.orbit-container {
+    height: auto !important;
+}
+li.orbit-slide {
+    max-height: none !important;
+}
+
+
 
 /*Change main menu styling
  Dropdown parent
 */
-.dropdown.menu > li.is-dropdown-submenu-parent > a, .singleLink > a {
-    background: inherit;
-    background-color: rgba(128, 0, 128, 1);
-    box-sizing: border-box;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(0, 0, 0, 1);
-    border-radius: 4px;
-    color: white;
-    margin-right: 5px;
+@media only screen and (min-width: 600px)  {
+    .dropdown.menu > li.is-dropdown-submenu-parent > a, .singleLink > a {
+        background: inherit;
+        background-color: rgba(128, 0, 128, 1);
+        box-sizing: border-box;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 1);
+        border-radius: 4px;
+        color: white;
+        margin-right: 5px;
+    }
+    /*Menu Hover*/
+    .dropdown.menu > li.is-dropdown-submenu-parent > a:hover, .singleLink > a:hover {
+        background: inherit;
+        text-decoration: underline;
+        background-color: rgba(128, 0, 128, 0.886274509803922);
+        box-sizing: border-box;
+        border: 1px solid rgba(153, 153, 153, 1);
+        border-radius: 4px;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
 }
-/*Menu Hover*/
-.dropdown.menu > li.is-dropdown-submenu-parent > a:hover, .singleLink > a:hover {
-    background: inherit;
-    text-decoration: underline;
-    background-color: rgba(128, 0, 128, 0.886274509803922);
-    box-sizing: border-box;
-    border: 1px solid rgba(153, 153, 153, 1);
-    border-radius: 4px;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
+
 
 /* Dropdown arrow color to white
 */
@@ -121,6 +198,8 @@ Extra styling on top of foundation framework
     text-align: right; }
 .split.button.left-icon span {
     left: 0; }
+
+
 
 
 /*Registration form*/
@@ -233,11 +312,6 @@ img__description {
     opacity: 1;
 }
 
-.menu-centered
-{
-    margin: auto;
-    width: 60%;
-}
 
 .submenu
 {
@@ -312,22 +386,22 @@ img__description {
     cursor: default
 }
 
-.breadcrumbs>*:before {
-    content: "/";
-    color: #aaa;
-    margin: 0 0.75rem;
-    position: relative;
-    top: 1px
-}
+/*.breadcrumbs>*:before {*/
+    /*content: "/";*/
+    /*color: #aaa;*/
+    /*margin: 0 0.75rem;*/
+    /*position: relative;*/
+    /*top: 1px*/
+/*}*/
 
-.breadcrumbs>*:first-child:before {
-    content: " ";
-    margin: 0
-}
+/*.breadcrumbs>*:first-child:before {*/
+    /*content: " ";*/
+    /*margin: 0*/
+/*}*/
 
-[aria-label="breadcrumbs"] [aria-hidden="true"]:after {
-    content: "/"
-}
+/*[aria-label="breadcrumbs"] [aria-hidden="true"]:after {*/
+    /*content: "/"*/
+/*}*/
 
 /*Form Stuff*/
 .required {
@@ -353,7 +427,12 @@ img__description {
 
 
 .social {
-    margin-right: .25rem;
+       margin-right: .25rem;
+       font-size: large;
+   }
+
+.social i {
+    font-size: larger;
 }
 
 .social.facebook {
@@ -455,3 +534,86 @@ img__description {
 
 .emailHider{display:none}
 
+
+/*.menu {*/
+    /*text-align: left;*/
+/*}*/
+
+/*@media only screen and (min-width: 768px) {*/
+    /*.menu {*/
+        /*text-align: center;*/
+    /*}*/
+
+/*}*/
+
+
+.responsive-card-table {
+    border-collapse: collapse;
+}
+
+.responsive-card-table.unstriped tbody {
+    background-color: transparent;
+}
+
+.responsive-card-table th {
+    background-color: #e6e6e6;
+}
+
+.responsive-card-table tr,
+.responsive-card-table th,
+.responsive-card-table td {
+    border: 1px solid #0a0a0a;
+}
+
+@media screen and (max-width: 640px) {
+    .responsive-card-table {
+
+    }
+    .responsive-card-table thead tr {
+        position: absolute;
+        top: -9999em;
+        left: -9999em;
+    }
+    .responsive-card-table tr {
+        border: 1px solid #0a0a0a;
+        display: block;
+    }
+    .responsive-card-table tr + tr {
+        margin-top: 1.5rem;
+    }
+    .responsive-card-table td {
+        border: none;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-justify-content: flex-start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+        border-bottom: 1px solid #0a0a0a;
+        padding-left: 50%;
+        position: relative;
+    }
+    .responsive-card-table td:before {
+        content: attr(data-label);
+        display: inline-block;
+        font-weight: bold;
+        line-height: 1.5;
+        margin-left: -100%;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+    .responsive-card-table td:after {
+        content: '';
+        position: absolute;
+        background: #e6e6e6;
+        width: 45%;
+        height: 95%;
+        left: 1px;
+        top: 1px;
+        z-index: 0;
+    }
+}

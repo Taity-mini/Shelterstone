@@ -1,3 +1,9 @@
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/" role="link">Gallery</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/album/<?php echo $albums->getAlbumID(); ?>/" role="link">View Album</a></li>
+    <li class="current">Edit Album</li>
+</ul>
 <?php
 /**
  * Created by PhpStorm.
@@ -16,7 +22,7 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']);
 }
 
-echo '<div class="small-6 small-centered large-10 large-centered columns">';
+echo '<div class="small-12 small-centered large-10 large-centered columns">';
 
 echo '<h1 class="pageTitle" >Gallery | Edit album: '.$albums->getAlbumName().'</h1>';
 
@@ -81,4 +87,6 @@ echo formStart();
 
 </div>
 </form>
+</div>
+</div>
 </div>

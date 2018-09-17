@@ -26,7 +26,7 @@ if (isset($_SESSION['approve'])) {
 }
 
 if ($toApproveList !=null) {
-    echo '<table style="border 1px;">
+    echo '<table class="responsive-card-table unstriped" style="border 1px;">
         <tr>
             <th>Name</th>
             <th>Username<br></th>
@@ -70,7 +70,7 @@ if (isset($_SESSION['accredit'])) {
 }
 
 if ($toAccredit !=null) {
-    echo '<table style="border 1px;">
+    echo '<table  class="responsive-card-table unstriped"  style="border 1px;">
         <tr>
             <th>Name</th>
             <th>Username<br></th>
@@ -108,7 +108,7 @@ if ($toAccredit !=null) {
 echo '<h4 class="large-text-center">Members list</h4>';
 
 if ($membersList !=null) {
-    echo '<table style="border 1px;">
+    echo '<table  class="responsive-card-table unstriped"  style="border 1px;">
         <tr>
 
             <th>Name</th>
@@ -122,8 +122,10 @@ if ($membersList !=null) {
     foreach ($membersList as $row) {
         $userName = new users($row['userID']);
         $userName->getAllDetails($conn);
+
         $group = new users_groups($userName->getUserID(), $userName->getGroupID());
         $group->getAllDetails($conn);
+
 
         //Hyperlinks
         $userlink = "../profile/view/" . $row['userID'];
@@ -134,7 +136,7 @@ if ($membersList !=null) {
         echo '<td>' . $userName->getFirstName() . ' '.$userName->getLastName().'</td>';
         echo '<td> '.$userName->getUsername().'</td>';
         echo '<td>'.$group->getGroupName().'</td>';
-        echo '<td>'.$userName->getRole().'</td>';
+        echo '<td>'.$roles->displayRole($conn,$userName->getRole()).'</td>';
         echo '<td><a href="' . $userlink . '">View</a></td>';
         echo '<td><a href="' . $editlink . '">Edit</a></td>';
         echo "<tr>";
@@ -153,7 +155,7 @@ echo '<h4 class="large-text-center">List of Club Drivers</h4>';
 
 
 if ($drivers !=null) {
-    echo '<table style="border 1px;">
+    echo '<table  class="responsive-card-table unstriped"  style="border 1px;">
         <tr>
             <th>Name</th>
             <th>Username<br></th>
@@ -172,7 +174,7 @@ if ($drivers !=null) {
         echo '<td>' . $userName->getFirstName() . ' '.$userName->getLastName().'</td>';
         echo '<td> <a href="' . $userlink . '">' . $userName->getUsername() . '</a></td>';
         echo '<td>'.$group->getGroupName().'</td>';
-        echo '<td>'.$userName->getRole().'</td>';
+        echo '<td>'.$roles->displayRole($conn,$userName->getRole()).'</td>';
     }
 } else {
     echo "No Drivers currently in the club";
@@ -191,14 +193,16 @@ if (isset($_SESSION['unBan'])) {
 }
 
 if ($bannedUsers !=null) {
-    echo '<table style="border 1px;">
+    echo '<table  class="responsive-card-table unstriped"  style="border 1px;">
+        <thead>
         <tr>
             <th>Name</th>
             <th>Username<br></th>
             <th>Group</th>
             <th>Role</th>
             <th>Action</th>
-        </tr>';
+        </tr>
+        </thead>';
 
     foreach ($bannedUsers as $row) {
         $userName = new users($row['userID']);
@@ -207,12 +211,12 @@ if ($bannedUsers !=null) {
         $group->getAllDetails($conn);
         $userlink = "../profile/view/" . $row['userID'];
 
-
-        echo '<td>' . $userName->getFirstName() . ' '.$userName->getLastName().'</td>';
-        echo '<td> <a href="' . $userlink . '">' . $userName->getUsername() . '</a></td>';
-        echo '<td>'.$group->getGroupName().'</td>';
-        echo '<td>'.$userName->getRole().'</td>';
-        echo '<td align="center"><button type="button" class="button" data-value0="2" data-value1="' . $userName->getUserID() . '">UnBan</button></td>';   echo "<tr>";
+        echo "<tr>";
+        echo '<td data-label="Name">' . $userName->getFirstName() . ' '.$userName->getLastName().'</td>';
+        echo '<td data-label="Username"> <a href="' . $userlink . '">' . $userName->getUsername() . '</a></td>';
+        echo '<td data-label="Group">'.$group->getGroupName().'</td>';
+        echo '<td data-label="Role">'.$roles->displayRole($conn,$userName->getRole()).'</td>';
+        echo '<td data-label="Action" align="center"><button type="button" class="button" data-value0="2" data-value1="' . $userName->getUserID() . '">UnBan</button></td>';   echo "</tr>";
     }
 
     echo "</table>";

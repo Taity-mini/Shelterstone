@@ -12,10 +12,11 @@
     <div class="large-12 medium-12 small-12 columns">
 
         <ul class="breadcrumbs">
-            <li><a href="../index.php" role="link">Home</a></li>
+            <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
             <li>Files</li>
             <li class="current">Download File</li>
         </ul>
+
 
         <?php
 

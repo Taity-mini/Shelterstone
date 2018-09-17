@@ -14,8 +14,15 @@
         plugins: 'advlist, table, autolink, code, contextmenu, imagetools, fullscreen, hr,  colorpicker, preview, spellchecker, link, autosave, lists, visualblocks'
     });
 </script>
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>news" role="link">News</a></li>
+    <li class="current">Create News Item</li>
+</ul>
 
 <div class="small-6 small-centered large-10 large-centered columns">
+
+
 <h1 class="pageTitle">Create news article</h1>
 <?php
 if (isset($_SESSION['error'])) {
@@ -79,6 +86,7 @@ if (isset($_POST["btnSubmit"])) {
         </div>
     <a href="javascript: history.go(-1)" class="button">Go Back</a>
     </form>
+</div>
 </div>
 </div>
 </div>

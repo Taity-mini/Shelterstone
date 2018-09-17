@@ -1,3 +1,7 @@
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li class="current">Register</li>
+</ul>
 <?php
 /**
  * Created by PhpStorm.

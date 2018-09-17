@@ -7,13 +7,19 @@
  * Upload Photo to gallery page
  */
 ?>
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/" role="link">Gallery</a></li>
+    <li class="current">Upload</li>
+</ul>
+
 <h1 class="pageTitle">Gallery | Upload</h1>
 
 
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post"
       enctype="multipart/form-data">
 <?php
-echo '<div class="small-6 small-centered large-10 large-centered columns">';
+echo '<div class="small-12 small-centered large-10 large-centered columns">';
 echo ' <div class="row">
                     <div class="large-12 medium-12 small-12 columns"> 
                             <p class="required">* indicates a required field</p>
@@ -71,4 +77,6 @@ if (isset($_POST["btnSubmit"])) {
 echo formEndWithButton("Upload Photo", false, "../album/" . $_SESSION['albumUpload'] . "");
 ?>
 
+</div>
+</div>
 </div>

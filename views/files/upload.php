@@ -7,16 +7,14 @@
  * File upload page
  */
 ?>
-
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>files" role="link">Files</a></li>
+    <li class="current">Upload File</li>
+</ul>
 <div class="row" id="content">
     <div class="large-12 medium-12 small-12 columns">
-
-        <ul class="breadcrumbs">
-            <li><a href="../index.php" role="link">Home</a></li>
-            <li><a href="../files/" role="link">Files</a></li>
-            <li class="current">Upload File</li>
-        </ul>
-        <h2 class="text-center">Upload File</h2>
+        <h2 class="pageTitle">Upload File</h2>
 
         <?php
         if (isset($_SESSION['error'])) {
@@ -78,3 +76,4 @@
 
         </form>
     </div>
+</div>

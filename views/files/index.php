@@ -7,16 +7,17 @@
  * Files index
  */
 ?>
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li class="current">Files</li>
+</ul>
 
 <div class="row" id="content">
     <div class="row-12 columns">
 
-        <ul class="breadcrumbs">
-            <li><a href="../" role="link">Home</a></li>
-            <li class="current">Files</li>
-        </ul>
 
-        <h2>Files List</h2>
+
+        <h2 class="pageTitle">Files List</h2>
 
         <?php
 

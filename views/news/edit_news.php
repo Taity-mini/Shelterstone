@@ -91,3 +91,6 @@ if (isset($_SESSION['error'])) {
     <a href="javascript: history.go(-1)" class="button">Go Back</a>
     </form>
 </div>
+</div>
+</div>
+</div>

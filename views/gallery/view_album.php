@@ -6,7 +6,15 @@
  * Time: 00:33
  * View individual album based on ID
  */
+?>
 
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/" role="link">Gallery</a></li>
+    <li class="current">View Album</li>
+</ul>
+
+<?php
 if (isset($_SESSION['upload'])) {
     echo '<br/>';
     echo '<div class="callout success">

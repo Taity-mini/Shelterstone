@@ -6,7 +6,15 @@
  * Time: 16:51
  * News Article Page
  */
+?>
 
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>news" role="link">News</a></li>
+    <li class="current">View News Article</li>
+</ul>
+
+<?php
 if (isset($_SESSION['update'])) {
     echo '<br/>';
     echo '<div class="callout success">

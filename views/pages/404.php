@@ -8,7 +8,7 @@
  *  404 not found error page
  */
 
-$img = "http://shelterstone.dev/img/404.jpg";
+$img = $_SESSION['domain']. "img/404.jpg";
 
 echo "<h1>404: Page not found!</h1>";
 echo "<img src= '$img'/>";

@@ -9,6 +9,5 @@
 
 //Setup Database connection files
 session_start();
-require_once('/inc/config.php');
-require_once ('views/layout.php');
-
+require_once('./inc/config.php');
+require_once ('./views/layout.php');

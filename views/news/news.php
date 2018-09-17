@@ -6,7 +6,16 @@
  * Time: 16:51
  * Shelterstone news list page
  */
-if (isset($_SESSION['create'])) {
+?>
+
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li class="current">News</li>
+</ul>
+
+
+
+<?php if (isset($_SESSION['create'])) {
     echo '<br/>';
     echo '<div class="callout success">
           <h5>News article Successfully Added!</h5>

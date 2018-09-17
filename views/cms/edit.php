@@ -15,8 +15,8 @@
     </script>
 
         <ul class="breadcrumbs">
-            <li><a href="../index.php" role="link">Home</a></li>
-            <li><a href="/pages/view/<?php echo $pages->getPageID(); ?>" role="link">Page</a></li>
+            <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+            <li><a href="<?php echo $_SESSION['domain'] ?>pages/view/<?php echo $pages->getPageID(); ?>" role="link">Page</a></li>
             <li class="current">Edit a Page Item</li>
         </ul>
 

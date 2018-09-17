@@ -7,7 +7,7 @@
  * Membership edit page
  */
 
-
+echo'<div class="large-12 medium-12 small-12 columns">';
 echo '<h4 class="large-text-center">Edit Membership ID: '.$memberships->getMemberShipID().'</h4>';
 
 echo formStart();
@@ -28,7 +28,7 @@ if (isset($_POST["btnSubmit"])) {
 
 
 ?>
-<div class="large-12 medium-12 small-12 columns">
+<div class="large-8 medium-8 small-12 columns">
     <input id="chkPaid" type="checkbox" name="chkPaid" value="1"
     <?php echo($memberships->getPaid() == 1 ? 'checked' : ''); ?>/><label
     for="Paid"><b>Paid?</b></label>
@@ -44,3 +44,6 @@ if (isset($_POST["btnSubmit"])) {
 
 </div>
 <a href="/committee/memberships" class="button">Go Back</a>
+</div>
+</div>
+</div>

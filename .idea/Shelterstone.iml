@@ -15,6 +15,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/PseudoRandomString" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/Url" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/facebook/graph-sdk" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/responsive_tables/javascripts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/responsive_tables/stylesheets" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

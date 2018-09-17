@@ -8,6 +8,12 @@
  */
 ?>
 
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>about/club_information" role="link">About</a></li>
+    <li class="current">Club Committee</li>
+</ul>
+<div class="small-12 small-centered large-12 large-centered columns">
 <h1 class="pageTitle" >Committee</h1>
 
 <p>The committee for the current session: <br/>
@@ -69,5 +75,5 @@ foreach ($committeeList as $item =>$value) {
 
 ?>
 <script type="text/javascript" async src="<?php echo $_SESSION['domain'] ?>js/functions.js"></script>
-
+</div>
 

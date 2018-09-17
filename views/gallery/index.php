@@ -6,7 +6,14 @@
  * Time: 00:38
  * Gallery index page - Lists all albums
  */
+?>
 
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li class="current">Gallery</li>
+</ul>
+
+<?php
 if (isset($_SESSION['create'])) {
     echo '<br/>';
     echo '<div class="callout success">

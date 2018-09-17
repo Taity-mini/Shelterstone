@@ -16,11 +16,11 @@
     });
 </script>
 </head>
-        <ul class="breadcrumbs">
-            <li><a href="../index.php" role="link">Home</a></li>
-            <li><a href="../news.php" role="link">Pages</a></li>
-            <li class="current">Create a new page</li>
-        </ul>
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>pages/" role="link">Pages</a></li>
+    <li class="current">Create Page</li>
+</ul>
 
         <h2>Create a new Page</h2>
 

@@ -1,3 +1,9 @@
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/" role="link">Gallery</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/album/<?php echo $photos->getAlbumID(); ?>/" role="link">View Album</a></li>
+    <li class="current">View Photo</li>
+</ul>
 <?php
 /**
  * Created by PhpStorm.
@@ -18,7 +24,7 @@ if (isset($_SESSION['update'])) {
 $photoFileLink = $photos->getFullFilePath();
 ?>
 <h1 class="pageTitle">Gallery | View photo: <?= $photos->getTitle() ?> </h1>
-<div class="small-6 small-centered large-10 large-centered columns">
+<div class="small-12 small-centered large-10 large-centered columns">
     <div class="row ">
         <div class="separator"></div>
         <div class="highslide-gallery small-6 small-centered columns">

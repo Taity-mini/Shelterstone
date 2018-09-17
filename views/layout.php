@@ -12,4 +12,3 @@ include('./inc/header.php');
 require_once('./route.php');
 
 include('./inc/footer.php');
-

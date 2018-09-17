@@ -16,7 +16,7 @@ if (isset($_SESSION['error'])) {
 }
 
 
-echo '<div class="small-6 small-centered large-10 large-centered columns">';
+echo '<div class="small-12 small-centered large-10 large-centered columns">';
 
 echo '<h1 class="pageTitle">Edit Profile: ' . $profile->getUsername() . '</h1>';
 
@@ -95,27 +95,19 @@ if ($limitedEdit) { ?>
 
 
 echo '<fieldset class="fieldset">
-                <legend>Admin Stuff</legend>';
+                <legend><b>Admin Stuff</b></legend>';
 
 
-//if (isset($_POST["btnSubmit"])) {
-//    echo textInputPostback(false, "Role", "txtRole", $_POST["txtLink"], 200);
-//} else {
-//    echo textInputSetup(false, "Role", "txtRole", $profile->getRole(), 200);
-//}
 
     if (isset($_POST["btnSubmit"])) {
-        echo comboInputPostback(true, "Role", "sltRole", $_POST["sltRole"], $roleList);
+        echo comboInputPostback(false, "Role", "sltRole", $_POST["sltRole"], $roleList);
     } else {
         if (!is_null($profile->getGroupID())) {
-            echo comboInputSetup(true, "Role", "sltRole", $profile->getRole(), $roleList);
+            echo comboInputSetup(false, "Role", "sltRole", $profile->getRole(), $roleList);
         } else {
-            echo comboInputBlank(true, "Role", "sltRole", "Please select...", $roleList);
+            echo comboInputBlank(false, "Role", "sltRole", "Please select...", $roleList);
         }
     }
-
-//    echo comboInputBlank(true, "Role", "sltRole", "Please select...", $roleList);
-
 
 
 
@@ -141,16 +133,16 @@ echo '<fieldset class="fieldset">
     </div>
 
     <div class="row collapse">
-        <div class="small-2  columns">
-            <span class="prefix">Last Modified Date:</span>
+        <div class="small-2 columns">
+            <span class="prefix">Last Modified:</span>
         </div>
         <div class="small-10  columns">
             <?= $profile->getModifiedDate() ?>
         </div>
     </div>
-
+    <br/>
     <fieldset class="large-12s columns">
-        <legend>Profile Flags</legend>
+        <legend><b>Profile Flags</b></legend>
         <input id="chkApproved" type="checkbox" name="chkApproved" value="1"
             <?php echo($profile->getApproved() == 1 ? 'checked' : ''); ?>/><label
                 for="Approved"><b>Approved</b></label>

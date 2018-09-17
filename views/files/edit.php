@@ -7,16 +7,15 @@
  */
 
 ?>
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href=".<?php echo $_SESSION['domain'] ?>files" role="link">Files</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>files/view/<?= $files->getFileID() ?>" role="link">View File</a></li>
+    <li class="current">Edit File</li>
+</ul>
 
 <div class="row" id="content">
     <div class="large-12 medium-12 small-12 columns">
-
-        <ul class="breadcrumbs">
-            <li><a href="../index.php" role="link">Home</a></li>
-            <li><a href="../files/" role="link">Files</a></li>
-            <li><a href="../files/view.php?id=<?= $files->getFileID() ?>" role="link">View File</a></li>
-            <li class="current">Edit File</li>
-        </ul>
 
         <?php
 
@@ -44,7 +43,7 @@
         }
 
         ?>
-        <h2 class="text-center">Files | Edit file: <?= $files->getTitle() ?></h2>
+        <h2 class="pageTitle">Files | Edit file: <?= $files->getTitle() ?></h2>
 
         <div class="small-6 small-centered large-10 large-centered columns">
             <form action="" method="post">

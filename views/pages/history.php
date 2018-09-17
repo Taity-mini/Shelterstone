@@ -10,17 +10,12 @@
 
 ?>
 
-<nav aria-label="You are here:" role="navigation">
-    <ul class="breadcrumbs">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Features</a></li>
-        <li class="disabled">Gene Splicing</li>
-        <li>
-            <span class="show-for-sr">Current: </span> Cloning
-        </li>
-    </ul>
-</nav>
-
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>about/club_information" role="link">About</a></li>
+    <li class="current">Club History</li>
+</ul>
+<div class="small-12 small-centered large-12 large-centered columns">
 <h1 class="pageTitle" >History</h1>
 
 <div class="row text-center">
@@ -48,4 +43,4 @@
         True to our roots, and to keep ourselves modern, as well as a Club President we have two Vice Presidents, one dedicated to Climbing Competitions, the other to our outdoor trips. </br>
     </p>
 </div>
-
+</div>

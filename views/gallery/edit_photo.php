@@ -6,7 +6,17 @@
  * Time: 00:37
  * Edit Photo page
  */
+?>
 
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/" role="link">Gallery</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/album/<?php echo $photos->getAlbumID(); ?>/" role="link">View Album</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>gallery/photo/<?php echo $photos->getPhotoID(); ?>/" role="link">View Photo</a></li>
+    <li class="current">Edit Photo</li>
+</ul>
+
+<?php
 if (isset($_SESSION['error'])) {
     echo '<br/>';
     echo '<div class="callout warning">
@@ -18,7 +28,7 @@ if (isset($_SESSION['error'])) {
 
 echo '<h1 class="pageTitle">Gallery | Edit Photo ID: '.$photos->getPhotoID().'</h1>';
 
-echo '<div class="small-6 small-centered large-10 large-centered columns">';
+echo '<div class="small-12 small-centered large-10 large-centered columns">';
 echo formStart();
 
 

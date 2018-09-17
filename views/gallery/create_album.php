@@ -19,7 +19,7 @@ if (isset($_SESSION['error'])) {
 ?>
 <h1 class="pageTitle">Gallery | Create album</h1>
 
-<div class="small-6 small-centered large-10 large-centered columns">
+<div class="small-12 small-centered large-10 large-centered columns">
     <?php
 
     echo formStart();

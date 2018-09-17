@@ -14,8 +14,8 @@
     <div class="large-12 medium-12 small-12 columns">
 
         <ul class="breadcrumbs">
-            <li><a href="../index.php" role="link">Home</a></li>
-            <li><a href="/pages/view/<?php echo $pages->getPageID();?>" role="link">Page</a></li>
+            <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+            <li><a href="<?php echo $_SESSION['domain'] ?>pages/view/<?php echo $pages->getPageID();?>" role="link">Page</a></li>
             <li class="current">Delete a Page</li>
         </ul>
 
@@ -35,7 +35,7 @@
 
         echo formStart(false);
 
-        echo '<div class="panel"><p class="centre middle">Are you sure you want to delete the page: <b>' . $pages->getPageTitle() . '</b>?</p></div>';
+        echo '<div class="row"><p class="centre middle">Are you sure you want to delete the page: <b>' . $pages->getPageTitle() . '</b>?</p></div>';
 
         echo formEndWithDeleteButton("Delete");
 

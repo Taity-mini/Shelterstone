@@ -122,6 +122,16 @@ class roles{
         }
     }
 
+    public function displayRole($conn, $roleID){
+        $roleList = $this->listAllRoles($conn);
+
+        if (array_key_exists($roleID, $roleList)) {
+            return $roleList[$roleID];
+        } else{
+            return 'No Role';
+        }
+    }
+
     public function isInputValid($role, $description) {
         if (isRoleValid($role) && isDescriptionValid($description)) {
             return true;

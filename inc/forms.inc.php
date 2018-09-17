@@ -20,14 +20,18 @@ function formStart($required = true)
     }
 }
 
-function linkButton($text, $link, $news = false)
+function linkButton($text, $link, $news = false, $center = false)
 {
     if ($news) {
         return '<div class="large-6 large-centered medium-6 medium-centered small-12 small-centered columns">
                 <a href="' . $link . '" class="medium radius button middle centre h6 capitalise">' . $text . '</a>
             </div>';
+    } else if ($center) {
+        return '</div><div class="row"><div class="large-12 medium-12 small-12 columns text-center">
+                <a href="' . $link . '" class="medium radius button middle centre h6 capitalise">' . $text . '</a>
+            </div></div>';
     } else {
-        return '</div><div class="row"><div class="large-6 large-centered medium-6 medium-centered small-12 small-centered columns">
+        return '</div><div class="row"><div class="large-12 medium-12 small-12 columns">
                 <a href="' . $link . '" class="medium radius button middle centre h6 capitalise">' . $text . '</a>
             </div></div>';
     }
@@ -1054,6 +1058,9 @@ function comboInputPostback($isRequired, $labelDescription, $labelControlName, $
         $output = '<div class="large-12 medium-12 small-12 columns">
                 <label><b>' . $labelDescription . '</b>
                 <select id="' . $labelControlName . '" name="' . $labelControlName . '">';
+        if ($labelDescription === "Climbing Partner") {
+            $output .= '<option value="" selected="selected">No Partner</option>;';
+        }
         foreach ($options as $key => $value) {
             if ($labelDescription === "Rank") {
                 if ($value == $selected) {
@@ -1156,8 +1163,11 @@ function comboInputSetup($isRequired, $labelDescription, $labelControlName, $sel
             $output = '<div class="large-12 medium-12 small-12 columns">
                 <label><b>' . $labelDescription . '</b>
                 <select id="' . $labelControlName . '" name="' . $labelControlName . '">';
-            if ($labelDescription === "Squad") {
-                $output .= '<option value="" selected="selected">No Squad</option>;';
+            if ($labelDescription === "Role") {
+                $output .= '<option value="" selected="selected">No Role</option>;';
+            }
+            if ($labelDescription === "Climbing Partner") {
+                $output .= '<option value="" selected="selected">No Partner</option>;';
             }
             foreach ($options as $key => $value) {
                 if ($labelDescription === "Rank") {
