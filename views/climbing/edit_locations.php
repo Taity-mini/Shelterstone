@@ -7,14 +7,16 @@
  * Climbing Locations - Edit
  */
 ?>
-<h1 class="pageTitle" >Climbing |Location Edit</h1>
-
-
 <ul class="breadcrumbs">
     <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
     <li><a href="<?php echo $_SESSION['domain'] ?>climbing_log" role="link">Climbing</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>climbing_log/locations" role="link">Locations</a></li>
     <li class="current">Edit a Climbing Location</li>
 </ul>
+<h1 class="pageTitle" >Climbing |Location Edit</h1>
+
+
+
 
 <h1 class="pageTitle">Edit Climbing ID: <?= $location->getLocationID(); ?> </h1>
 
@@ -74,4 +76,7 @@ if (isset($_POST["btnSubmit"])) {
 </div>
 <a href="javascript: history.go(-1)" class="button">Go Back</a>
 
+</div>
+</div>
+</div>
 </div>

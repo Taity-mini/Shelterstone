@@ -6,8 +6,13 @@
  * Time: 01:09
  * Climbing Logbook List
  */
+?>
 
-
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li class="current">Climbing</li>
+</ul>
+<?php
 echo '<h1 class="pageTitle" >Climbing |Logbook List</h1>';
 
 if ($logbookList !=null) {
@@ -32,19 +37,19 @@ if ($logbookList !=null) {
         $locationItem = new climbing_locations();
         $locationItem->setLocationID($row['locationID']);
         $locationItem->getAllDetails($conn);
-        $viewLink = $_SESSION['domain'] . "climbing_log/" . $logbookItem->getLogID();
-        $editLink = $_SESSION['domain'] . "climbing_log/edit/" . $logbookItem->getLogID();
+        $viewLink = $_SESSION['domain'] . "climbing_log/logbook/" . $logbookItem->getLogID();
+        $editLink = $_SESSION['domain'] . "climbing_log/logbook/edit/" . $logbookItem->getLogID();
         echo '<tr>';
         echo '<td>'.$logbookItem->getLogID().'</td>';
         echo '<td>'.$locationItem->getLocationName().'</td>';
         echo '<td>'.$logbookItem->displayType().'</td>';
-        echo '<td>'.$logbookItem->getDate().'</td>';
+        echo '<td>'.$logbookItem->getFormattedDate().'</td>';
         echo '<td><a href="'.$viewLink.'">View</a></td>';
         echo '<td><a href="'.$editLink.'">Edit</a></td></tr>';
     }
     echo "</table><hr>";
 } else {
-    echo "No locations added - add one in the form below. <hr>" ;
+    echo "No lo added - add one in the form below. <hr>" ;
 }
 ?>
 
@@ -70,6 +75,16 @@ if ($logbookList !=null) {
           </div>';
         unset($_SESSION['create']);
     }
+
+
+    if (isset($_SESSION['update'])) {
+        echo '<br/>';
+        echo '<div class="callout success">
+          <h5>Logbook Successfully Updated!</h5>
+          </div>';
+        unset($_SESSION['update']);
+    }
+
 
     if (isset($_SESSION['delete'])) {
         echo '<br/>';
@@ -125,4 +140,7 @@ if ($logbookList !=null) {
         <input class="button" type="reset" value="Reset">
     </div>
     </form>
+</div>
+</div>
+</div>
 </div>

@@ -7,6 +7,11 @@
  * Climbing Logbook - Locations
  */
 ?>
+<ul class="breadcrumbs">
+    <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>climbing_log" role="link">Climbing</a></li>
+    <li class="current">Locations</li>
+</ul>
 <div class="small-6 small-centered large-10 large-centered columns">
 <h1 class="pageTitle" >Climbing |Locations</h1>
 
@@ -103,12 +108,14 @@ echo '<h3>Create Location</h3>';
 
     ?>
 
-    <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
-        <input class="button" type="submit" name="btnSubmit" value="Add Location">
+    <div class="large-8 large-centered medium-8 medium-centered small-12 small-centered columns">
+        <input class="button success" type="submit" name="btnSubmit" value="Add Location">
         <input class="button" type="reset" value="Reset">
     </div>
     <a href="javascript: history.go(-1)" class="button">Go Back</a>
     </form>
 </div>
-
-
+</div>
+</div>
+</div>
+</div>
