@@ -47,6 +47,14 @@ class climbing_logbooks
         //Convert mysql date format to UK format
         $date = new DateTime($this->date);
         $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('Y-m-d');
+    }
+
+    public function getFormattedDate()
+    {
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->date);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
         return $date->format('d/m/Y');
     }
 
@@ -142,18 +150,17 @@ class climbing_logbooks
     public function update($conn)
     {
         try {
-            $sql = "UPDATE climbing_logbook SET userID = :userID, locationID = :locationID, logType = :logType, date = :date, notes = :notes  
+            $sql = "UPDATE climbing_logbook SET  locationID = :locationID, logType = :logType, date = :date, notes = :notes  
                     WHERE logID = :logID";
 
             $date = date('Y-m-d H:i:s', strtotime(str_replace('-', '/', $this->getDate())));
             $stmt = $conn->prepare($sql);
 
             $stmt->bindParam(':logID', $this->getLogID(), PDO::PARAM_STR);
-            $stmt->bindParam(':userID', $this->getUserID(), PDO::PARAM_STR);
             $stmt->bindParam(':locationID', $this->getLocationID(), PDO::PARAM_INT);
             $stmt->bindValue(':logType', $this->getLogType(), PDO::PARAM_INT);
             $stmt->bindValue(':date', $date, PDO::PARAM_INT);
-            $stmt->bindValue(':notes', $this->getNotes, PDO::PARAM_INT);
+            $stmt->bindValue(':notes', $this->getNotes(), PDO::PARAM_INT);
 
             $stmt->execute();
             return true;

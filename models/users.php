@@ -302,7 +302,7 @@ class users
 
     public function setBanned($banned)
     {
-        $this->banned = htmlentities($banned);
+        $this->banned = $banned;
     }
 
 //Get all users' details
@@ -419,11 +419,10 @@ class users
             if (count($results) > 0) {
                 $date = date('Y-m-d H:i:s');
                 try {
-                    $sql = "UPDATE users SET groupID = :groupID, email = :email, firstName = :firstName, lastName = :lastName, picture = :picture, link = :link, modified = :modified
+                    $sql = "UPDATE users SET email = :email, firstName = :firstName, lastName = :lastName, picture = :picture, link = :link, modified = :modified
                     WHERE userID = :userID";
 
                     $stmt = $conn->prepare($sql);
-                    $stmt->bindValue(':groupID', $this->getGroupID(), PDO::PARAM_STR);
                     $stmt->bindValue(':userID', $this->getUserID(), PDO::PARAM_STR);
                     $stmt->bindValue(':email', $this->getEmail(), PDO::PARAM_STR);
                     $stmt->bindValue(':firstName', $this->getFirstName(), PDO::PARAM_STR);
@@ -446,7 +445,7 @@ class users
                 $sql = "INSERT INTO users VALUES (null, :groupID, :oauth ,:username, null, :email, :firstName, :lastName, :bio, :interests, :picture, :link, :role, :certifications, :approve, :accredited, :driver, :banned, :created, :modified, :tokenCode)";
 
                 $stmt = $conn->prepare($sql);
-                $stmt->bindValue(':groupID', $this->getGroupID(), PDO::PARAM_INT);
+                $stmt->bindValue(':groupID', 3, PDO::PARAM_INT);
                 $stmt->bindValue(':oauth', $this->getOauthUID(), PDO::PARAM_STR);
                 $stmt->bindValue(':username', $this->getUsername(), PDO::PARAM_STR);
 
@@ -462,7 +461,7 @@ class users
                 $stmt->bindValue(':link', $this->getLink(), PDO::PARAM_STR);
                 $stmt->bindValue(':role', $this->getRole(), PDO::PARAM_STR);
                 $stmt->bindValue(':certifications', $this->getCertifications(), PDO::PARAM_STR);
-                $stmt->bindValue(':approve', $this->getApproved(), PDO::PARAM_INT);
+                $stmt->bindValue(':approve', 1, PDO::PARAM_INT);
                 $stmt->bindValue(':accredited', 0, PDO::PARAM_INT);
                 $stmt->bindValue(':driver', 0, PDO::PARAM_INT);
                 $stmt->bindValue(':banned', 0, PDO::PARAM_INT);
@@ -980,10 +979,10 @@ class users
     {
         $output = '
             <div class="row collapse">
-                <div class="small-2  columns">
+                <div class="small-4  columns">
                 <span class="prefix">' . $description . '</span>
             </div>
-            <div class="small-10  columns">
+            <div class="small-8  columns">
                ' . $field . '
             </div>
         </div>
@@ -997,10 +996,10 @@ class users
     {
         $output = '
             <div class="row collapse">
-                <div class="small-2  columns">
+                <div class="small-4  columns">
                 <span class="prefix">' . $description . '</span>
             </div>
-            <div class="small-10  columns">
+            <div class="small-8  columns">
                <a href="' . $field . '">Profile</a>
             </div>
         </div>

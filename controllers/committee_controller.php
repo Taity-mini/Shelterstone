@@ -22,6 +22,8 @@ class committee_controller extends controller
         require_once('./models/users.php');
         require_once('./models/users_groups.php');
         require_once('./models/memberships.php');
+        require_once('./models/roles.php');
+
 
         //login check
         if (isset($_SESSION['userID'])) {
@@ -41,6 +43,11 @@ class committee_controller extends controller
                 $toAccredit = $users->listUsersToAccredit($conn);
                 $bannedUsers = $users->listBannedUsers($conn);
                 $drivers = $users->listDrivers($conn);
+
+                $roles = new roles();
+
+                $roleList = $roles->listAllRoles($conn);
+
 
 
                 //Perform Approve All Members

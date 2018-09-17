@@ -90,7 +90,7 @@ class gallery_controller extends controller
 
         if (isset($_SESSION['userID'])) {
             $groups = new users_groups();
-            if ($groups->newsFullAccess($conn, $_SESSION['userID'])) {
+            if ($groups->galleryFullAccess($conn, $_SESSION['userID'])) {
                 $canEdit = true;
             } else if ($users->getUserID() == $_SESSION['userID']) {
                 $canEdit = true;
@@ -588,8 +588,8 @@ class gallery_controller extends controller
         $this->data['author'] = $user;
         $this->data['photos'] = $photo;
         $this->data['create'] = $adding;
-        $this->date['heading'] = $heading;
-        $this->date['description'] = $description;
+        $this->data['heading'] = $heading;
+        $this->data['description'] = $description;
 
         //Extract data array to display variables on view template
         extract($this->data);

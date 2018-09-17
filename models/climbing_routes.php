@@ -114,7 +114,7 @@ class climbing_routes
 
     public function create($conn)
     {
-        $sql = "INSERT INTO climbing_routes VALUES(:logID, :routeName, :routeStyle, :routeGrade, :partnerID)";
+        $sql = "INSERT INTO climbing_routes VALUES(NULL,:logID, :routeName, :routeStyle, :routeGrade, :partnerID)";
         $stmt = $conn->prepare($sql);
 
         $stmt->bindParam(':logID', $this->getLogID(), PDO::PARAM_STR);
@@ -186,28 +186,13 @@ class climbing_routes
     }
 
     //List all routes or all routes in a logbook
-    public function listAllRoutes($conn, $logID = null)
+    public function listAllRoutes($conn, $logID)
     {
-        $sql = "SELECT * FROM climbing_logbook";
-
-        if (!is_null($logID)) {
-            $sql .= " WHERE logID = :logID";
-        }
-
-        if (is_null($logID)) {
-            $sql .= " WHERE routeID = :routeID";
-        }
+        $sql = "SELECT * FROM climbing_routes WHERE logID = :logID";
 
         $stmt = $conn->prepare($sql);
 
-        if (!is_null($logID)) {
-            $stmt->bindParam(':logID', $logID, PDO::PARAM_STR);
-        }
-        if (is_null($logID)) {
-            $stmt->bindParam(':routeID', $this->getRouteID(), PDO::PARAM_STR);
-        }
-
-        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':logID', $logID, PDO::PARAM_INT);
 
         try {
             $stmt->execute();
@@ -232,9 +217,9 @@ class climbing_routes
         return $types;
     }
 
-    public function displayType()
+    public function displayStyle()
     {
-        switch ($this->getType()) {
+        switch ($this->getRouteStyle()) {
             case 1:
                 return "Boulder";
                 break;

@@ -9,13 +9,12 @@
 
 class freshers
 {
-    private  $freshersID, $firstName, $lastName, $email, $studentID, $climbingXP;
+    private $freshersID, $firstName, $lastName, $email, $studentID, $climbingXP, $GDPRConsent, $GDPRDate;
 
     function __construct($freshersID = -1)
     {
         $this->freshersID = $freshersID;
     }
-
 
     //Getters
 
@@ -49,6 +48,21 @@ class freshers
         return $this->climbingXP;
     }
 
+    public function getGDPRConsent()
+    {
+        return $this->GDPRConsent;
+    }
+
+
+    public function getGDPRDate()
+    {
+        //Convert mysql date format to UK format
+        $date = new DateTime($this->GDPRDate);
+        $date->setTimezone(new DateTimeZone('Europe/London'));
+        return $date->format('d-m-Y');
+    }
+
+
     //Setters
 
     public function setFreshersID($freshersID)
@@ -61,7 +75,7 @@ class freshers
         $this->firstName = htmlentities($firstName);
     }
 
-    public function  setLastName($lastName)
+    public function setLastName($lastName)
     {
         $this->lastName = htmlentities($lastName);
     }
@@ -81,6 +95,19 @@ class freshers
         $this->climbingXP = htmlentities($climbingXP);
     }
 
+
+    public function setGDPRConsent($GDPRConsent)
+    {
+        $this->GDPRConsent = $GDPRConsent;
+    }
+
+
+    public function setGDPRDate($GDPRDate)
+    {
+        $this->GDPRDate = $GDPRDate;
+    }
+
+
     public function getAllDetails($conn)
     {
         $sql = "SELECT * from freshers WHERE freshersID = :freshersID";
@@ -97,6 +124,8 @@ class freshers
                 $this->setEmail($row['email']);
                 $this->setStudentID($row['studentID']);
                 $this->setClimbingXP($row['climbingXP']);
+                $this->setGDPRConsent($row['GDPRConsent']);
+                $this->setGDPRDate($row['GDPRDate']);
             }
             return true;
         } catch (PDOException $e) {
@@ -108,8 +137,15 @@ class freshers
     public function create($conn)
     {
         try {
+            //GDPR consent check
+            if ($this->getGDPRConsent() != NULL) {
+                $date = date('Y-m-d H:i:s');
+            } else {
+                $date = NULL;
+            }
+
             //SQL Statement
-            $sql = "INSERT into freshers VALUES (NULL,:firstName, :lastName, :email , :studentID, :climbingXP)";
+            $sql = "INSERT into freshers VALUES (NULL,:firstName, :lastName, :email , :studentID, :climbingXP, :GDPRConsent, :GDPRDate)";
 
 
             $stmt = $conn->prepare($sql);
@@ -118,65 +154,15 @@ class freshers
             $stmt->bindParam(':email', $this->getEmail(), PDO::PARAM_STR);
             $stmt->bindParam(':studentID', $this->getStudentID(), PDO::PARAM_STR);
             $stmt->bindParam(':climbingXP', $this->getClimbingXP(), PDO::PARAM_STR);
-
+            $stmt->bindParam(':GDPRConsent', $this->getGDPRConsent(), PDO::PARAM_INT);
+            $stmt->bindParam(':GDPRDate', $date, PDO::PARAM_STR);
             $stmt->execute();
-            //echo "Statement working";
+
             return true;
         } catch (PDOException $e) {
-            //dbClose($conn);
             return "Create fresher entry failed: " . $e->getMessage();
         }
     }
-
-//    //Delete individual file or all files upload a user
-//    public function delete($conn, $userID = null)
-//    {
-//        $sql = "DELETE FROM files";
-//
-//        if (!is_null($userID)) {
-//            $sql .= " WHERE userID = :userID";
-//        }
-//
-//        if (is_null($userID)) {
-//            $sql .= " WHERE fileID = :fileID";
-//        }
-//
-//        $stmt = $conn->prepare($sql);
-//
-//        if (!is_null($userID)) {
-//            $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
-//        }
-//        if (is_null($userID)) {
-//            $stmt->bindParam(':fileID', $this->getFileID(), PDO::PARAM_STR);
-//        }
-//
-//        try {
-//            unlink('../'.$this->getFilePath());
-//            $stmt->execute();
-//            return true;
-//        } catch (PDOException $e) {
-//            return "delete file failed: " . $e->getMessage();
-//        }
-//    }
-
-//    public function update($conn)
-//    {
-//        try {
-//            $sql = "UPDATE files SET title = :title, description = :description, visibility = :visibility WHERE fileID = :fileID";
-//
-//            $stmt = $conn->prepare($sql);
-//
-//            $stmt->bindParam(':fileID', $this->getFileID(), PDO::PARAM_STR);
-//            $stmt->bindParam(':title', $this->getTitle(), PDO::PARAM_STR);
-//            $stmt->bindParam(':description', $this->getDescription(), PDO::PARAM_INT);
-//            $stmt->bindValue(':visibility', $this->getVisibility(), PDO::PARAM_INT);
-//            $stmt->execute();
-//            return true;
-//        } catch (PDOException $e) {
-//            dbClose($conn);
-//            return "update file entry failed: " . $e->getMessage();
-//        }
-//    }
 
 
     public function doesExist($conn)
@@ -219,9 +205,9 @@ class freshers
     public function listClimbingLevels()
     {
         $levels = array(
-            1  => "Beginner",
-            2  => "Intermediate",
-            3  => "Experienced",
+            1 => "Beginner",
+            2 => "Intermediate",
+            3 => "Experienced",
         );
         return $levels;
     }
@@ -244,7 +230,19 @@ class freshers
         }
     }
 
+    public function displayMailingList()
+    {
+        switch ($this->getGDPRConsent()) {
 
+            case 0:
+                return "No";
+                break;
+
+            case 1:
+                return "Yes";
+                break;
+        }
+    }
 
 
 }

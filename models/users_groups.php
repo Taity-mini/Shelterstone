@@ -47,22 +47,22 @@ class users_groups
 
     public function setGroupID($groupID)
     {
-        $this->groupID = htmlentities($groupID);
+        $this->groupID = $groupID;
     }
 
     public function setGroupName($groupName)
     {
-        $this->groupName = htmlentities($groupName);
+        $this->groupName = $groupName;
     }
 
     public function setGroupDescription($groupDescription)
     {
-        $this->groupDescription = htmlentities($groupDescription);
+        $this->groupDescription = $groupDescription;
     }
 
     public function setUserID($userID)
     {
-        $this->userID = htmlentities($userID);
+        $this->userID = $userID;
     }
 
     //Group Manipulation functions
@@ -89,7 +89,7 @@ class users_groups
 
     public function delete($conn, $groupID)
     {
-        $sql = "DELETE FROM groups WHERE groupID = :groupID";
+        $sql = "DELETE FROM shelterstone.groups WHERE groupID = :groupID";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $groupID, PDO::PARAM_STR);
 
@@ -112,7 +112,11 @@ class users_groups
     public function getAllDetails($conn)
     {
         try {
-            $sql = "SELECT * FROM groups g WHERE g.groupID = :groupID";
+//            $sql = "SELECT * FROM shelterstone.groups WHERE 'groupID' = :groupID";
+//            $stmt = $conn->prepare($sql);
+//            $stmt->bindParam(':groupID', $this->getGroupID(), PDO::PARAM_INT);
+
+            $sql = "SELECT * from shelterstone.groups WHERE groupID = :groupID";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':groupID', $this->getGroupID(), PDO::PARAM_STR);
 
@@ -121,7 +125,6 @@ class users_groups
                 $results = $stmt->fetchAll();
 
                 foreach ($results as $row) {
-                    $this->setGroupID($row["groupID"]);
                     $this->setGroupDescription($row['groupDescription']);
                     $this->setGroupName($row['groupName']);
                 }
@@ -137,7 +140,7 @@ class users_groups
     //List all groups for drop down menus
     public function listAllGroups($conn)
     {
-        $sql = "SELECT groupID, groupName FROM groups";
+        $sql = "SELECT groupID, groupName FROM shelterstone.groups";
         $stmt = $conn->prepare($sql);
 
         try {
@@ -159,7 +162,7 @@ class users_groups
     //Admin ID 1
     public function isAdministrator($conn, $userID)
     {
-        $sql = "SELECT u.userID FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 1 AND u.userID = :userID";
+        $sql = "SELECT u.userID FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 1 AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -183,7 +186,7 @@ class users_groups
 
     public function isUserCommittee($conn, $userID)
     {
-        $sql = "SELECT u.userID FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.userID = :userID";
+        $sql = "SELECT u.userID FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.userID = :userID";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
 
@@ -206,7 +209,7 @@ class users_groups
 
     public function isUserMember($conn, $userID)
     {
-        $sql = "SELECT u.userID FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 3 AND u.userID = :userID";
+        $sql = "SELECT u.userID FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 3 AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -230,7 +233,7 @@ class users_groups
 
     public function isUserPastMember($conn, $userID)
     {
-        $sql = "SELECT u.userID FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 3 AND u.userID = :userID";
+        $sql = "SELECT u.userID FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 3 AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -343,9 +346,9 @@ class users_groups
 
     public function ListCommittee($conn)
     {
-        //$sql = "SELECT userID FROM users u, user_groups ug, groups g WHERE ug.groupID = g.groupID AND g.groupID IN (2,3,4,5,6) AND u.userID = :userID";
+        //$sql = "SELECT userID FROM users u, user_groups ug, shelterstone.groups g WHERE ug.groupID = g.groupID AND g.groupID IN (2,3,4,5,6) AND u.userID = :userID";
 
-        $sql = "SELECT u.userID, r.roleID FROM users u, groups g, roles r WHERE u.groupID = g.groupID AND u.role = r.roleID AND u.groupID = 2 ORDER BY r.roleID";
+        $sql = "SELECT u.userID, r.roleID FROM users u, shelterstone.groups g, roles r WHERE u.groupID = g.groupID AND u.role = r.roleID AND u.groupID = 2 ORDER BY r.roleID";
 
 
         $stmt = $conn->prepare($sql);
@@ -379,7 +382,7 @@ class users_groups
     //Current President - based on role
     public function isUserPresident($conn, $userID)
     {
-        $sql = "SELECT u.userID, u.role FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='President' AND u.userID = :userID";
+        $sql = "SELECT u.userID, u.role FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='President' AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -401,7 +404,7 @@ class users_groups
     //Current competitions vice president: ID 3
     public function isUserCompsPres($conn, $userID)
     {
-        $sql = "SELECT u.userID, u.role FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Competitions Vice president' AND u.userID = :userID";
+        $sql = "SELECT u.userID, u.role FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Competitions Vice president' AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -423,7 +426,7 @@ class users_groups
     //Current outdoor events/trips vice president ID: 4
     public function isUserTripsPres($conn, $userID)
     {
-        $sql = "SELECT u.userID, u.role FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Outdoor Trips Chair' AND u.userID = :userID";
+        $sql = "SELECT u.userID, u.role FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Outdoor Trips Chair' AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -445,7 +448,7 @@ class users_groups
     //Current Social Chair
     public function isUserSocialChair($conn, $userID)
     {
-        $sql = "SELECT u.userID, u.role FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Social Chair' AND u.userID = :userID";
+        $sql = "SELECT u.userID, u.role FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Social Chair' AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -467,7 +470,7 @@ class users_groups
     //Current Fundraising Chair
     public function isUserFundraisingChair($conn, $userID)
     {
-        $sql = "SELECT u.userID, u.role FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Fundraising Chair' AND u.userID = :userID";
+        $sql = "SELECT u.userID, u.role FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Fundraising Chair' AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);
@@ -490,7 +493,7 @@ class users_groups
 
     public function isUserSafetyOfficer($conn, $userID)
     {
-        $sql = "SELECT u.userID, u.role FROM users u, groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Safety Officer' AND u.userID = :userID";
+        $sql = "SELECT u.userID, u.role FROM users u, shelterstone.groups g WHERE u.groupID = g.groupID AND u.groupID = 2 AND u.role='Safety Officer' AND u.userID = :userID";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userID', $userID, PDO::PARAM_STR);

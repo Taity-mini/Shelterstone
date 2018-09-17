@@ -1,6 +1,6 @@
 <?php
 // Include FB config file && User class
-require_once('/inc/config.php');
+require_once('./inc/config.php');
 require_once('./inc/fbConfig.php');
 require_once('./models/users.php');
 
@@ -54,55 +54,56 @@ if (isset($accessToken)) {
     }
 
 
-//Check if user is in the club! (Bouncer function)
-    try {
-        // Returns a `FacebookFacebookResponse` object
-        $response = $fb->get(
-            '/146226435444638/members/?fields=id,administrator&limit=500',
-            '' .  $_SESSION['facebook_access_token'] . ''
-        );
-    } catch (FacebookExceptionsFacebookResponseException $e) {
-        echo 'Graph returned an error: ' . $e->getMessage();
-        exit;
-    } catch (FacebookExceptionsFacebookSDKException $e) {
-        echo 'Facebook SDK returned an error: ' . $e->getMessage();
-        exit;
-    }
-    $graphNode = $response->getGraphList()->asArray();
-    $inClub = false;
-    $committeMember = false;
-    foreach ($graphNode as $key => $value) { // This will search in the 2 jsons
-        if ($fbUserProfile['id'] == $value["id"]) {
-            $inClub = true;
-            //if admin of Facebook group then automatically added to the committee user group on site
-            if ($value['administrator'] == 1) {
-                $committeMember = true;
-            }
-        }
-    }
-
-    if ($inClub) {
+////Check if user is in the club! (Bouncer function)
+//    try {
+//        // Returns a `FacebookFacebookResponse` object
+//        $response = $fb->get(
+//            '/146226435444638/members/?fields=id,administrator&limit=500',
+//            '' .  $_SESSION['facebook_access_token'] . ''
+//        );
+//    } catch (FacebookExceptionsFacebookResponseException $e) {
+//        echo 'Graph returned an error: ' . $e->getMessage();
+//        exit;
+//    } catch (FacebookExceptionsFacebookSDKException $e) {
+//        echo 'Facebook SDK returned an error: ' . $e->getMessage();
+//        exit;
+//    }
+//    $graphNode = $response->getGraphList()->asArray();
+//    $inClub = false;
+//    $committeMember = false;
+//    foreach ($graphNode as $key => $value) { // This will search in the 2 jsons
+//        if ($fbUserProfile['id'] == $value["id"]) {
+//            $inClub = true;
+//            //if admin of Facebook group then automatically added to the committee user group on site
+//            if ($value['administrator'] == 1) {
+//                $committeMember = true;
+//            }
+//        }
+//    }
+//
+//    if ($inClub) {
         // Initialize User class
         $user = new users();
 
         //get user data from Facebook profile
+        $picture = "https://graph.facebook.com/".$fbUserProfile['id']."/picture?type=large&width=160&height=160";
         $conn = dbConnect();
         $user->setUserName($fbUserProfile['id']);
         $user->setOAuthUID($fbUserProfile['id']);
         $user->setFirstName($fbUserProfile['first_name']);
         $user->setLastName($fbUserProfile['last_name']);
         $user->setEmail($fbUserProfile['email']);
-        $user->setPicture($fbUserProfile['picture']['url']);
+        $user->setPicture($picture);
         $user->setLink($fbUserProfile['link']);
 
-        //User groups
-        if($committeMember){
-            $user->setGroupID(2);
-            $user->setApproved(1);
-        } else{
-            $user->setGroupID(3);
-            $user->setApproved(0);
-        }
+//        //User groups
+//        if($committeMember){
+//            $user->setGroupID(2);
+//            $user->setApproved(1);
+//        } else{
+//            $user->setGroupID(3);
+//            $user->setApproved(0);
+//        }
 
         $userData = $user->checkUser($conn);
 
@@ -115,10 +116,7 @@ if (isset($accessToken)) {
             $_SESSION['fb_error'] = true;
             header("Location: ./login");
         }
-    } else {
-        $_SESSION['not_in_club'] = true;
-        header("Location: ./login");
-    }
+
 } else {
     header("Location: ./login");
     exit;

@@ -21,7 +21,6 @@ class pages_controller extends controller
         require_once('./models/news.php');
 
 
-
         $conn = dbConnect();
         $user = new users();
         $newsArticle = new news();
@@ -63,10 +62,10 @@ class pages_controller extends controller
         require_once('./views/pages/home.php');
     }
 
-    public function search()
-    {
-        require_once('./views/pages/search.php');
-    }
+//    public function search()
+//    {
+//        require_once('./views/pages/search.php');
+//    }
 
 
     //PROFILE PAGES
@@ -79,10 +78,11 @@ class pages_controller extends controller
             $conn = dbConnect();
             $user = new users($_SESSION['userID']);
             $user->getAllDetails($conn);
-            if($user->getPicture() == null)
-            {
-                $user->setPicture($_SESSION['domain'].'/img/profile.png');
+            if ($user->getPicture() == null) {
+                $user->setPicture($_SESSION['domain'] . '/img/profile.png');
             }
+
+            $roles = new roles();
 
             $this->data['profile'] = $user;
             //Extract data array to display variables on view template
@@ -90,7 +90,7 @@ class pages_controller extends controller
             require_once('./views/pages/profile.php');
 
         } else { //Show login page otherwise
-            $this->redirect("/login");
+            $this->redirect("login");
         }
     }
 
@@ -98,31 +98,34 @@ class pages_controller extends controller
     //View other user's profile
     public function viewProfile()
     {
-        require_once('./models/roles.php');
-        if (isset($_SESSION['userID'])) {
 
+        if (isset($_SESSION['userID'])) {
+            require_once('./models/roles.php');
             $conn = dbConnect();
             $userID = $_SESSION['params']['userID'];
             $user = new users($userID);
             $user->getAllDetails($conn);
+            $roles = new roles();
 
-            if($user->getPicture() == null)
-            {
-                $user->setPicture($_SESSION['domain'].'/img/profile.png');
+
+            if ($user->getPicture() == null) {
+                $user->setPicture($_SESSION['domain'] . '/img/profile.png');
             }
 
             //Security and error checks
             if (!$user->doesExist($conn)) {
-                $this->redirect("/error");
+                $this->redirect("error");
             }
 
             $this->data['profile'] = $user;
+            $this->data['role'] = $roles;
+            $this->data['conn'] = $conn;
             //Extract data array to display variables on view template
             extract($this->data);
 
             require_once('./views/pages/profile.php');
         } else { //Show error page otherwise
-            $this->redirect("/login");
+            $this->redirect("login");
         }
     }
 
@@ -143,7 +146,6 @@ class pages_controller extends controller
             $roles = new roles();
 
             $roleList = $roles->listAllRoles($conn);
-
 
 
             //Security and error checks
@@ -185,15 +187,35 @@ class pages_controller extends controller
                         $update->setInterests($_POST['txtInterests']);
                         $update->setCertifications($_POST['txtCertifications']);
                         $update->setLink(($_POST['txtLink']));
-                        $driver = (isset($_POST['chkDriver']));
+                        if (isset($_POST['chkDriver'])) {
+                            $driver = isset($_POST['chkDriver']);
+                        } else {
+                            $driver = 0;
+                        }
+                        //$driver = (isset($_POST['chkDriver']));
                         $update->setDriver($driver);
 
                         if (!$limited_edit) {
                             //Admin only fields
                             //Profile flag checks
-                            $approved = (isset($_POST['chkApproved']));
-                            $accredited = (isset($_POST['chkAccredited']));
-                            $banned = (isset($_POST['chkBanned']));
+
+                            if (isset($_POST['chkApproved'])) {
+                                $approved = isset($_POST['chkApproved']);
+                            } else {
+                                $approved = 0;
+                            }
+
+                            if (isset($_POST['chkAccredited'])) {
+                                $accredited = isset($_POST['chkAccredited']);
+                            } else {
+                                $accredited = 0;
+                            }
+
+                            if (isset($_POST['chkBanned'])) {
+                                $banned = isset($_POST['chkBanned']);
+                            } else {
+                                $banned = 0;
+                            }
 
                             $update->setApproved($approved);
                             $update->setAccredited($accredited);
@@ -202,6 +224,7 @@ class pages_controller extends controller
                             $update->setRole($_POST['sltRole']);
                             $update->setGroupID($_POST['sltGroup']);
                         }
+
 
                         //Update user in the database
                         if ($update->updateUser($conn)) {
@@ -251,7 +274,7 @@ class pages_controller extends controller
         require_once('./models/users.php');
         require_once('./models/users_groups.php');
         $conn = dbConnect();
-        $committee  = new users_groups();
+        $committee = new users_groups();
 
         $committeeList = $committee->ListCommittee($conn);
 
@@ -509,11 +532,6 @@ class pages_controller extends controller
             exit;
         }
 
-        //        if (!pagesFullAccess($connection, $currentUser, $memberValidation)) {
-        //            header('Location:' . $domain . 'message.php?id=badaccess');
-        //            exit;
-        //        }
-
 
 // Check for a parameter before we send the header
         if (is_null($pageID) || !is_numeric($pageID)) {
@@ -581,11 +599,6 @@ class pages_controller extends controller
             exit;
         }
 
-//        if (!pagesFullAccess($connection, $currentUser, $memberValidation)) {
-//            header('Location:' . $domain . 'message.php?id=badaccess');
-//            exit;
-//        }
-
 
         // Check for a parameter before we send the header
         if (is_null($pageID) || !is_numeric($pageID)) {
@@ -636,25 +649,32 @@ class pages_controller extends controller
         if (isset($_SESSION['userID'])) {
 
             $conn = dbConnect();
-
-
             $users = new users();
-            $freshers = new freshers();
-            $freshersList = $freshers->listAllFreshers($conn);
+            $groups = new users_groups();
 
-            $this->data['freshers'] = $freshers;
-            $this->data['freshersList'] = $freshersList;
+            //committee or admin check
+            if ($groups->isUserCommittee($conn, $_SESSION['userID']) || $groups->isAdministrator($conn, $_SESSION['userID'])) {
 
-            $this->data['$user'] = $users;
-            $this->data['domain'] = $_SESSION['domain'];
+                $freshers = new freshers();
+                $freshersList = $freshers->listAllFreshers($conn);
 
-            //Extract data array to display variables on view template
-            extract($this->data);
+                $this->data['freshers'] = $freshers;
+                $this->data['freshersList'] = $freshersList;
 
-            require_once('views/pages/freshers/index.php');
+                $this->data['$user'] = $users;
+                $this->data['domain'] = $_SESSION['domain'];
+
+                //Extract data array to display variables on view template
+                extract($this->data);
+
+                require_once('views/pages/freshers/index.php');
+            } else {
+                $this->redirect("error");
+            }
+
 
         } else { //Show login page otherwise
-            $this->redirect("/login");
+            $this->redirect("login");
         }
 
 
@@ -669,40 +689,47 @@ class pages_controller extends controller
             require_once('./models/users.php');
             include('./inc/forms.inc.php');
 
-            $news = new news();
+            $conn = dbConnect();
+            $users = new users();
+            $groups = new users_groups();
 
-            $freshers = new freshers();
+            //committee or admin check
+            if ($groups->isUserCommittee($conn, $_SESSION['userID']) || $groups->isAdministrator($conn, $_SESSION['userID'])) {
+                $freshers = new freshers();
 
-            //Perform update
-            if (isset($_POST['btnSubmit'])) {
-                $conn = dbConnect();
+                //Perform update
+                if (isset($_POST['btnSubmit'])) {
+                    $conn = dbConnect();
 
 
-                if ($_POST['sltLevel'] != '') {
-                    $news = new News();
+                    if ($_POST['sltLevel'] != '') {
 
-                    $freshers = new freshers();
+                        $freshers = new freshers();
 
-                    $freshers->setFirstName($_POST['txtFirstName']);
-                    $freshers->setLastName($_POST['txtLastName']);
-                    $freshers->setEmail($_POST['txtEmail']);
-                    $freshers->setStudentID($_POST['txtStudentID']);
-                    $freshers->setClimbingXP($_POST['sltLevel']);
-
+                        $freshers->setFirstName($_POST['txtFirstName']);
+                        $freshers->setLastName($_POST['txtLastName']);
+                        $freshers->setEmail($_POST['txtEmail']);
+                        $freshers->setStudentID($_POST['txtStudentID']);
+                        $freshers->setClimbingXP($_POST['sltLevel']);
+                        if (isset($_POST['chkGDPRConsent'])) {
+                            $freshers->setGDPRConsent($_POST['chkGDPRConsent']);
+                        } else {
+                            $freshers->setGDPRConsent(0);
+                        }
                         if ($freshers->create($conn)) {
                             $_SESSION['create'] = true;
                         } else {
                             $_SESSION['error'] = true;
                         }
+                    } else {
+                        $_SESSION['error'] = true;
                     }
-                 else {
-                    $_SESSION['error'] = true;
                 }
-            }
-            $this->data['newsArticle'] = $news;
 
-            extract($this->data);
-            require_once('views/pages/freshers/create.php');
+                require_once('views/pages/freshers/create.php');
+            }
+
+
         } else { //Show login page otherwise
             $this->redirect("login");
         }

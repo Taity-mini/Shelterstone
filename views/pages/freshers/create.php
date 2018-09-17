@@ -10,12 +10,12 @@
 
 ?>
 
-<div class="small-6 small-centered large-10 large-centered columns">
+<div class="small-12 small-centered large-10 large-centered columns">
 
     <?php
 
 
-    if(!isset($_SESSION['create'])) {
+    if (!isset($_SESSION['create'])) {
         echo ' <h1 class="pageTitle">Welcome Fresher!</h1>';
 
         if (isset($_SESSION['error'])) {
@@ -78,6 +78,12 @@
 
 
         ?>
+        <div class="large-12 medium-12 small-12 columns">
+            <label><b>
+                    I would like to subscribe to the Shelterstone Mailing list</b>
+                <input id="chkGDPRConsent" type="checkbox" name="chkGDPRConsent" value="1"/>
+            </label>
+        </div>
 
         <div class="large-4 large-centered medium-6 medium-centered small-12 small-centered columns">
             <input class="button" type="submit" name="btnSubmit" value="Welcome Aboard!">
@@ -93,14 +99,17 @@
           <h5>Fresher successfully added!</h5>
           <p>We will see you on Monday 7pm @ RGU Sport - Climbing Wall!</p>
           </div>';
-        echo linkButton("Add new fresher", '../freshers/add', false);
+
+        echo linkButton("Add new fresher", '../freshers/add', false,true);
         unset($_SESSION['create']);
+
     }
     ?>
 </div>
 </div>
 </div>
-
+</div>
+</div>
 
 
 

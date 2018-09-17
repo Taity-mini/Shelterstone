@@ -8,78 +8,68 @@
 
 ?>
 
-<div class="row" id="content">
-    <div class="row-12 columns">
 
-        <ul class="breadcrumbs">
-            <li><a href="../" role="link">Home</a></li>
-            <li class="current">Freshers</li>
-        </ul>
+<ul class="breadcrumbs">
+    <li><a href="../" role="link">Home</a></li>
+    <li class="current">Freshers</li>
+</ul>
 
-        <h2>Freshers List</h2>
+<div class="small-12 small-centered large-12 large-centered columns">
+    <h2>Freshers List</h2>
 
+    <?php
+
+
+    if ($freshersList != null)
+    {
+
+    ?>
+
+    <table class="responsive-card-table unstriped">
+        <thead>
+        <tr>
+            <th>Fresher ID #</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Student ID</th>
+            <th>Climbing XP</th>
+            <th>Mailing List</th>
+            <th>GPDR Consent Date</th>
+        </tr>
+        </thead>
         <?php
 
-        if (isset($_SESSION['delete'])) {
-            echo '<p class="alert-box success radius centre">File deleted successfully!</p>';
-            unset($_SESSION['delete']);
+
+        foreach ($freshersList as $freshersItem) {
+
+            $freshers->setFreshersID($freshersItem['freshersID']);
+            $freshers->getAllDetails($conn);
+
+
+            echo "<tr>";
+
+            echo '<td data-label="Freshers ID">' . $freshers->getFreshersID() . '</td>';
+            echo '<td data-label="First Name">' . $freshers->getFirstName() . '</td>';
+            echo '<td data-label="Last Name">' . $freshers->getLastName() . '</td>';
+            echo '<td data-label="Email">' . $freshers->getEmail() . '</td>';
+            echo '<td data-label="Student ID">' . $freshers->getStudentID() . '</td>';
+            echo '<td data-label="Climbing XP">' . $freshers->displayLevel() . '</td>';
+            echo '<td data-label="Mailing List">' . $freshers->displayMailingList() . '</td>';
+            echo '<td data-label="GDPR Consent Date">' . $freshers->getGDPRDate() . '</td>';
+            echo "</tr>";
         }
 
-        if (isset($_SESSION['update'])) {
-            echo '<p class="alert-box success radius centre">Changes saved!</p>';
-            unset($_SESSION['update']);
+        echo '</table>';
+
+        } else {
+            echo 'No freshers added yet!';
         }
 
-        if (isset($_SESSION['upload'])) {
-            echo '<p class="alert-box success radius centre">File uploaded successfully!</p>';
-            unset($_SESSION['upload']);
-        }
 
-        if ($freshersList != null)
-        {
+        echo linkButton("Add new fresher", '../freshers/add', false, true);
 
         ?>
 
-        <table class="large-12 medium-12 small-12 columns">
-            <tr>
-                <th>Fresher ID #</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Student ID</th>
-                <th>Climbing XP</th>
-            </tr>
-            <?php
-
-
-            foreach ($freshersList as $freshersItem) {
-
-                $freshers->setFreshersID($freshersItem['freshersID']);
-                $freshers->getAllDetails($conn);
-
-
-                echo "<tr>";
-
-                echo '<td data-th="Freshers ID">' . $freshers->getFreshersID() . '</td>';
-                echo '<td data-th="First Name">' . $freshers->getFirstName() . '</td>';
-                echo '<td data-th="Last Name">' . $freshers->getLastName() . '</td>';
-                echo '<td data-th="Email">' . $freshers->getEmail() . '</td>';
-                echo '<td data-th="Student ID">' . $freshers->getStudentID() . '</td>';
-                echo '<td data-th="Climbing XP">' . $freshers->displayLevel() . '</td>';
-
-                echo "</tr>";
-            }
-
-            echo '</table>';
-
-            } else{
-            echo 'No freshers added yet!';
-            }
-
-            //dbClose($conn);
-
-            echo linkButton("Add new fresher", '../freshers/add', false);
-            ?>
-
-    </div>
+</div>
 </div>
