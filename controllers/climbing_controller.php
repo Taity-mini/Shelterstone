@@ -92,7 +92,7 @@ class climbing_controller extends controller
 
             //remove current user from partner list
             unset($partnerList[$userID]);
-            $routeTypes = $routes->listTypes();
+            $routeStyles = $routes->listStyles();
 
             //Add new route
             if (isset($_POST['btnSubmit'])) {
@@ -103,7 +103,7 @@ class climbing_controller extends controller
                 $logID = $_SESSION['params']['logID'];
                 $route->setLogID($logID);
                 $route->setRouteName($_POST['txtName']);
-                $route->setRouteStyle($_POST['sltType']);
+                $route->setRouteStyle($_POST['sltStyle']);
                 $route->setRouteGrade($_POST['txtGrade']);
 
                 //Set partner ID to selection or NULL (No Partner)
@@ -368,23 +368,64 @@ class climbing_controller extends controller
             $routeID = $_SESSION['params']['routeID'];
             $route = new climbing_routes();
 
-            $route->setLogID($routeID);
+            $route->setRouteID($routeID);
             $route->getALLDetails($conn);
 
+            $logbook = new climbing_logbooks();
+            $logbook->setLogID($route->getLogID());
+            $logbook->getAllDetails($conn);
 
             $userID = $_SESSION['userID'];
-
+            $users = new users();
 
 
             //Dropdown lists
             $partnerList = $users->listAllUsersDropdown($conn);
-
             //remove current user from partner list
             unset($partnerList[$userID]);
-            $routeTypes = $route->listTypes();
 
-            require_once('./views/climbing/edit_route.php');
+            $routeStyles = $route->listStyles();
 
+
+            //Update new route
+            if (isset($_POST['btnSubmit'])) {
+
+                $conn = dbConnect();
+
+                $route = new climbing_routes();
+                $routeID = $_SESSION['params']['routeID'];
+                $route->setRouteID($routeID);
+                $route->setRouteName($_POST['txtName']);
+                $route->setRouteStyle($_POST['sltStyle']);
+                $route->setRouteGrade($_POST['txtGrade']);
+
+                //Set partner ID to selection or NULL (No Partner)
+
+                if ($_POST['sltPartner'] = '') {
+                    $route->setPartnerID(NULL);
+                } else {
+                    $route->setPartnerID($_POST['sltPartner']);
+                }
+
+                if ($route->isInputValid($route->getRouteName(), $route->getRouteStyle(), $route->getRouteGrade())) {
+                    if ($route->update($conn)) {
+                        $_SESSION['update'] = true;
+                        $route->getALLDetails($conn);
+                        $logID = $route->getLogID();
+                        $this->redirect("climbing_log/logbook/" . $logID);
+                    } else {
+                        $_SESSION['error'] = true;
+                    }
+                } else {
+                    $_SESSION['error'] = true;
+                }
+            }
+
+
+            require_once('./views/climbing/edit_routes.php');
+
+        } else {
+            $this->redirect("login");
         }
 
     }

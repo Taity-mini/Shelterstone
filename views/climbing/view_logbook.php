@@ -38,7 +38,7 @@ if (!empty($routeList)) {
         $viewLink = $_SESSION['domain'] . "climbing_log/route/" . $routeItem->getRouteID();
         $editLink = $_SESSION['domain'] . "climbing_log/route/edit/" . $routeItem->getRouteID();
         echo '<tr>';
-        echo '<td>' . $routeItem->getLogID() . '</td>';
+        echo '<td>' . $routeItem->getRouteID() . '</td>';
         echo '<td>' . $routeItem->getRouteName() . '</td>';
         echo '<td>' . $routeItem->displayStyle() . '</td>';
         echo '<td>' . $routeItem->getRouteGrade() . '</td>';
@@ -106,21 +106,21 @@ if (!empty($routeList)) {
     }
 
     if (isset($_POST["btnSubmit"])) {
-        if (empty($_POST["sltType"])) {
-            echo comboInputEmptyError(true, "Route Type", "sltType", "Please select...", "errRouteType", "Please select a Route type", $routeTypes);
+        if (empty($_POST["sltStyle"])) {
+            echo comboInputEmptyError(true, "Route Style", "sltStyle", "Please select...", "errRouteStyle", "Please select a Route type", $routeStyles);
         } else {
-            echo comboInputPostback(true, "Route Type", "sltType", $_POST["sltType"], $routeTypes);
+            echo comboInputPostback(true, "Route Style", "sltStyle", $_POST["sltStyle"], $routeStyles);
         }
     } else {
-        echo comboInputBlank(true, "Route Type", "sltType", "Please select...", $routeTypes);
+        echo comboInputBlank(true, "Route Style", "sltStyle", "Please select...", $routeStyles);
     }
 
 
     if (isset($_POST["btnSubmit"])) {
-        if (empty($_POST["txtTitle"])) {
+        if (empty($_POST["txtGrade"])) {
             echo textInputEmptyError(true, "Route Grade", "txtGrade", "errEmptyGrade", "Please enter a Route Grade", 25);
         } else {
-            echo textInputPostback(true, "Route Grade", "txtGrade", $_POST["txtName"], 25);
+            echo textInputPostback(true, "Route Grade", "txtGrade", $_POST["txtGrade"], 25);
         }
     } else {
         echo textInputBlank(true, "Route Grade", "txtGrade", 25);

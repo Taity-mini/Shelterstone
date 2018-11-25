@@ -134,13 +134,12 @@ class climbing_routes
     public function update($conn)
     {
         try {
-            $sql = "UPDATE climbing_routes SET logID = :logID, routeName = :routeName, routeStyle = :routeStyle, routeGrade = :routeGrade, partnerID = :partnerID  
+            $sql = "UPDATE climbing_routes SET routeName = :routeName, routeStyle = :routeStyle, routeGrade = :routeGrade, partnerID = :partnerID  
                     WHERE routeID = :routeID";
 
             $stmt = $conn->prepare($sql);
 
             $stmt->bindParam(':routeID', $this->getRouteID(), PDO::PARAM_STR);
-            $stmt->bindParam(':logID', $this->getLogID(), PDO::PARAM_STR);
             $stmt->bindParam(':routeName', $this->getRouteName(), PDO::PARAM_STR);
             $stmt->bindParam(':routeStyle', $this->getRouteStyle(), PDO::PARAM_STR);
             $stmt->bindParam(':routeGrade', $this->getRouteGrade(), PDO::PARAM_STR);
@@ -203,7 +202,7 @@ class climbing_routes
         }
     }
 
-    public function listTypes()
+    public function listStyles()
     {
         $types = array(
             1  => "Boulder",
@@ -233,15 +232,15 @@ class climbing_routes
                 return "Lead";
                 break;
 
-            case 4:
+            case 5:
                 return "Alt-Lead";
                 break;
 
-            case 5:
+            case 6:
                 return "Second";
                 break;
 
-            case 5:
+            case 7:
                 return "Top Rope";
                 break;
         }

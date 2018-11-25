@@ -11,7 +11,7 @@
 <ul class="breadcrumbs">
     <li><a href="<?php echo $_SESSION['domain'] ?>" role="link">Home</a></li>
     <li><a href="<?php echo $_SESSION['domain'] ?>climbing_log" role="link">Climbing</a></li>
-    <li><a href="<?php echo $_SESSION['domain'] ?>climbing_log/logbook/" role="link">Logbook</a></li>
+    <li><a href="<?php echo $_SESSION['domain'] ?>climbing_log/logbook/<?php echo $logbook->getLogID() ?>" role="link">Logbook</a></li>
     <li class="current">Edit a Climbing Route</li>
 </ul>
 
@@ -29,48 +29,56 @@ if (isset($_SESSION['error'])) {
 echo '<div class="large-12 medium-12 small-12 columns">';
 echo formStart();
 
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["txtTitle"])) {
+        echo textInputEmptyError(true, "Route Name", "txtName", "errEmptyName", "Please enter a Route Name", 500);
+    } else {
+        echo textInputPostback(true, "Route Name", "txtName", $_POST["txtName"], 500);
+    }
+} else {
+    echo textInputSetup(true, "Route Name", "txtName",$route->getRouteName(), 500);
+}
+
+
+
 
 
 if (isset($_POST["btnSubmit"])) {
-    echo comboInputPostback(true, "Location", "sltLocation", $_POST["sltLocation"], $locationList);
-} else {
-    if (!is_null($logbook->getLocationID())) {
-        echo comboInputSetup(true, "Location", "sltLocation", $logbook->getLocationID(), $locationList);
+    if (empty($_POST["sltStyle"])) {
+        echo comboInputEmptyError(true, "Route Style", "sltStyle", "Please select...", "errRouteStyle", "Please select a Route Style", $routeStyles);
     } else {
-        echo comboInputBlank(true, "Location", "sltLocation", "Please select...", $locationList);
+        echo comboInputPostback(true, "Route Style", "sltStyle", $_POST["sltStyle"], $routeStyles);
+    }
+} else {
+
+    echo comboInputSetup(true, "Route Style", "sltStyle", $route->getRouteStyle(), $route->listStyles());
+}
+
+
+
+
+if (isset($_POST["btnSubmit"])) {
+    if (empty($_POST["txtName"])) {
+        echo textInputEmptyError(true, "Route Grade", "txtGrade", "errEmptyTitle", "Please enter a Route Grade", 25);
+    } else {
+        echo textInputPostback(true, "Route Grade", "txtGrade", $_POST["txtGrade"], 25);
+    }
+} else {
+    echo textInputSetup(true, "Route Grade", "txtGrade", $route->getRouteGrade(), 25);
+}
+
+
+
+if (isset($_POST["btnSubmit"])) {
+    echo comboInputPostback(false, "Climbing Partner", "sltPartner", $_POST["sltPartner"], $partnerList);
+} else {
+    if (!is_null($route->getPartnerID())) {
+        echo comboInputSetup(false, "Climbing Partner", "sltPartner", $route->getPartnerID(), $partnerList);
+    } else {
+        echo comboInputBlank(false, "Climbing Partner", "sltPartner", "Please select...", $partnerList);
     }
 }
 
-
-
-if (isset($_POST["btnSubmit"])) {
-    echo comboInputPostback(true, "Logbook Type", "sltType", $_POST["sltLocation"], $logbookTypes);
-} else {
-    if (!is_null($logbook->getLogType())) {
-        echo comboInputSetup(true, "Logbook Type", "sltType", $logbook->getLogType(), $logbookTypes);
-    } else {
-        echo comboInputBlank(true, "Logbook Type", "sltType", "Please select...",  $logbookTypes);
-    }
-}
-
-
-
-if (isset($_POST["btnSubmit"])) {
-    if (empty($_POST["txtDate"])) {
-        echo dateInputEmptyError(true, "Logbook Date", "txtDate", "errEmptyDOB", "Please enter a Logbook Date", null, date("Y-m-d"));
-    } else {
-        echo dateInputPostback(true, "Logbook Date", "txtDate", $_POST["txtDate"], null, date("Y-m-d"));
-    }
-} else {
-    echo dateInputSetup(true, "Logbook Date", "txtDate", $logbook->getDate(), null, date("Y-m-d"));
-}
-
-
-if (isset($_POST["btnSubmit"])) {
-    echo textareaInputPostback(false, "Notes", "txtNotes", $_POST["txtNotes"], 250, 4);
-} else {
-    echo textareaInputSetup(false, "Notes", "txtNotes", $logbook->getNotes(), 250, 4);
-}
 
 
 ?>
