@@ -60,6 +60,10 @@ $rules = array(
 //main pages
 //
 
+//FB Redirect
+
+'fbclid'=> "^(.*)&?fbclid=[^&]+&?(.*)$",
+
 
 //About us
     'about' => "/about/club_information",
@@ -180,6 +184,22 @@ foreach ($rules as $action => $rule) {
         $_SESSION['domain'] = $domain;
 
         switch ($action) {
+
+            //Handle FB URL IDs
+            case 'fbclid':
+                $url = $_SERVER['REQUEST_URI'];
+                //Find start fbclid  - question mark
+                $pos = strpos($url, '?');
+                //Remove from main url
+                $finalURL =substr($url, 0,$pos);
+
+                //Store in session
+                $_SESSION['finalURL'] = $finalURL;
+
+                //Call controller to redirect accordingly
+                call('pages', 'redirectFB');
+                break;
+
             case 'home':
                 call('pages', $action);
                 break;

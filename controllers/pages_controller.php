@@ -575,7 +575,7 @@ class pages_controller extends controller
 
         if (isset($_POST['btnAddFiles'])) {
             $_SESSION['addFiles'] = $pages->getPageID();
-            $this->redirect("files/upload.php");
+            $this->redirect("files/upload/");
             die();
         }
 
@@ -734,6 +734,25 @@ class pages_controller extends controller
             $this->redirect("login");
         }
 
+    }
+
+    public function redirectFB()
+    {
+
+        $finalURL = $_SESSION['finalURL'];
+        unset($_SESSION['finalURL']);
+
+        if(!empty($finalURL) || strlen($finalURL) != 0){
+         echo "redirect";
+         //remove trailing / at start of url (redirect already as it)
+            $finalURL  = substr($finalURL,1);
+            $this->redirect($finalURL);
+
+        } else{
+            echo "Empty";
+            //Any empty url redirect to home page
+            $this->redirect("");
+        }
     }
 
 }
