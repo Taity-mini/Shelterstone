@@ -26,8 +26,37 @@ if (isset($_SESSION['userID'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>RGU ShelterStone</title>
+    <!-- COMMON TAGS -->
+    <meta charset="utf-8">
+    <title>RGU Shelterstone</title>
+    <!-- Search Engine -->
+    <meta name="description" content="RGU's very own Climbing and Mountaineering Club!">
+    <meta name="image" content="https://rgushelterstone.co.uk/img/2018_logo.jpg">
+    <!-- Schema.org for Google -->
+    <meta itemprop="name" content="RGU Shelterstone">
+    <meta itemprop="description" content="RGU's very own Climbing and Mountaineering Club!">
+    <meta itemprop="image" content="https://rgushelterstone.co.uk/img/2018_logo.jpg">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="RGU Shelterstone">
+    <meta name="twitter:description" content="RGU's very own Climbing and Mountaineering Club!">
+    <!-- Open Graph general (Facebook, Pinterest & Google+) -->
+    <meta property="og:title" content="RGU Shelterstone">
+    <meta property="og:description" content="RGU's very own Climbing and Mountaineering Club!">
+    <meta property="og:image" content="https://rgushelterstone.co.uk/img/2018_logo.jpg">
+    <meta property="og:url" content="https://rgushelterstone.co.uk">
+    <meta property="og:site_name" content="RGU ShelterStone">
+    <meta property="og:locale" content="en_UK">
+    <meta property="fb:admins" content="1807029359366188">
+    <meta property="fb:app_id" content="268370126908939">
+    <meta property="og:type" content="website">
+
+    <meta property="og:image:alt" content="RGU ShelterStone">
+    <meta property="og:site_name" content="RGU ShelterStone">
+
+
+
+
     <link  rel="stylesheet" href="<?php echo $domain ?>css/foundation.min.css">
 
     <link href="<?php echo $domain ?>css/foundation-icons.css" rel="stylesheet">
@@ -85,6 +114,17 @@ if (isset($_SESSION['userID'])) {
             document.body.scrollLeft = scroll.left;
         }());
     </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129015793-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-129015793-1');
+    </script>
+
 
     <script type="text/javascript">
         hs.graphicsDir = '<?php echo $domain ?>highslide/graphics/';
